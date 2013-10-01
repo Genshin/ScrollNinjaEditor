@@ -1,38 +1,11 @@
-*.DS_Store
-
-*.class
-
-# Package Files #
-*.jar
-*.war
-*.ear
-
-# Created by http://gitignore.io
-
-### Eclipse ###
-*.pydevproject
-.project
-.metadata
-bin/**
-tmp/**
-tmp/**/*
-*.tmp
-*.bak
 *.swp
-*~.nib
-local.properties
-.classpath
-.settings/
-.loadpath
-
-# External tool builders
-.externalToolBuilders/
-
-# Locally stored "Eclipse launch configurations"
-*.launch
-
-# CDT-specific
-.cproject
-
-# PDT-specific
-.buildpath
+*.orig
+*.DS_Store
+*.log
+*.class
+ScrollNinja.jar
+doc/
+bin/
+ScrollNinja-html/.gwt/.gwt-log
+ScrollNinja-html/gwt-unit-Cache/
+ScrollNinja-android/gen/
