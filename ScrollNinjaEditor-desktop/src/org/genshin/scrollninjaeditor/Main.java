@@ -8,8 +8,8 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "ScrollNinjaEditor";
 		cfg.useGL20 = false;
-		cfg.width = 480;
-		cfg.height = 320;
+		cfg.width = 600;
+		cfg.height = 600;
 		
 		new LwjglApplication(new ScrollNinjaEditor(), cfg);
 	}
