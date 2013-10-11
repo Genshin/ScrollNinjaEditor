@@ -12,6 +12,7 @@ public class SelectScreen implements Screen {
 	 */
 	public SelectScreen(ScrollNinjaEditor editor) {
 		this.editor = editor;
+		MapObjectManager mom = MapObjectManager.create();
 	}
 	
 	/**
