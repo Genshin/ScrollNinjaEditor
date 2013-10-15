@@ -30,7 +30,6 @@ public class SelectScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void draw(float delta) {
-		
 	}
 	
 	@Override
