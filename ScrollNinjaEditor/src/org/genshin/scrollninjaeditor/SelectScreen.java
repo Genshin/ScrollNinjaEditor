@@ -1,10 +1,8 @@
 package org.genshin.scrollninjaeditor;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.filechooser.FileFilter;
 
 import com.badlogic.gdx.Gdx;
@@ -12,23 +10,18 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 
 public class SelectScreen implements Screen {
 	ScrollNinjaEditor editor;
@@ -36,27 +29,17 @@ public class SelectScreen implements Screen {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Stage stage;
-	private TextButton openButton;
-	private TextButton createButton;
 	private Image image;
 	private static boolean loadflag = false;
 	private static boolean changeflag = false;
 	private Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+	private TextField fileLabel;
 	
-	//配列宣言
-	private ArrayList<Texture> textures = new ArrayList<Texture>();
-	private ArrayList<Sprite> sprites = new ArrayList<Sprite>();
-	private ArrayList<TextureRegion> regions = new ArrayList<TextureRegion>();
-	private ArrayList<SpriteDrawable> sds = new ArrayList<SpriteDrawable>();
 	
-
-	
-	//定数宣言
-	static final int open = 0;
-	static final int prev = 1;
-	static final int create = 2;
-
-	
+	private Texture texture;
+	private Sprite sprite;
+	private TextureRegion region;
+	private SpriteDrawable sd;
 	
 	/**
 	 * Constructor
@@ -82,10 +65,11 @@ public class SelectScreen implements Screen {
 		Table selTable = new Table();
 		selTable.size( w/5*4 , h / 5 );
 		selTable.translate(w/10, h/5*4);
-		setdata(open,Gdx.files.internal("data/libgdx.png").toString());
 		//ボタン作成
+		TextButton openButton;
 		openButton = new TextButton("OPEN",skin);
-		
+		fileLabel = new TextField(" ",skin);
+		selTable.add(fileLabel).size(selTable.getWidth() - 64,32);
 		selTable.right().add(openButton).size(64, 32);
 		
 		
@@ -96,8 +80,8 @@ public class SelectScreen implements Screen {
 		Table preTable = new Table();
 		preTable.size(w/5*4, h/5*3);
 		preTable.translate(w/10, h/5);
-		setdata(prev,Gdx.files.internal("data/test.png").toString());
-		image = new Image(sds.get(prev));
+		setdata(Gdx.files.internal("data/test.png").toString());
+		image = new Image(sd);
 		preTable.add(image);
 						
 		//----------------------------------------
@@ -107,8 +91,8 @@ public class SelectScreen implements Screen {
 		Table creTable = new Table();
 		creTable.size( w/5*4 , h / 5 );
 		creTable.translate(w/10,0.0f);
-		setdata(create,Gdx.files.internal("data/libgdx.png").toString());
 		//ボタン作成
+		TextButton createButton;
 		createButton = new TextButton("CREATE",skin);
 		creTable.add(createButton).size(64, 32);
 		
@@ -143,6 +127,7 @@ public class SelectScreen implements Screen {
 						if(filter[i].accept(file))
 						{
 							changeTex(Gdx.files.absolute(file.getAbsolutePath()).path());	//画像切替
+							fileLabel.setText(file.getName());
 							fileName = Gdx.files.absolute(file.getAbsolutePath()).path();	//パス保存
 							loadflag = true;
 							break;
@@ -198,8 +183,7 @@ public class SelectScreen implements Screen {
 		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		for(Sprite sprite:sprites)
-			sprite.draw(batch);
+		sprite.draw(batch);
 		batch.end();
 		
 		Table.drawDebug(stage);			//テーブル枠組み描画
@@ -234,37 +218,23 @@ public class SelectScreen implements Screen {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		textures.remove(textures);
-		sprites.remove(sprites);
-		regions.remove(regions);
-		sds.remove(sds);
+		texture.dispose();
 		stage.dispose();
 	}
 	
-	private void setdata(int cnt ,String str) {
-		textures.add(new Texture(str));
-		Texture texture = textures.get(cnt);
-		regions.add(new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight()));
-		TextureRegion region = regions.get(cnt);
-		sprites.add(new Sprite(region));
-		Sprite sprite = sprites.get(cnt);
-		sds.add(new SpriteDrawable(sprite));
+	private void setdata(String str) {
+		this.texture = new Texture(str);
+		this.region = new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight());
+		this.sprite = new Sprite(region);
+		this.sd = new SpriteDrawable(sprite);
 		
 	}
 	
 	private void changeTex(String str)
 	{
-		Texture texture = new Texture(str);
-		textures.set(prev, texture);
-		TextureRegion region = new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight());
-		regions.set(prev, region);
-		Sprite sprite = new Sprite(region);
-		sprites.set(prev, sprite);
-		SpriteDrawable sd = new SpriteDrawable(sprite);
-		sds.set(prev, sd);
+		setdata(str);
 		
-		image.setDrawable(sds.get(prev));
-		
+		image.setDrawable(sd);
 	}
 	
 	class ExtendFileFilter extends FileFilter

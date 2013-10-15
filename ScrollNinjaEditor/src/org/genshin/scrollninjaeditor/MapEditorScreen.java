@@ -16,6 +16,7 @@ public class MapEditorScreen implements Screen {
 		this.editor = editor;
 		this.fileName = fileName;
 		Gdx.app.log("画面遷移完了", "");
+		Gdx.app.log("", "" + this.fileName);
 	}
 	
 	/**
