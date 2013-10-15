@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class ScrollNinjaEditor implements ApplicationListener {
+public class ScrollNinjaEditor1 implements ApplicationListener {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture texture;
@@ -120,7 +120,7 @@ public class ScrollNinjaEditor implements ApplicationListener {
 		
 		//====ボタン
 		stage1 = new Stage(300,300,streach);
-		Gdx.input.setInputProcessor(stage1);
+		//Gdx.input.setInputProcessor(stage1)
 		
 		table1 = new Table();
 		table1.setFillParent(true);
@@ -231,7 +231,6 @@ public class ScrollNinjaEditor implements ApplicationListener {
 			stage2.act(Gdx.graphics.getDeltaTime());
 			stage2.draw();
 		}
-		
 	}
 
 	@Override
