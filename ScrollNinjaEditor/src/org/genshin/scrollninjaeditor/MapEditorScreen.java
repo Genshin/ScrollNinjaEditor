@@ -2,6 +2,8 @@ package org.genshin.scrollninjaeditor;
 
 import java.util.ArrayList;
 
+import org.genshin.scrollninjaeditor.factory.TextureFactory;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
@@ -16,6 +18,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -40,16 +44,19 @@ public class MapEditorScreen implements Screen {
 	private Sprite sprite2;
 	private TextureRegion region2;
 	
+	private Skin skin;
+	private ScrollPane scro;
+	private Table scroTable;
+	
 	private int i;
-	private float getSpriteMousePosX = 0 , getSpriteMousePosY = 0 ;
 	private float getMousePositionX = 0 , getMousePositionY = 0;
 	private float getSpritePositionX = 0 , getSpritePositionY = 0;
-	private float width = 0 , hight = 0;
-	private int size = 2;
+	private boolean sprite_flg = true;
 	
 	private ArrayList<Stage> array_stage = new ArrayList<Stage>();
 	private ArrayList<Texture> array_tex = new ArrayList<Texture>();
 	private ArrayList<Table> array_table = new ArrayList<Table>();
+	private ArrayList<Boolean> array_flg = new ArrayList<Boolean>();
 	
 	/**
 	 * Constructor
@@ -71,7 +78,7 @@ public class MapEditorScreen implements Screen {
 		
 		texture = new Texture(this.fileName);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
+		
 		region = new TextureRegion(texture, 0, 0, 4096, 2048);
 
 		sprite = new Sprite(region);
@@ -96,8 +103,10 @@ public class MapEditorScreen implements Screen {
 		region2 = new TextureRegion(array_tex.get(0),0,0,512,256);
 	
 		// - 複数化 - 
-		for (i = 0 ; i < 15 ; i ++)
+		for (i = 0 ; i < 30 ; i ++)
 		{
+			if (i == 15 )
+				table.row();
 			region1 = new TextureRegion(array_tex.get(i % 3),0,0,64,64);	
 			sprite1 = new Sprite(region1);
 			sd = new SpriteDrawable();						// 上書きが必要
@@ -121,20 +130,30 @@ public class MapEditorScreen implements Screen {
 					sprite2 = new Sprite(region2);
 					sprite2.setSize(sprite2.getRegionWidth(),sprite2.getRegionHeight());
 					sprite2.setOrigin(sprite2.getWidth()/2, sprite2.getHeight()/2);
-					sprite2.setPosition(sprite.getX(),sprite.getY());
-					getSpritePositionX = sprite.getX();
-					getSpritePositionY = sprite.getY();
+					sprite2.setPosition(-sprite2.getWidth()/2, -sprite2.getHeight()/2);
+					getSpritePositionX = sprite2.getX();
+					getSpritePositionY = sprite2.getY();
 				}
 			});
-			//imageButton.setPosition(30 + i * 100, 400);		// 座標移動
 			table.add(imageButton);
 			table.setFillParent(true);
 			table.left();
 			table.setX(32);
 			table.setY(200);
-			array_table.add(table);
-			stage.addActor(array_table.get(i));
 		}
+		
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		scro = new ScrollPane(table,skin);
+		scro.setFlickScroll(false);
+		scro.setFadeScrollBars(true);				// ここでfalseなら常に。trueなら使用するとき。
+		scro.setScrollingDisabled(false, false);	// 一番目は縦、二番目は横。これによりスクロールをするかしないか
+		scroTable = new Table();
+		scroTable.setFillParent(true);
+		scroTable.add(scro);
+		scroTable.setX(20);
+		scroTable.setY(200);
+		array_table.add(scroTable);
+		stage.addActor(array_table.get(0));
 		array_stage.add(stage);
 		
 		//===オブジェクト
@@ -142,9 +161,9 @@ public class MapEditorScreen implements Screen {
 		sprite2 = new Sprite(region2);
 		sprite2.setSize(sprite2.getRegionWidth(),sprite2.getRegionHeight());
 		sprite2.setOrigin(sprite2.getWidth()/2, sprite2.getHeight()/2);
-		sprite2.setPosition(0,0);
-		getSpritePositionX = sprite.getX();
-		getSpritePositionY = sprite.getY();
+		sprite2.setPosition(-sprite2.getWidth()/2, -sprite2.getHeight()/2);
+		getSpritePositionX = sprite2.getX();
+		getSpritePositionY = sprite2.getY();
 	}
 	
 	/**
@@ -181,10 +200,6 @@ public class MapEditorScreen implements Screen {
 		camera.update();
 		
 		//===マウスクリック
-		/*
-		getMousePositionX = Gdx.input.getX();
-		getMousePositionY = Gdx.input.getY();
-		*/
 		
 		getMousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
 		getMousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
@@ -192,20 +207,6 @@ public class MapEditorScreen implements Screen {
 		// デバッグ用
 		if (Gdx.input.isKeyPressed(Keys.P))
 		{
-			//Gdx.app.log("tag", "y" + );
-	/*		Gdx.app.log("スプライト", "x" + sprite.getX());
-			Gdx.app.log("スプライト", "y" + sprite.getY());
-			Gdx.app.log("スプライト2", "x" + sprite2.getX());
-			Gdx.app.log("スプライト2", "y" + sprite2.getY());
-			Gdx.app.log("スプライト", "x" + sprite.getOriginX());
-			Gdx.app.log("スプライト", "y" + sprite.getOriginY());
-			Gdx.app.log("スプライト2", "x" + sprite2.getOriginX());
-			Gdx.app.log("スプライト2", "y" + sprite2.getOriginY());
-			Gdx.app.log("スプライト", "x" + sprite.getWidth());
-			Gdx.app.log("スプライト", "y" + sprite.getHeight());
-			Gdx.app.log("スプライト2", "x" + sprite2.getWidth());
-			Gdx.app.log("スプライト2", "y" + sprite2.getHeight());*/
-			//Gdx.app.log("判定", "" + sprite2.getBoundingRectangle().contains((Gdx.input.getX() - 512) * 4,((Gdx.input.getY() + 512) * -1) + 190));
 			Gdx.app.log("マウスの座標X", "x:" + getMousePositionX);
 			Gdx.app.log("マウスの座標Y", "y:" + getMousePositionY);
 			Gdx.app.log("カメラ座標","X" + camera.position.x);
@@ -219,10 +220,6 @@ public class MapEditorScreen implements Screen {
 			Gdx.app.log("スプライト2のY値", "" + sprite2.getBoundingRectangle().getY());
 			Gdx.app.log("スプライト2のW値", "" + sprite2.getBoundingRectangle().getWidth());
 			Gdx.app.log("スプライト2のH値", "" + sprite2.getBoundingRectangle().getHeight());
-			/*
-			Gdx.app.log("tag","X" + getMousePositionX);
-			Gdx.app.log("tag","Y" + getMousePositionY);
-			*/
 		}
 		
 		if (Gdx.input.isKeyPressed(Keys.A))
@@ -246,18 +243,40 @@ public class MapEditorScreen implements Screen {
 			sprite2.setY(getSpritePositionY);
 		}
 		
-		// クリックしたタイミング
-		if(sprite2.getBoundingRectangle().contains(getMousePositionX,getMousePositionY))
+		if(sprite_flg)
 		{
-			if (Gdx.input.justTouched())
+			if (Gdx.input.isButtonPressed(0))
 			{
-				Gdx.app.log("マウス座標","X:" + getMousePositionX);
-				Gdx.app.log("マウス座標","Y:" + getMousePositionY);
-				Gdx.app.log("スプライト２座標","X:" + sprite2.getBoundingRectangle().getX());
-				Gdx.app.log("スプライト２座標","Y:" + sprite2.getBoundingRectangle().getY());
-				Gdx.app.log("スプライト２高さ","H:" + sprite2.getBoundingRectangle().getHeight());
-				Gdx.app.log("スプライト２幅","W:" + sprite2.getBoundingRectangle().getWidth());
+			// クリックしたタイミング
+				if(sprite2.getBoundingRectangle().contains(getMousePositionX,-getMousePositionY))
+				{
+					getSpritePositionX = getMousePositionX - sprite2.getWidth() / 2;
+					getSpritePositionY = getMousePositionY + sprite2.getHeight() / 2;
+					sprite2.setPosition(getSpritePositionX,-getSpritePositionY);
+					
+					Gdx.app.log("マウス座標","X:" + getMousePositionX);
+					Gdx.app.log("マウス座標","Y:" + getMousePositionY);
+					Gdx.app.log("マウス座標","X:" + getSpritePositionX);
+					Gdx.app.log("マウス座標","Y:" + getSpritePositionY);
+					Gdx.app.log("スプライト２座標","X:" + sprite2.getBoundingRectangle().getX());
+					Gdx.app.log("スプライト２座標","Y:" + sprite2.getBoundingRectangle().getY());
+					Gdx.app.log("スプライト２高さ","H:" + sprite2.getBoundingRectangle().getHeight());
+					Gdx.app.log("スプライト２幅","W:" + sprite2.getBoundingRectangle().getWidth());
+				}
 			}
+			
+			if(Gdx.input.isButtonPressed(1))
+			{
+				sprite_flg = false;
+				sprite2.setPosition(-sprite2.getWidth()/2, -sprite2.getHeight()/2);
+				getSpritePositionX = sprite2.getX();
+				getSpritePositionY = sprite2.getY();
+			}
+		}
+			
+		if(Gdx.input.isButtonPressed(2))
+		{
+			sprite_flg = true;
 		}
 	}
 	
@@ -272,8 +291,10 @@ public class MapEditorScreen implements Screen {
 		batch.begin();
 		
 		sprite.draw(batch);
-		sprite2.draw(batch);
-		
+		if(sprite_flg)
+		{
+			sprite2.draw(batch);
+		}
 		batch.end();
 		
 		//===ボタン
