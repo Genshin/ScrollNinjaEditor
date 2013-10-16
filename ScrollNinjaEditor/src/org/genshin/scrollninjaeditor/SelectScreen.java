@@ -5,6 +5,8 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
+import org.genshin.scrollninjaeditor.factory.TextureFactory;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
@@ -109,6 +111,7 @@ public class SelectScreen implements Screen {
 					new ExtendFileFilter(".gif","GIF  ファイル(*.gif)"),
 					new ExtendFileFilter(".jpg","JPEG ファイル(*.jpg)"),
 					new ExtendFileFilter(".png","PNG  ファイル(*.png)"),
+					new ExtendFileFilter(".json","JSON ファイル(*.json)"),
 				};
 				
 				//フィルター設定
@@ -126,11 +129,19 @@ public class SelectScreen implements Screen {
 						//開いたファイルが正しい場合
 						if(filter[i].accept(file))
 						{
-							changeTex(Gdx.files.absolute(file.getAbsolutePath()).path());	//画像切替
-							fileLabel.setText(file.getName());
-							fileName = Gdx.files.absolute(file.getAbsolutePath()).path();	//パス保存
-							loadflag = true;
-							break;
+							if(i < 3)
+							{
+								changeTex(Gdx.files.absolute(file.getAbsolutePath()).path());	//画像切替
+								fileLabel.setText(file.getName());
+								fileName = Gdx.files.absolute(file.getAbsolutePath()).path();	//パス保存
+								loadflag = true;
+								break;
+							}
+							else
+							{
+								MapObjectManager map = new MapObjectManager();
+								map.create();
+							}
 						}
 					}
 					
@@ -223,7 +234,8 @@ public class SelectScreen implements Screen {
 	}
 	
 	private void setdata(String str) {
-		this.texture = new Texture(str);
+		//this.texture = new Texture(str);
+		this.texture = TextureFactory.getInstance().get(str);
 		this.region = new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight());
 		this.sprite = new Sprite(region);
 		this.sd = new SpriteDrawable(sprite);
@@ -232,6 +244,7 @@ public class SelectScreen implements Screen {
 	
 	private void changeTex(String str)
 	{
+		Gdx.app.log("", "" + str);
 		setdata(str);
 		
 		image.setDrawable(sd);

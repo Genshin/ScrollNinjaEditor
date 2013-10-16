@@ -45,7 +45,8 @@ public class MapObjectManager {
 		try
         {
             ObjectMapper objectMapper = new ObjectMapper();
-            mapObjectList = objectMapper.readValue(Gdx.files.internal("data/objects/objects.json").read(), new TypeReference<ArrayList<MapObject>>(){});
+            //mapObjectList = objectMapper.readValue(Gdx.files.internal("data/objects/objects.json").read(), new TypeReference<ArrayList<MapObject>>(){});
+            mapObjectList = objectMapper.readValue(Gdx.files.internal("data/objects/test.json").read(), new TypeReference<ArrayList<MapObject>>(){});
         }
         catch (JsonParseException e) { e.printStackTrace(); }
         catch (JsonMappingException e) { e.printStackTrace(); }
@@ -53,7 +54,10 @@ public class MapObjectManager {
 		
 		if (mapObjectList != null) {
 			for (int i = 0; i < mapObjectList.size(); i ++) {
-				Gdx.app.log("map", i + "   " + mapObjectList.get(i).getFileName());
+				//Gdx.app.log("first", i + "   " + mapObjectList.get(i).getfirstName());
+				//Gdx.app.log("last", i + "   " + mapObjectList.get(i).getlastName());
+				//Gdx.app.log("email", i + "   " + mapObjectList.get(i).getEmail());
+				
 			}
 		}
 	}
