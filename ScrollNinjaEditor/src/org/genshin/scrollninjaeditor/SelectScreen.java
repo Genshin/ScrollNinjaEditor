@@ -80,9 +80,9 @@ public class SelectScreen implements Screen {
 		//----------------------------------------
 		//プレビュー用table作成
 		Table preTable = new Table();
-		preTable.size(w/5*4, h/5*3);
-		preTable.translate(w/10, h/5);
-		setdata(Gdx.files.internal("data/test.png").toString());
+		preTable.size(w, h/5*3);
+		preTable.translate(0.0f, h/5);
+		setdata(null);
 		image = new Image(sd);
 		preTable.add(image);
 						
@@ -129,19 +129,12 @@ public class SelectScreen implements Screen {
 						//開いたファイルが正しい場合
 						if(filter[i].accept(file))
 						{
-							if(i < 3)
-							{
-								changeTex(Gdx.files.absolute(file.getAbsolutePath()).path());	//画像切替
-								fileLabel.setText(file.getName());
-								fileName = Gdx.files.absolute(file.getAbsolutePath()).path();	//パス保存
-								loadflag = true;
-								break;
-							}
-							else
-							{
-								MapObjectManager map = new MapObjectManager();
-								map.create();
-							}
+							changeTex(Gdx.files.absolute(file.getAbsolutePath()).path());	//画像切替
+							fileLabel.setText(file.getName());
+							fileName = Gdx.files.absolute(file.getAbsolutePath()).path();	//パス保存
+							loadflag = true;
+							break;
+	
 						}
 					}
 					
@@ -186,6 +179,7 @@ public class SelectScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void draw(float delta) {
+
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
@@ -194,10 +188,12 @@ public class SelectScreen implements Screen {
 		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		sprite.draw(batch);
+		if(sprite != null)
+			sprite.draw(batch);
 		batch.end();
 		
 		Table.drawDebug(stage);			//テーブル枠組み描画
+
 	}
 	
 	@Override
@@ -234,17 +230,24 @@ public class SelectScreen implements Screen {
 	}
 	
 	private void setdata(String str) {
-		//this.texture = new Texture(str);
-		this.texture = TextureFactory.getInstance().get(str);
-		this.region = new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight());
-		this.sprite = new Sprite(region);
-		this.sd = new SpriteDrawable(sprite);
-		
+		if(str != null)
+		{
+			this.texture = TextureFactory.getInstance().get(str);
+			this.region = new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight());
+			this.sprite = new Sprite(region);
+			this.sd = new SpriteDrawable(sprite);
+		}
+		else
+		{
+			this.texture = null;
+			this.region = null;
+			this.sprite = null;
+			this.sd = null;
+		}
 	}
 	
 	private void changeTex(String str)
 	{
-		Gdx.app.log("", "" + str);
 		setdata(str);
 		
 		image.setDrawable(sd);
