@@ -24,6 +24,9 @@ public class MapObject {
 		Texture texture = TextureFactory.getInstance().get("data/objects/" + fileName);
 		TextureRegion region = new TextureRegion(texture, 0, 0, width, height);
 		this.sprite = new Sprite(region);
+		this.sprite.setSize(this.sprite.getRegionWidth(),this.sprite.getRegionHeight());
+		this.sprite.setOrigin(this.sprite.getWidth()/2,this.sprite.getHeight()/2);
+		//this.sprite.setPosition(-this.sprite.getWidth()/2,-this.sprite.getHeight()/2);
 	}
 	
 	/**
@@ -66,7 +69,7 @@ public class MapObject {
 	/**
 	 * @return	sprite
 	 */
-	public Sprite getSprite() {
+	public Sprite sp() {
 		return sprite;
 	}
 	

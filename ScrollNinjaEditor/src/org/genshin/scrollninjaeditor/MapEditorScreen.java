@@ -53,6 +53,9 @@ public class MapEditorScreen implements Screen {
 	private float getSpritePositionX = 0 , getSpritePositionY = 0;
 	private boolean sprite_flg = true;
 	
+	private MapObjectManager mpobject = new MapObjectManager();
+	//private Stage stage3;
+	
 	private ArrayList<Stage> array_stage = new ArrayList<Stage>();
 	private ArrayList<Texture> array_tex = new ArrayList<Texture>();
 	private ArrayList<Table> array_table = new ArrayList<Table>();
@@ -72,6 +75,7 @@ public class MapEditorScreen implements Screen {
 
 		camera = new OrthographicCamera(w , h);
 		batch = new SpriteBatch();
+		
 		
 		//----------------------------------------------------------------------
 		//====最背面(選択マップ)
@@ -101,16 +105,18 @@ public class MapEditorScreen implements Screen {
 		array_tex.add(2,texture);
 		
 		region2 = new TextureRegion(array_tex.get(0),0,0,512,256);
+		
+		mpobject = MapObjectManager.create();
 	
 		// - 複数化 - 
-		for (i = 0 ; i < 30 ; i ++)
+		for (i = 0 ; i < 10 ; i ++)
 		{
 			if (i == 15 )
 				table.row();
-			region1 = new TextureRegion(array_tex.get(i % 3),0,0,64,64);	
-			sprite1 = new Sprite(region1);
+			/*region1 = new TextureRegion(array_tex.get(i % 3),0,0,64,64);	
+			sprite1 = new Sprite(region1);*/
 			sd = new SpriteDrawable();						// 上書きが必要
-			sd.setSprite(sprite1);							// 上書きではないので注意
+			sd.setSprite(mpobject.getMapObjectList().get(i).sp());							// 上書きではないので注意
 			imageButton = new ImageButton(sd);
 
 			table.addListener(new ClickListener()
@@ -164,6 +170,18 @@ public class MapEditorScreen implements Screen {
 		sprite2.setPosition(-sprite2.getWidth()/2, -sprite2.getHeight()/2);
 		getSpritePositionX = sprite2.getX();
 		getSpritePositionY = sprite2.getY();
+		
+		//===テスト
+		/*
+		mpobject = MapObjectManager.create();
+		stage3 = new Stage();
+		Table table1 = new Table();
+		SpriteDrawable sd2 = new SpriteDrawable();
+		sd2.setSprite(mpobject.getMapObjectList().get(0).sp());
+		ImageButton imagebutton2 = new ImageButton(sd2);
+		table1.add(imagebutton2);
+		table1.setFillParent(true);
+		stage3.addActor(table1);*/
 	}
 	
 	/**
@@ -216,6 +234,7 @@ public class MapEditorScreen implements Screen {
 			Gdx.app.log("レクト", "Y" + rect.getY());
 			Gdx.app.log("レクト", "W" + rect.getWidth());
 			Gdx.app.log("レクト", "H" + rect.getHeight());
+			Gdx.app.log("tag", "" + mpobject);
 			Gdx.app.log("スプライト2のX値", "" + sprite2.getBoundingRectangle().getX());
 			Gdx.app.log("スプライト2のY値", "" + sprite2.getBoundingRectangle().getY());
 			Gdx.app.log("スプライト2のW値", "" + sprite2.getBoundingRectangle().getWidth());
@@ -295,6 +314,7 @@ public class MapEditorScreen implements Screen {
 		{
 			sprite2.draw(batch);
 		}
+		
 		batch.end();
 		
 		//===ボタン
@@ -303,6 +323,10 @@ public class MapEditorScreen implements Screen {
 			stage.act(Gdx.graphics.getDeltaTime());
 			stage.draw();
 		}
+		/*
+		stage3.act(Gdx.graphics.getDeltaTime());
+		stage3.draw();
+		*/
 	}
 
 	@Override
