@@ -1,6 +1,7 @@
 package org.genshin.scrollninjaeditor;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+
 
 public class SelectScreen implements Screen {
 	ScrollNinjaEditor editor;
@@ -111,7 +113,7 @@ public class SelectScreen implements Screen {
 					new ExtendFileFilter(".gif","GIF  ファイル(*.gif)"),
 					new ExtendFileFilter(".jpg","JPEG ファイル(*.jpg)"),
 					new ExtendFileFilter(".png","PNG  ファイル(*.png)"),
-					new ExtendFileFilter(".json","JSON ファイル(*.json)"),
+					new ExtendFileFilter(".json","JSON  ファイル(*.json)"),
 				};
 				
 				//フィルター設定
@@ -125,14 +127,40 @@ public class SelectScreen implements Screen {
 					File file = FileChooser.getSelectedFile();
 					//開いたファイルの種類のチェック
 					for(int i = 0 ;i < filter.length ; i++)
-					{
+					{	
 						//開いたファイルが正しい場合
 						if(filter[i].accept(file))
 						{
-							changeTex(Gdx.files.absolute(file.getAbsolutePath()).path());	//画像切替
-							fileLabel.setText(file.getName());
-							fileName = Gdx.files.absolute(file.getAbsolutePath()).path();	//パス保存
-							loadflag = true;
+							//if(i < 3)
+							//{
+								changeTex(Gdx.files.absolute(file.getAbsolutePath()).path());	//画像切替
+								fileLabel.setText(file.getName());
+								fileName = Gdx.files.absolute(file.getAbsolutePath()).path();	//パス保存
+								loadflag = true;
+							//}
+							/*else
+							{
+								ArrayList<JsonFile> jsonDatas = new ArrayList<JsonFile>();
+								JsonRead read = new JsonRead(Gdx.files.absolute(file.getAbsolutePath()).path());
+								int nCnt = 0;
+								
+								for(int node = 0; read.getRootNode(node) != null;node++ , nCnt++)
+								{
+									JsonFile json;
+									jsonDatas.add(new JsonFile());
+									json = jsonDatas.get(nCnt);
+									json.SetFirstName(read.getObjectFieldString("name", "first", node));
+									json.SetLastName(read.getObjectFieldString("name", "last", node));
+									json.SetEmail(read.getObjectString("email", node));
+									json.SetValue(read.getObjectInt("value", node));
+									jsonDatas.set(nCnt, json);
+									Gdx.app.log("first", "" + json.GetFirstName());
+									Gdx.app.log("last", "" + json.GetLastName());
+									Gdx.app.log("email", "" + json.GetEmail());
+									Gdx.app.log("value", "" + json.GetValue());
+								}
+								
+							}*/
 							break;
 	
 						}
@@ -150,6 +178,33 @@ public class SelectScreen implements Screen {
 				{
 					changeflag = true;
 				}
+				/*else
+				{
+					JFileChooser fileChooser = new JFileChooser();
+					int select = fileChooser.showSaveDialog(fileChooser);
+					if(select == JFileChooser.APPROVE_OPTION)
+					{
+						ArrayList<JsonFile> jsonDatas2 = new ArrayList<JsonFile>();
+						jsonDatas2.add(new JsonFile("aaa","bbb","ccc",1));
+						jsonDatas2.add(new JsonFile("ddd","eee","fff",2));
+						
+						JsonWrite write = new JsonWrite();
+						for(int i = 0; i<jsonDatas2.size();i++)
+						{
+							JsonFile a = jsonDatas2.get(i);
+							write.addObject();
+							write.setFieldNode("name");
+							write.putObjectField("first" ,"" + a.GetFirstName());
+							write.putObjectField("last" ,"" + a.GetLastName());
+							write.putObject("email","" + a.GetEmail());
+							write.putObject("value", a.GetValue());
+							
+						}
+						
+						Gdx.app.log("", "" + fileChooser.getSelectedFile().toString());
+						write.writeData(fileChooser.getSelectedFile().toString() + ".json");
+					}
+				}*/
 			}
 		});
 				
@@ -272,5 +327,5 @@ public class SelectScreen implements Screen {
 		}
 	}
 
-	
+
 }

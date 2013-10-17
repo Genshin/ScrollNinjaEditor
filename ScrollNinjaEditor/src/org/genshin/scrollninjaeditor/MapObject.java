@@ -70,7 +70,7 @@ public class MapObject {
 	/**
 	 * @return	sprite
 	 */
-	public Sprite getSprite() {
+	public Sprite getSp() {
 		return sprite;
 	}
 	

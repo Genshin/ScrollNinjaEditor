@@ -1,6 +1,5 @@
 package org.genshin.scrollninjaeditor;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
 public class MapEditorScreen implements Screen {
