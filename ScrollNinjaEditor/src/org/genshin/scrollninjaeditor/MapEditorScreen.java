@@ -34,11 +34,9 @@ public class MapEditorScreen implements Screen {
 	private Sprite sprite;
 	private Stage stage;
 	private TextureRegion region;
-	
-	private Sprite sprite1;
-	private TextureRegion region1;
 	private Table table;
 	private ImageButton imageButton;
+	//private ObjectButton objB;
 	private SpriteDrawable sd = new SpriteDrawable();
 
 	private Sprite sprite2;
@@ -54,11 +52,10 @@ public class MapEditorScreen implements Screen {
 	private boolean sprite_flg = true;
 	
 	private MapObjectManager mpobject = new MapObjectManager();
-	//private Stage stage3;
 	
 	private ArrayList<Stage> array_stage = new ArrayList<Stage>();
 	private ArrayList<Texture> array_tex = new ArrayList<Texture>();
-	private ArrayList<Table> array_table = new ArrayList<Table>();
+	private ArrayList<Sprite> array_sprite = new ArrayList<Sprite>();
 	private ArrayList<Boolean> array_flg = new ArrayList<Boolean>();
 	
 	/**
@@ -107,45 +104,28 @@ public class MapEditorScreen implements Screen {
 		region2 = new TextureRegion(array_tex.get(0),0,0,512,256);
 		
 		mpobject = MapObjectManager.create();
-	
+		
 		// - 複数化 - 
-		for (i = 0 ; i < 10 ; i ++)
+		for (i = 0 ; i < 11 ; i ++)
 		{
 			if (i == 15 )
 				table.row();
-			/*region1 = new TextureRegion(array_tex.get(i % 3),0,0,64,64);	
-			sprite1 = new Sprite(region1);*/
+			//mpobject.getMapObjectList().get(i).getSp().setSize(64,64);
 			sd = new SpriteDrawable();						// 上書きが必要
-			sd.setSprite(mpobject.getMapObjectList().get(i).sp());							// 上書きではないので注意
-			imageButton = new ImageButton(sd);
-
-			table.addListener(new ClickListener()
+			sd.setSprite(mpobject.getMapObjectList().get(i).getSp());							// 上書きではないので注意
+			final ObjectButton objB = new ObjectButton(sd, mpobject.getMapObjectList().get(i));
+			
+			objB.addListener(new ClickListener()
 			{
 				@Override
-				public void clicked(InputEvent event,float x,float y)
+				public void clicked(InputEvent event ,float x,float y)
 				{
-					if((x / 64.0f > 0.0f) && (x / 64.0f < 1.0f))
-						region2 = new TextureRegion(array_tex.get(0),0,0,512,256);
-					
-					else if((x / 64.0f > 1.0f) && (x / 64.0f < 2.0f))
-						region2 = new TextureRegion(array_tex.get(1),0,0,512,256);
-					
-					else if((x / 64.0f > 2.0f) && (x / 64.0f < 3.0f))
-						region2 = new TextureRegion(array_tex.get(2),0,0,512,256);
-					
-					sprite2 = new Sprite(region2);
-					sprite2.setSize(sprite2.getRegionWidth(),sprite2.getRegionHeight());
-					sprite2.setOrigin(sprite2.getWidth()/2, sprite2.getHeight()/2);
-					sprite2.setPosition(-sprite2.getWidth()/2, -sprite2.getHeight()/2);
-					getSpritePositionX = sprite2.getX();
-					getSpritePositionY = sprite2.getY();
+					MapObject mapobj = objB.getMapObject();
+					mpobject.setMapObject(mapobj);
 				}
+	
 			});
-			table.add(imageButton);
-			table.setFillParent(true);
-			table.left();
-			table.setX(32);
-			table.setY(200);
+			table.add(objB);
 		}
 		
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -154,34 +134,25 @@ public class MapEditorScreen implements Screen {
 		scro.setFadeScrollBars(true);				// ここでfalseなら常に。trueなら使用するとき。
 		scro.setScrollingDisabled(false, false);	// 一番目は縦、二番目は横。これによりスクロールをするかしないか
 		scroTable = new Table();
-		scroTable.setFillParent(true);
+		scroTable.setLayoutEnabled(false);			// 任意に変更
+		scroTable.setX(150);
+		scroTable.setY(350);
+		scro.size(600,10);
 		scroTable.add(scro);
-		scroTable.setX(20);
-		scroTable.setY(200);
-		array_table.add(scroTable);
-		stage.addActor(array_table.get(0));
+		stage.addActor(scroTable);
 		array_stage.add(stage);
 		
 		//===オブジェクト
 		
-		sprite2 = new Sprite(region2);
+		/*sprite2 = new Sprite(region2);
 		sprite2.setSize(sprite2.getRegionWidth(),sprite2.getRegionHeight());
 		sprite2.setOrigin(sprite2.getWidth()/2, sprite2.getHeight()/2);
 		sprite2.setPosition(-sprite2.getWidth()/2, -sprite2.getHeight()/2);
 		getSpritePositionX = sprite2.getX();
 		getSpritePositionY = sprite2.getY();
 		
-		//===テスト
-		/*
-		mpobject = MapObjectManager.create();
-		stage3 = new Stage();
-		Table table1 = new Table();
-		SpriteDrawable sd2 = new SpriteDrawable();
-		sd2.setSprite(mpobject.getMapObjectList().get(0).sp());
-		ImageButton imagebutton2 = new ImageButton(sd2);
-		table1.add(imagebutton2);
-		table1.setFillParent(true);
-		stage3.addActor(table1);*/
+		array_sprite.add(sprite2);*/
+		
 	}
 	
 	/**
@@ -215,7 +186,6 @@ public class MapEditorScreen implements Screen {
 			if (camera.position.y < sprite.getY() + 256)
 				camera.position.y = sprite.getY() + 256;
 		}
-		camera.update();
 		
 		//===マウスクリック
 		
@@ -225,26 +195,21 @@ public class MapEditorScreen implements Screen {
 		// デバッグ用
 		if (Gdx.input.isKeyPressed(Keys.P))
 		{
-			Gdx.app.log("マウスの座標X", "x:" + getMousePositionX);
-			Gdx.app.log("マウスの座標Y", "y:" + getMousePositionY);
-			Gdx.app.log("カメラ座標","X" + camera.position.x);
-			Gdx.app.log("カメラ座標","Y" + camera.position.y);
-			Rectangle rect = sprite2.getBoundingRectangle();
-			Gdx.app.log("レクト", "X" + rect.getX());
-			Gdx.app.log("レクト", "Y" + rect.getY());
-			Gdx.app.log("レクト", "W" + rect.getWidth());
-			Gdx.app.log("レクト", "H" + rect.getHeight());
-			Gdx.app.log("tag", "" + mpobject);
-			Gdx.app.log("スプライト2のX値", "" + sprite2.getBoundingRectangle().getX());
-			Gdx.app.log("スプライト2のY値", "" + sprite2.getBoundingRectangle().getY());
-			Gdx.app.log("スプライト2のW値", "" + sprite2.getBoundingRectangle().getWidth());
-			Gdx.app.log("スプライト2のH値", "" + sprite2.getBoundingRectangle().getHeight());
+			for (i = 0 ; i < 11 ; i ++)
+			{
+				Gdx.app.log("tag","1:" + (mpobject.getMapObjectList().get(i).getSp().getBoundingRectangle().contains(getMousePositionX,-getMousePositionY)));
+				Gdx.app.log("tag","2:" + (mpobject.getMapObjectList().get(i).getSp().getX()));
+				Gdx.app.log("tag","3:" + (mpobject.getMapObjectList().get(i).getSp().getY()));
+			}
+			Gdx.app.log("tag","4:" + getMousePositionX);
+			Gdx.app.log("tag","5:" + (-getMousePositionY));
 		}
 		
 		if (Gdx.input.isKeyPressed(Keys.A))
 		{
 			getSpritePositionX -= 50;
-			sprite2.setX(getSpritePositionX);
+			//sprite2.setX(getSpritePositionX);
+		//	mpobject.getMapObjectList().get(4).setPosition(getSpritePositionX, getSpritePositionY);
 		}
 		if (Gdx.input.isKeyPressed(Keys.D))
 		{
@@ -262,41 +227,21 @@ public class MapEditorScreen implements Screen {
 			sprite2.setY(getSpritePositionY);
 		}
 		
-		if(sprite_flg)
+		//===スプライトクリック
+		for(i = 0 ; i < 11 ; i ++)
 		{
 			if (Gdx.input.isButtonPressed(0))
 			{
-			// クリックしたタイミング
-				if(sprite2.getBoundingRectangle().contains(getMousePositionX,-getMousePositionY))
+				// クリックしたタイミング
+				if(mpobject.getMapObjectList().get(i).getSp().getBoundingRectangle().contains(getMousePositionX,-getMousePositionY))
 				{
-					getSpritePositionX = getMousePositionX - sprite2.getWidth() / 2;
-					getSpritePositionY = getMousePositionY + sprite2.getHeight() / 2;
-					sprite2.setPosition(getSpritePositionX,-getSpritePositionY);
-					
-					Gdx.app.log("マウス座標","X:" + getMousePositionX);
-					Gdx.app.log("マウス座標","Y:" + getMousePositionY);
-					Gdx.app.log("マウス座標","X:" + getSpritePositionX);
-					Gdx.app.log("マウス座標","Y:" + getSpritePositionY);
-					Gdx.app.log("スプライト２座標","X:" + sprite2.getBoundingRectangle().getX());
-					Gdx.app.log("スプライト２座標","Y:" + sprite2.getBoundingRectangle().getY());
-					Gdx.app.log("スプライト２高さ","H:" + sprite2.getBoundingRectangle().getHeight());
-					Gdx.app.log("スプライト２幅","W:" + sprite2.getBoundingRectangle().getWidth());
+					getSpritePositionX = getMousePositionX - mpobject.getMapObjectList().get(i).getSp().getWidth() / 2;
+					getSpritePositionY = getMousePositionY + mpobject.getMapObjectList().get(i).getSp().getHeight() / 2;
+					mpobject.getMapObjectList().get(i).setPosition(getSpritePositionX, -getSpritePositionY);
 				}
 			}
-			
-			if(Gdx.input.isButtonPressed(1))
-			{
-				sprite_flg = false;
-				sprite2.setPosition(-sprite2.getWidth()/2, -sprite2.getHeight()/2);
-				getSpritePositionX = sprite2.getX();
-				getSpritePositionY = sprite2.getY();
-			}
 		}
-			
-		if(Gdx.input.isButtonPressed(2))
-		{
-			sprite_flg = true;
-		}
+		camera.update();
 	}
 	
 	/**
@@ -310,10 +255,16 @@ public class MapEditorScreen implements Screen {
 		batch.begin();
 		
 		sprite.draw(batch);
+		/*
 		if(sprite_flg)
 		{
-			sprite2.draw(batch);
+			for (Sprite sprite : array_sprite)
+			{
+				sprite.draw(batch);
+			}
 		}
+		*/
+		mpobject.drawMapObjects(batch);
 		
 		batch.end();
 		
@@ -323,10 +274,6 @@ public class MapEditorScreen implements Screen {
 			stage.act(Gdx.graphics.getDeltaTime());
 			stage.draw();
 		}
-		/*
-		stage3.act(Gdx.graphics.getDeltaTime());
-		stage3.draw();
-		*/
 	}
 
 	@Override

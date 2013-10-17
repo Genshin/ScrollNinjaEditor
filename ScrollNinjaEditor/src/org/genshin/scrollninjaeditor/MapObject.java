@@ -6,9 +6,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class MapObject {
+
+public class MapObject{
 	@JsonProperty("fileName")	private String fileName;
 	@JsonProperty("labelName")	private String labelName;
 	@JsonProperty("width")		private int width;
@@ -26,7 +28,7 @@ public class MapObject {
 		this.sprite = new Sprite(region);
 		this.sprite.setSize(this.sprite.getRegionWidth(),this.sprite.getRegionHeight());
 		this.sprite.setOrigin(this.sprite.getWidth()/2,this.sprite.getHeight()/2);
-		//this.sprite.setPosition(-this.sprite.getWidth()/2,-this.sprite.getHeight()/2);
+		this.sprite.setPosition(-this.sprite.getWidth()/2,-this.sprite.getHeight()/2);
 	}
 	
 	/**
@@ -69,7 +71,7 @@ public class MapObject {
 	/**
 	 * @return	sprite
 	 */
-	public Sprite sp() {
+	public Sprite getSp() {
 		return sprite;
 	}
 	
