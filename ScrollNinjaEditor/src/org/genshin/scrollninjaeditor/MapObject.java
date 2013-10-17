@@ -1,20 +1,20 @@
 package org.genshin.scrollninjaeditor;
 
+
 import org.genshin.scrollninjaeditor.factory.TextureFactory;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
-public class MapObject{
+public class MapObject {
 	@JsonProperty("fileName")	private String fileName;
 	@JsonProperty("labelName")	private String labelName;
 	@JsonProperty("width")		private int width;
 	@JsonProperty("height")		private int height;
+
 	private Sprite sprite;
 
 	public MapObject() {}
@@ -53,7 +53,7 @@ public class MapObject{
 	public String getLabelName() {
 		return labelName;
 	}
-	
+
 	/**
 	 * @return x position
 	 */

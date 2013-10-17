@@ -12,5 +12,4 @@ public class ScrollNinjaEditor extends Game {
 		// 直接マップエディタに移動
 		setScreen(new MapEditorScreen(this, "data/3144.png"));
 	}
-
 }
