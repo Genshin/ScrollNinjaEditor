@@ -36,11 +36,12 @@ public class MapEditorScreen implements Screen {
 	private TextureRegion region;
 	private Table table;
 	private ImageButton imageButton;
-	//private ObjectButton objB;
 	private SpriteDrawable sd = new SpriteDrawable();
 
 	private Sprite sprite2;
+	private Table table2;
 	private TextureRegion region2;
+	private SpriteDrawable sd2 = new SpriteDrawable();
 
 	private Skin skin;
 	private ScrollPane scro;
@@ -101,8 +102,6 @@ public class MapEditorScreen implements Screen {
 		texture = new Texture(Gdx.files.internal("data/314.png"));
 		array_tex.add(2,texture);
 
-		region2 = new TextureRegion(array_tex.get(0),0,0,512,256);
-
 		mpobject = MapObjectManager.create();
 
 		// - 複数化 - 
@@ -140,17 +139,50 @@ public class MapEditorScreen implements Screen {
 		stage.addActor(scroTable);
 		array_stage.add(stage);
 
-		//===オブジェクト
-
-		/*sprite2 = new Sprite(region2);
-		sprite2.setSize(sprite2.getRegionWidth(),sprite2.getRegionHeight());
-		sprite2.setOrigin(sprite2.getWidth()/2, sprite2.getHeight()/2);
-		sprite2.setPosition(-sprite2.getWidth()/2, -sprite2.getHeight()/2);
-		getSpritePositionX = sprite2.getX();
-		getSpritePositionY = sprite2.getY();
-
-		array_sprite.add(sprite2);*/
-
+		//===インポート、エクスポートボタン
+		table2 = new Table();
+		table2.setLayoutEnabled(false);
+		table2.setX(0);
+		region2 = new TextureRegion(array_tex.get(1),0,0,100,50);
+		sprite2 = new Sprite(region2);
+		sd2 = new SpriteDrawable();						// 上書きが必要
+		sd2.setSprite(sprite2);
+		imageButton = new ImageButton(sd2);
+		
+		imageButton.addListener(new ClickListener()
+		{
+			@Override
+			public void clicked(InputEvent event ,float x,float y)
+			{
+				fileImport();
+			}
+		});
+		
+		table2.add(imageButton);
+		stage.addActor(table2);
+		array_stage.add(stage);
+		
+		table2 = new Table();
+		table2.setLayoutEnabled(false);
+		table2.setX(150);
+		region2 = new TextureRegion(array_tex.get(2),0,0,100,50);
+		sprite2 = new Sprite(region2);
+		sd2 = new SpriteDrawable();						// 上書きが必要
+		sd2.setSprite(sprite2);
+		imageButton = new ImageButton(sd2);
+		
+		imageButton.addListener(new ClickListener()
+		{
+			@Override
+			public void clicked(InputEvent event ,float x,float y)
+			{
+				fileExport();
+			}
+		});
+		
+		table2.add(imageButton);
+		stage.addActor(table2);
+		array_stage.add(stage);
 	}
 
 	/**
@@ -185,8 +217,6 @@ public class MapEditorScreen implements Screen {
 				camera.position.y = sprite.getY() + 256;
 		}
 
-		//===マウスクリック
-
 		// デバッグ用
 		if (Gdx.input.isKeyPressed(Keys.P))
 		{
@@ -198,29 +228,6 @@ public class MapEditorScreen implements Screen {
 			}
 			Gdx.app.log("tag","4:" + getMousePositionX);
 			Gdx.app.log("tag","5:" + (-getMousePositionY));
-		}
-
-		if (Gdx.input.isKeyPressed(Keys.A))
-		{
-			getSpritePositionX -= 50;
-			//sprite2.setX(getSpritePositionX);
-			//mpobject.getMapObjectList().get(4).setPosition(getSpritePositionX, getSpritePositionY);
-			mpobject.getMapObject(0).setPosition(getSpritePositionX, getSpritePositionY);
-		}
-		if (Gdx.input.isKeyPressed(Keys.D))
-		{
-			getSpritePositionX += 50;
-			sprite2.setX(getSpritePositionX);
-		}
-		if (Gdx.input.isKeyPressed(Keys.W))
-		{
-			getSpritePositionY += 50;
-			sprite2.setY(getSpritePositionY);
-		}
-		if (Gdx.input.isKeyPressed(Keys.S))
-		{
-			getSpritePositionY -= 50;
-			sprite2.setY(getSpritePositionY);
 		}
 
 		//===スプライトクリック
@@ -254,15 +261,7 @@ public class MapEditorScreen implements Screen {
 		batch.begin();
 
 		sprite.draw(batch);
-		/*
-		if(sprite_flg)
-		{
-			for (Sprite sprite : array_sprite)
-			{
-				sprite.draw(batch);
-			}
-		}
-		*/
+	
 		mpobject.drawMapObjects(batch);
 
 		batch.end();
@@ -305,6 +304,14 @@ public class MapEditorScreen implements Screen {
 	public void dispose() {
 		batch.dispose();
 		texture.dispose();
+	}
+	
+	public void fileImport(){
+		Gdx.app.log("tag","インポート:" + imageButton);
+	}
+	
+	public void fileExport(){
+		Gdx.app.log("tag","エクスポート:" + imageButton);
 	}
 
 }
