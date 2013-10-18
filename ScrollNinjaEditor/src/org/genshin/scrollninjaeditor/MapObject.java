@@ -17,10 +17,10 @@ public class MapObject {
 	public MapObject() {}
 	
 	public MapObject(MapObject obj) {
-		this.fileName = obj.fileName;
-		this.labelName = obj.labelName;
-		this.width = obj.width;
-		this.height = obj.height;
+		fileName = obj.fileName;
+		labelName = obj.labelName;
+		width = obj.width;
+		height = obj.height;
 		setSprite();
 	}
 
