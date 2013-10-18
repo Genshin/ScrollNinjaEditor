@@ -2,9 +2,8 @@ package org.genshin.scrollninjaeditor;
 
 import java.util.ArrayList;
 
-import org.genshin.scrollninjaeditor.factory.TextureFactory;
-
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
@@ -14,7 +13,6 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -28,36 +26,28 @@ public class MapEditorScreen implements Screen {
 	ScrollNinjaEditor editor;
 	String fileName;
 
-	private OrthographicCamera camera;
-	private SpriteBatch batch;
-	private Texture texture;
-	private Sprite sprite;
-	private Stage stage;
-	private TextureRegion region;
-	private Table table;
-	private ImageButton imageButton;
-	private SpriteDrawable sd = new SpriteDrawable();
-
-	private Sprite sprite2;
-	private Table table2;
-	private TextureRegion region2;
-	private SpriteDrawable sd2 = new SpriteDrawable();
-
-	private Skin skin;
-	private ScrollPane scro;
-	private Table scroTable;
-
-	private int i;
-	private float getMousePositionX = 0 , getMousePositionY = 0;
-	private float getSpritePositionX = 0 , getSpritePositionY = 0;
-	private boolean sprite_flg = true;
-
-	private MapObjectManager mpobject = new MapObjectManager();
-
-	private ArrayList<Stage> array_stage = new ArrayList<Stage>();
-	private ArrayList<Texture> array_tex = new ArrayList<Texture>();
-	private ArrayList<Sprite> array_sprite = new ArrayList<Sprite>();
-	private ArrayList<Boolean> array_flg = new ArrayList<Boolean>();
+	private OrthographicCamera 	camera;									// カメラ
+	private SpriteBatch 		batch;									// バッチ
+	private Texture				texture;								// 画像
+	private Sprite 				backsprite;								// 背景用
+	private Sprite 				subsprite;								// スプライト
+	private Stage 				stage;									// ステージ
+	private TextureRegion 		region;									// 画像の注視位置設定用
+	private Table 				table;									// テーブル
+	private Table 				scroTable;								// スクロール用テーブル
+	private ImageButton 		importButton;							// インポートボタン
+	private ImageButton 		exportButton;							// エクスポートボタン
+	private SpriteDrawable 		sd = new SpriteDrawable();				// ここにスプライトを入れてテーブルに入れる
+	private Skin 				skin;									// スキン
+	private ScrollPane 			scro;									// スクロールペイン
+	private float 				mousePositionX = 0, 					// マウスポジションX
+								mousePositionY = 0,						// マウスポジションY
+								spritePositionX = 0,	 				// スプライトポジションX
+								spritePositionY = 0;					// スプライトポジションY
+	private int 				i = 0;									// ループカウンタ
+	private MapObjectManager 	mpobject= new MapObjectManager();		// オブジェクトセレクト用
+	private ArrayList<Texture> 	array_tex = new ArrayList<Texture>();	// テクスチャ用配列
+	private int f = -1;
 
 	/**
 	 * Constructor
@@ -67,122 +57,94 @@ public class MapEditorScreen implements Screen {
 	public MapEditorScreen(ScrollNinjaEditor editor, String fileName) {
 		this.editor = editor;
 		this.fileName = fileName;
-
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
-
 		camera = new OrthographicCamera(w , h);
 		batch = new SpriteBatch();
 
-
-		//----------------------------------------------------------------------
-		//====最背面(選択マップ)
-
-		texture = new Texture(this.fileName);
+		//===テクスチャ読み込み
+		texture = new Texture(this.fileName);							// 最背面
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		array_tex.add(texture);
+		texture = new Texture(Gdx.files.internal("data/import.png"));	// インポート
+		array_tex.add(texture);
+		texture = new Texture(Gdx.files.internal("data/export.png"));	// エクスポート
+		array_tex.add(texture);
 
-		region = new TextureRegion(texture, 0, 0, 4096, 2048);
-
-		sprite = new Sprite(region);
-
-		sprite.setSize(sprite.getRegionWidth(),sprite.getRegionHeight());
-		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
-		sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
+		//====最背面(選択マップ)
+		region = new TextureRegion(array_tex.get(0), 0, 0, array_tex.get(0).getWidth(),array_tex.get(0).getHeight());
+		backsprite = new Sprite(region);
+		backsprite.setSize(backsprite.getRegionWidth(),backsprite.getRegionHeight());
+		backsprite.setOrigin(backsprite.getWidth()/2, backsprite.getHeight()/2);
+		backsprite.setPosition(-backsprite.getWidth()/2, -backsprite.getHeight()/2);
 
 		//====ボタン
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-
 		table = new Table();
-
-		texture = new Texture(Gdx.files.internal("data/301.png"));
-		array_tex.add(0,texture);
-		texture = new Texture(Gdx.files.internal("data/311.png"));
-		array_tex.add(1,texture);
-		texture = new Texture(Gdx.files.internal("data/314.png"));
-		array_tex.add(2,texture);
-
 		mpobject = MapObjectManager.create();
-
+		
 		// - 複数化 - 
-		for (i = 0 ; i < mpobject.getMapObjectList().size() ; i ++)
-		{
-			//mpobject.getMapObjectList().get(i).getSp().setSize(64,64);
-			sd = new SpriteDrawable();						// 上書きが必要
+		for (i = 0 ; i < mpobject.getMapObjectList().size() ; i ++){
+			mpobject.getMapObjectList().get(i).getSp().setSize(64,64);
+			sd = new SpriteDrawable();															// 上書きが必要
 			sd.setSprite(mpobject.getMapObjectList().get(i).getSp());							// 上書きではないので注意
 			final ObjectButton objB = new ObjectButton(sd, mpobject.getMapObjectList().get(i));
 			
-			objB.addListener(new ClickListener()
-			{
+			objB.addListener(new ClickListener(){
 				@Override
-				public void clicked(InputEvent event ,float x,float y)
-				{
+				public void clicked(InputEvent event ,float x,float y){
 					MapObject mapobj = new MapObject(objB.mapObject);
 					mpobject.setMapObject(mapobj);
+					mpobject.getMapObjects().get(i).setPosition(camera.position.x,camera.position.y); // カメラに映るように描画
 				}
 			});
-				
 			table.add(objB);
 		}
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		scro = new ScrollPane(table,skin);
-		scro.setFlickScroll(false);
+		scro.setFlickScroll(false);					// フリックの有無
 		scro.setFadeScrollBars(true);				// ここでfalseなら常に。trueなら使用するとき。
 		scro.setScrollingDisabled(false, false);	// 一番目は縦、二番目は横。これによりスクロールをするかしないか
 		scroTable = new Table();
-		scroTable.setLayoutEnabled(false);			// 任意に変更
-		scroTable.setX(150);
-		scroTable.setY(350);
-		scro.size(300,10);
+		scroTable.setFillParent(true);
+		scroTable.setY(200);
 		scroTable.add(scro);
 		stage.addActor(scroTable);
-		array_stage.add(stage);
 
-		//===インポート、エクスポートボタン
-		table2 = new Table();
-		table2.setLayoutEnabled(false);
-		table2.setX(0);
-		region2 = new TextureRegion(array_tex.get(1),0,0,100,50);
-		sprite2 = new Sprite(region2);
-		sd2 = new SpriteDrawable();						// 上書きが必要
-		sd2.setSprite(sprite2);
-		imageButton = new ImageButton(sd2);
-		
-		imageButton.addListener(new ClickListener()
-		{
-			@Override
-			public void clicked(InputEvent event ,float x,float y)
-			{
-				fileImport();
+		// - インポート、エクスポートボタン - 
+		for(i = 1 ; i < 3 ; i ++){
+			table = new Table();
+			table.setLayoutEnabled(false);
+			table.setX((i-1) * 150);
+			region = new TextureRegion(array_tex.get(i % 3),0,0,array_tex.get(i % 3).getWidth(),array_tex.get(i % 3).getHeight());
+			subsprite = new Sprite(region);
+			sd = new SpriteDrawable();
+			sd.setSprite(subsprite);
+			if(i == 1){
+				importButton = new ImageButton(sd);
+				importButton.addListener(new ClickListener(){
+					@Override
+					public void clicked(InputEvent event ,float x,float y){
+						fileImport();
+					}
+				});
+				table.add(importButton);
+				stage.addActor(table);
 			}
-		});
-		
-		table2.add(imageButton);
-		stage.addActor(table2);
-		array_stage.add(stage);
-		
-		table2 = new Table();
-		table2.setLayoutEnabled(false);
-		table2.setX(150);
-		region2 = new TextureRegion(array_tex.get(2),0,0,100,50);
-		sprite2 = new Sprite(region2);
-		sd2 = new SpriteDrawable();						// 上書きが必要
-		sd2.setSprite(sprite2);
-		imageButton = new ImageButton(sd2);
-		
-		imageButton.addListener(new ClickListener()
-		{
-			@Override
-			public void clicked(InputEvent event ,float x,float y)
-			{
-				fileExport();
+			else if(i == 2){
+				exportButton = new ImageButton(sd);
+				exportButton.addListener(new ClickListener(){
+					@Override
+					public void clicked(InputEvent event ,float x,float y){
+						fileExport();
+					}
+				});
+				table.add(exportButton);
+				stage.addActor(table);
 			}
-		});
-		
-		table2.add(imageButton);
-		stage.addActor(table2);
-		array_stage.add(stage);
+		}
 	}
 
 	/**
@@ -190,64 +152,60 @@ public class MapEditorScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void update(float delta) {
-		//------------------------------------------------------------------------
 		//===カメラ移動
-		if (Gdx.input.isKeyPressed(Keys.LEFT))
-		{
+		if (Gdx.input.isKeyPressed(Keys.LEFT)){
 			camera.position.x -= 50;
-			if (camera.position.x < sprite.getX() + 512)
-				camera.position.x = sprite.getX() + 512;
+			if (camera.position.x < backsprite.getX() + Gdx.graphics.getWidth()/2)
+				camera.position.x = backsprite.getX() + Gdx.graphics.getWidth()/2;
 		}
-		if (Gdx.input.isKeyPressed(Keys.RIGHT))
-		{
+		if (Gdx.input.isKeyPressed(Keys.RIGHT)){
 			camera.position.x += 50;
-			if (camera.position.x > sprite.getOriginX() - 512)
-				camera.position.x = sprite.getOriginX() - 512;
+			if (camera.position.x > backsprite.getOriginX() - Gdx.graphics.getWidth()/2)
+				camera.position.x = backsprite.getOriginX() - Gdx.graphics.getWidth()/2;
 		}
-		if (Gdx.input.isKeyPressed(Keys.UP))
-		{
-			camera.position.y += 50;
-			if (camera.position.y > sprite.getOriginY() - 256)
-				camera.position.y = sprite.getOriginY() - 256;
+		if (Gdx.input.isKeyPressed(Keys.UP)){
+			camera.position.y += 30;
+			if (camera.position.y > backsprite.getOriginY() - Gdx.graphics.getHeight()/2)
+				camera.position.y = backsprite.getOriginY() - Gdx.graphics.getHeight()/2;
 		}
-		if (Gdx.input.isKeyPressed(Keys.DOWN))
-		{
-			camera.position.y -= 50;
-			if (camera.position.y < sprite.getY() + 256)
-				camera.position.y = sprite.getY() + 256;
+		if (Gdx.input.isKeyPressed(Keys.DOWN)){
+			camera.position.y -= 30;
+			if (camera.position.y < backsprite.getY() + Gdx.graphics.getHeight()/2)
+				camera.position.y = backsprite.getY() + Gdx.graphics.getHeight()/2;
 		}
-
-		// デバッグ用
-		if (Gdx.input.isKeyPressed(Keys.P))
-		{
-			for (i = 0 ; i < 11 ; i ++)
-			{
-				Gdx.app.log("tag","1:" + (mpobject.getMapObjectList().get(i).getSp().getBoundingRectangle().contains(getMousePositionX,-getMousePositionY)));
-				Gdx.app.log("tag","2:" + (mpobject.getMapObjectList().get(i).getSp().getX()));
-				Gdx.app.log("tag","3:" + (mpobject.getMapObjectList().get(i).getSp().getY()));
-			}
-			Gdx.app.log("tag","4:" + getMousePositionX);
-			Gdx.app.log("tag","5:" + (-getMousePositionY));
-		}
+		camera.update();
 
 		//===スプライトクリック
-		for(i = 0 ; i < mpobject.getMapObjects().size() ; i ++)
-		{
-			if (Gdx.input.isButtonPressed(0))
-			{
-				getMousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
-				getMousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
-				// クリックしたタイミング
-				if(mpobject.getMapObjects().get(i).getSp().getBoundingRectangle().contains(getMousePositionX,-getMousePositionY))
-				{
-					getSpritePositionX = getMousePositionX - mpobject.getMapObjects().get(i).getSp().getWidth() / 2;
-					getSpritePositionY = getMousePositionY + mpobject.getMapObjects().get(i).getSp().getHeight() / 2;
-					mpobject.getMapObjects().get(i).setPosition(getSpritePositionX, -getSpritePositionY);
-					break;
+		if(f == -1){
+			for(i = 0 ; i < mpobject.getMapObjects().size() ; i ++){
+				mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
+				mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
+				if(mpobject.getMapObjects().get(i).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
+					if (Gdx.input.isButtonPressed(Buttons.LEFT)){
+						f = i;
+						break;
+					}
+					if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
+						mpobject.getMapObjects().remove(i);
+						break;
+					}
 				}
 			}
 		}
-		camera.update();
+
+		else{
+			if (Gdx.input.isButtonPressed(0)){
+				mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
+				mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
+				if(mpobject.getMapObjects().get(f).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
+					spritePositionX = mousePositionX - mpobject.getMapObjects().get(f).getSp().getWidth() / 2;
+					spritePositionY = mousePositionY + mpobject.getMapObjects().get(f).getSp().getHeight() / 2;
+					mpobject.getMapObjects().get(f).setPosition(spritePositionX, -spritePositionY);
+				}
+			}
+			else
+				f = -1;
+		}
 	}
 
 	/**
@@ -255,23 +213,15 @@ public class MapEditorScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void draw(float delta) {
-		Gdx.gl.glClearColor(1, 0, 1, 1);
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-
-		sprite.draw(batch);
-	
-		mpobject.drawMapObjects(batch);
-
+		backsprite.draw(batch);					// 背景描画
+		mpobject.drawMapObjects(batch);			// オブジェボタン描画
 		batch.end();
-
-		//===ボタン
-		for (Stage stage : array_stage)
-		{
-			stage.act(Gdx.graphics.getDeltaTime());
-			stage.draw();
-		}
+		stage.act(Gdx.graphics.getDeltaTime());	// ステージ描画
+		stage.draw();
 	}
 
 	@Override
@@ -307,11 +257,11 @@ public class MapEditorScreen implements Screen {
 	}
 	
 	public void fileImport(){
-		Gdx.app.log("tag","インポート:" + imageButton);
+		Gdx.app.log("tag","インポート:" + importButton);
 	}
 	
 	public void fileExport(){
-		Gdx.app.log("tag","エクスポート:" + imageButton);
+		Gdx.app.log("tag","エクスポート:" + exportButton);
 	}
 
 }

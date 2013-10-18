@@ -48,18 +48,15 @@ public class MapObjectManager {
 		try
         {
             ObjectMapper objectMapper = new ObjectMapper();
-
             mapObjectList = objectMapper.readValue(Gdx.files.internal("data/objects/objects.json").read(), new TypeReference<ArrayList<MapObject>>(){});
-
         }
         catch (JsonParseException e) { e.printStackTrace(); }
         catch (JsonMappingException e) { e.printStackTrace(); }
         catch (IOException e) { e.printStackTrace(); }
-		
+
 		// set sprite
 		if (mapObjectList != null) {
 			for (int i = 0; i < mapObjectList.size(); i ++) {
-
 				mapObjectList.get(i).setSprite();
 			}
 		}
@@ -73,7 +70,6 @@ public class MapObjectManager {
 		if (mapObjects != null) {
 			for (MapObject obj : mapObjects) {
 				obj.draw(batch);
-
 			}
 		}
 	}
