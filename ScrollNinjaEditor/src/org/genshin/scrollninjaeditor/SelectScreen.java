@@ -1,7 +1,6 @@
 package org.genshin.scrollninjaeditor;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
