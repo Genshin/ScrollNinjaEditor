@@ -1,5 +1,10 @@
 package org.genshin.scrollninjaeditor;
+
 import java.util.ArrayList;
+
+import java.io.File;
+
+import javax.swing.JFileChooser;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -48,6 +53,19 @@ public class MapEditorScreen implements Screen {
 	private ArrayList<Texture> 	array_tex = new ArrayList<Texture>();	// テクスチャ用配列
 	private int f = -1;
 
+	private Sprite sprite;
+	private ImageButton imageButton;
+
+	private Sprite sprite2;
+	private Table table2;
+	private TextureRegion region2;
+	private SpriteDrawable sd2 = new SpriteDrawable();
+
+	private float getMousePositionX = 0 , getMousePositionY = 0;
+	private float getSpritePositionX = 0 , getSpritePositionY = 0;
+
+	private ArrayList<Stage> array_stage = new ArrayList<Stage>();
+
 	/**
 	 * Constructor
 	 * @param editor
@@ -89,6 +107,7 @@ public class MapEditorScreen implements Screen {
 			sd = new SpriteDrawable();															// 上書きが必要
 			sd.setSprite(mpobject.getMapObjectList().get(i).getSp());							// 上書きではないので注意
 			final ObjectButton objB = new ObjectButton(sd, mpobject.getMapObjectList().get(i));
+			//objB.setSize(64, 64);
 			
 			objB.addListener(new ClickListener(){
 				@Override
@@ -256,10 +275,72 @@ public class MapEditorScreen implements Screen {
 	}
 	
 	public void fileImport(){
-		Gdx.app.log("tag","インポート:" + importButton);
+		File current = new File("./bin/data");
+		JFileChooser FileChooser = new JFileChooser(current.getAbsolutePath());
+		
+		//ファイル選択フィルター宣言
+		ExtendsFileFilter filter[] = {
+			new ExtendsFileFilter(".json","JSON  ファイル(*.json)"),
+		};
+		
+		//フィルター設定
+		for(int i = 0; i < filter.length ; i ++)
+			FileChooser.addChoosableFileFilter(filter[i]);
+		
+		int res = FileChooser.showOpenDialog(FileChooser);
+
+		if(res == JFileChooser.APPROVE_OPTION)
+		{
+			File file = FileChooser.getSelectedFile();
+			//開いたファイルの種類のチェック
+			for(int i = 0 ;i < filter.length ; i++)
+			{	
+				//開いたファイルが正しい場合
+				if(filter[i].accept(file))
+				{
+					JsonRead read = new JsonRead(Gdx.files.absolute(file.getAbsolutePath()).path());
+					
+					for(int node = 0;read.getRootNode(node) != null;node++)
+					{
+						Sprite sp;
+						MapObject setObj = null;
+						//スプライトの種類チェック
+						for(MapObject obj:mpobject.getMapObjectList())
+						{
+							String label = read.getObjectString("label", node);
+															
+							if(label.matches(obj.getLabelName()))
+							{	
+								sp = obj.getSp();
+								setObj = new MapObject(obj);
+								break;
+							}
+						}
+						setObj.setPosition(read.getObjectFloat("x", node), read.getObjectFloat("y", node));
+						mpobject.setMapObject(setObj);
+					}
+				}
+			}
+		}
 	}
-	
+
 	public void fileExport(){
-		Gdx.app.log("tag","エクスポート:" + exportButton);
+		File current = new File("./bin/data");
+		JFileChooser fileChooser = new JFileChooser(current.getAbsolutePath());
+		int select = fileChooser.showSaveDialog(fileChooser);
+		
+		if(select == JFileChooser.APPROVE_OPTION)
+		{	
+			JsonWrite write = new JsonWrite();
+			for(MapObject obj:mpobject.getMapObjects())
+			{		
+				write.addObject();
+				write.putObject("name", obj.getFileName());
+				write.putObject("label", obj.getLabelName());
+				write.putObject("x", obj.getX());
+				write.putObject("y", obj.getY());
+			}
+			write.writeData(fileChooser.getSelectedFile().toString() + ".json");
+		}
 	}
 }
