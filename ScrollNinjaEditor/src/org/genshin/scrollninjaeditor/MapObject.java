@@ -1,8 +1,6 @@
 package org.genshin.scrollninjaeditor;
 
-
-import org.genshin.scrollninjaeditor.factory.TextureFactory;
-
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,21 +12,27 @@ public class MapObject {
 	@JsonProperty("labelName")	private String labelName;
 	@JsonProperty("width")		private int width;
 	@JsonProperty("height")		private int height;
-
 	private Sprite sprite;
 
 	public MapObject() {}
+	
+	public MapObject(MapObject obj) {
+		this.fileName = obj.fileName;
+		this.labelName = obj.labelName;
+		this.width = obj.width;
+		this.height = obj.height;
+		setSprite();
+	}
 
 	/**
 	 * sprite set
 	 */
 	public void setSprite() {
-		Texture texture = TextureFactory.getInstance().get("data/objects/" + fileName);
+		Texture texture = new Texture(Gdx.files.internal("data/objects/" + fileName));
 		TextureRegion region = new TextureRegion(texture, 0, 0, width, height);
-		this.sprite = new Sprite(region);
-		this.sprite.setSize(this.sprite.getRegionWidth(),this.sprite.getRegionHeight());
-		this.sprite.setOrigin(this.sprite.getWidth()/2,this.sprite.getHeight()/2);
-		this.sprite.setPosition(-this.sprite.getWidth()/2,-this.sprite.getHeight()/2);
+		sprite = new Sprite(region);
+		sprite.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
+		sprite.setPosition(-sprite.getWidth()/2,-sprite.getHeight()/2);
 	}
 	
 	/**
@@ -37,7 +41,7 @@ public class MapObject {
 	 * @param y
 	 */
 	public void setPosition(float x, float y) {
-		sprite.setPosition(x, y);
+		this.sprite.setPosition(x, y);
 	}
 
 	/**
