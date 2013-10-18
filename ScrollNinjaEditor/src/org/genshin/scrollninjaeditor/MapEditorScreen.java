@@ -58,6 +58,8 @@ public class MapEditorScreen implements Screen {
 	private ArrayList<Sprite> array_sprite = new ArrayList<Sprite>();
 	private ArrayList<Boolean> array_flg = new ArrayList<Boolean>();
 	
+	private int nCnt = 0;
+	
 	/**
 	 * Constructor
 	 * @param editor
@@ -110,10 +112,12 @@ public class MapEditorScreen implements Screen {
 		{
 			if (i == 15 )
 				table.row();
-			//mpobject.getMapObjectList().get(i).getSp().setSize(64,64);
+			Sprite a = mpobject.getMapObjectList().get(i).getSp();
+			a.setSize(64, 64);
 			sd = new SpriteDrawable();						// 上書きが必要
-			sd.setSprite(mpobject.getMapObjectList().get(i).getSp());							// 上書きではないので注意
+			sd.setSprite(a);							// 上書きではないので注意
 			final ObjectButton objB = new ObjectButton(sd, mpobject.getMapObjectList().get(i));
+			//objB.setSize(64, 64);
 			
 			objB.addListener(new ClickListener()
 			{
@@ -122,6 +126,7 @@ public class MapEditorScreen implements Screen {
 				{
 					MapObject mapobj = objB.getMapObject();
 					mpobject.setMapObject(mapobj);
+					nCnt ++;
 				}
 	
 			});
@@ -228,16 +233,16 @@ public class MapEditorScreen implements Screen {
 		}
 		
 		//===スプライトクリック
-		for(i = 0 ; i < 11 ; i ++)
+		for(i = 0 ; i < nCnt ; i ++)
 		{
 			if (Gdx.input.isButtonPressed(0))
 			{
 				// クリックしたタイミング
-				if(mpobject.getMapObjectList().get(i).getSp().getBoundingRectangle().contains(getMousePositionX,-getMousePositionY))
+				if(mpobject.getMapObjects().get(i).getSp().getBoundingRectangle().contains(getMousePositionX,-getMousePositionY))
 				{
 					getSpritePositionX = getMousePositionX - mpobject.getMapObjectList().get(i).getSp().getWidth() / 2;
 					getSpritePositionY = getMousePositionY + mpobject.getMapObjectList().get(i).getSp().getHeight() / 2;
-					mpobject.getMapObjectList().get(i).setPosition(getSpritePositionX, -getSpritePositionY);
+					mpobject.getMapObjects().get(i).getSp().setPosition(getSpritePositionX, -getSpritePositionY);
 				}
 			}
 		}

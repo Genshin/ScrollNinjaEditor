@@ -110,10 +110,7 @@ public class SelectScreen implements Screen {
 				
 				//ファイル選択フィルター宣言
 				ExtendFileFilter filter[] = {
-					new ExtendFileFilter(".gif","GIF  ファイル(*.gif)"),
-					new ExtendFileFilter(".jpg","JPEG ファイル(*.jpg)"),
 					new ExtendFileFilter(".png","PNG  ファイル(*.png)"),
-					new ExtendFileFilter(".json","JSON  ファイル(*.json)"),
 				};
 				
 				//フィルター設定
@@ -131,36 +128,13 @@ public class SelectScreen implements Screen {
 						//開いたファイルが正しい場合
 						if(filter[i].accept(file))
 						{
-							//if(i < 3)
-							//{
-								changeTex(Gdx.files.absolute(file.getAbsolutePath()).path());	//画像切替
-								fileLabel.setText(file.getName());
-								fileName = Gdx.files.absolute(file.getAbsolutePath()).path();	//パス保存
-								loadflag = true;
-							//}
-							/*else
-							{
-								ArrayList<JsonFile> jsonDatas = new ArrayList<JsonFile>();
-								JsonRead read = new JsonRead(Gdx.files.absolute(file.getAbsolutePath()).path());
-								int nCnt = 0;
-								
-								for(int node = 0; read.getRootNode(node) != null;node++ , nCnt++)
-								{
-									JsonFile json;
-									jsonDatas.add(new JsonFile());
-									json = jsonDatas.get(nCnt);
-									json.SetFirstName(read.getObjectFieldString("name", "first", node));
-									json.SetLastName(read.getObjectFieldString("name", "last", node));
-									json.SetEmail(read.getObjectString("email", node));
-									json.SetValue(read.getObjectInt("value", node));
-									jsonDatas.set(nCnt, json);
-									Gdx.app.log("first", "" + json.GetFirstName());
-									Gdx.app.log("last", "" + json.GetLastName());
-									Gdx.app.log("email", "" + json.GetEmail());
-									Gdx.app.log("value", "" + json.GetValue());
-								}
-								
-							}*/
+							//String fileName = file.getName();
+							//getRelativePath(fileName, file);
+							changeTex(Gdx.files.absolute(file.getAbsolutePath()).path());	//画像切替
+							fileLabel.setText(file.getName());
+							fileName = Gdx.files.absolute(file.getAbsolutePath()).path();	//パス保存
+							loadflag = true;
+						
 							break;
 	
 						}
@@ -306,6 +280,31 @@ public class SelectScreen implements Screen {
 		setdata(str);
 		
 		image.setDrawable(sd);
+	}
+	
+	private void getRelativePath(String fileName,File path)
+	{
+		if(path.isDirectory())
+		{
+			String[] fileList;
+			fileList = path.list();
+			
+			for(int i = 0; i< fileList.length ;i++)
+			{
+				File childFile;
+				childFile = new File(path,fileList[i]);
+				
+				String nextPath;
+				nextPath = fileName + childFile.getName();
+				
+				getRelativePath(nextPath,childFile);
+			}
+		}
+		else
+		{
+			Gdx.app.log("", "" + fileName);
+		}
+		
 	}
 	
 	class ExtendFileFilter extends FileFilter
