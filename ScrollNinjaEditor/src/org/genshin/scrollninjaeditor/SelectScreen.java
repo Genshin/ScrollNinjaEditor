@@ -1,10 +1,8 @@
 package org.genshin.scrollninjaeditor;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
 
 import org.genshin.scrollninjaeditor.factory.TextureFactory;
 
@@ -82,8 +80,8 @@ public class SelectScreen implements Screen {
 		//----------------------------------------
 		//プレビュー用table作成
 		Table preTable = new Table();
-		preTable.size(w, h/5*3);
-		preTable.translate(0.0f, h/5);
+		preTable.size(w/5*4, h/5*3);
+		preTable.translate(w/10, h/5);
 		setdata(null);
 		image = new Image(sd);
 		preTable.add(image);
@@ -106,11 +104,12 @@ public class SelectScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event,float x,float y)
 			{
-				JFileChooser FileChooser = new JFileChooser();
+				File current = new File("./bin/data/stage");
+				JFileChooser FileChooser = new JFileChooser(current.getAbsolutePath());
 				
 				//ファイル選択フィルター宣言
-				ExtendFileFilter filter[] = {
-					new ExtendFileFilter(".png","PNG  ファイル(*.png)"),
+				ExtendsFileFilter filter[] = {
+					new ExtendsFileFilter(".png","PNG  ファイル(*.png)"),
 				};
 				
 				//フィルター設定
@@ -128,11 +127,10 @@ public class SelectScreen implements Screen {
 						//開いたファイルが正しい場合
 						if(filter[i].accept(file))
 						{
-							//String fileName = file.getName();
-							//getRelativePath(fileName, file);
-							changeTex(Gdx.files.absolute(file.getAbsolutePath()).path());	//画像切替
+				
+							changeTex(file.getName());	//画像切替
 							fileLabel.setText(file.getName());
-							fileName = Gdx.files.absolute(file.getAbsolutePath()).path();	//パス保存
+							fileName = "data/stage/" + file.getName();	//パス保存
 							loadflag = true;
 						
 							break;
@@ -152,39 +150,10 @@ public class SelectScreen implements Screen {
 				{
 					changeflag = true;
 				}
-				/*else
-				{
-					JFileChooser fileChooser = new JFileChooser();
-					int select = fileChooser.showSaveDialog(fileChooser);
-					if(select == JFileChooser.APPROVE_OPTION)
-					{
-						ArrayList<JsonFile> jsonDatas2 = new ArrayList<JsonFile>();
-						jsonDatas2.add(new JsonFile("aaa","bbb","ccc",1));
-						jsonDatas2.add(new JsonFile("ddd","eee","fff",2));
-						
-						JsonWrite write = new JsonWrite();
-						for(int i = 0; i<jsonDatas2.size();i++)
-						{
-							JsonFile a = jsonDatas2.get(i);
-							write.addObject();
-							write.setFieldNode("name");
-							write.putObjectField("first" ,"" + a.GetFirstName());
-							write.putObjectField("last" ,"" + a.GetLastName());
-							write.putObject("email","" + a.GetEmail());
-							write.putObject("value", a.GetValue());
-							
-						}
-						
-						Gdx.app.log("", "" + fileChooser.getSelectedFile().toString());
-						write.writeData(fileChooser.getSelectedFile().toString() + ".json");
-					}
-				}*/
+
 			}
 		});
 				
-		selTable.debug();
-		preTable.debug();
-		creTable.debug();
 		stage.addActor(selTable);
 		stage.addActor(preTable);
 		stage.addActor(creTable);
@@ -261,10 +230,11 @@ public class SelectScreen implements Screen {
 	private void setdata(String str) {
 		if(str != null)
 		{
-			this.texture = TextureFactory.getInstance().get(str);
+			this.texture = TextureFactory.getInstance().get("data/stage/" + str);
 			this.region = new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight());
 			this.sprite = new Sprite(region);
 			this.sd = new SpriteDrawable(sprite);
+
 		}
 		else
 		{
@@ -281,50 +251,8 @@ public class SelectScreen implements Screen {
 		
 		image.setDrawable(sd);
 	}
-	
-	private void getRelativePath(String fileName,File path)
-	{
-		if(path.isDirectory())
-		{
-			String[] fileList;
-			fileList = path.list();
-			
-			for(int i = 0; i< fileList.length ;i++)
-			{
-				File childFile;
-				childFile = new File(path,fileList[i]);
-				
-				String nextPath;
-				nextPath = fileName + childFile.getName();
-				
-				getRelativePath(nextPath,childFile);
-			}
-		}
-		else
-		{
-			Gdx.app.log("", "" + fileName);
-		}
-		
-	}
-	
-	class ExtendFileFilter extends FileFilter
-	{
-		private String extension;
-		private String msg;
-		
-		public ExtendFileFilter(String extension ,String msg){
-			this.extension = extension;
-			this.msg = msg;
-		}
 
-		public boolean accept(java.io.File f) {
-			return f.getName().endsWith(extension);
-		}
 
-		public String getDescription() {
-			return msg;
-		}
-	}
 
 
 }

@@ -1,8 +1,6 @@
 package org.genshin.scrollninjaeditor;
 
 
-import org.genshin.scrollninjaeditor.factory.TextureFactory;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -19,6 +17,14 @@ public class MapObject {
 	private Sprite sprite;
 
 	public MapObject() {}
+	
+	public MapObject(MapObject obj) {
+		fileName = obj.fileName;
+		labelName = obj.labelName;
+		width = obj.width;
+		height = obj.height;
+		setSprite();
+	}
 
 	public MapObject(Sprite sd) {
 		this.sprite = sd;
@@ -28,6 +34,7 @@ public class MapObject {
 	 */
 	public void setSprite() {
 		//Texture texture = TextureFactory.getInstance().get("data/objects/" + fileName);
+
 		Texture texture = new Texture(Gdx.files.internal("data/objects/" + fileName));
 		TextureRegion region = new TextureRegion(texture, 0, 0, width, height);
 		this.sprite = new Sprite(region);

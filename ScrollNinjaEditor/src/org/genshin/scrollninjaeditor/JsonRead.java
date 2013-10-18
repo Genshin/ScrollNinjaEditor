@@ -42,7 +42,7 @@ public class JsonRead
 		
 		JsonNode getNode = currentNode.get(object);
 		
-		return getNode.toString();
+		return getNode.textValue();
 	}
 	
 	public int getObjectInt(String object, int nodeNo)
@@ -73,7 +73,7 @@ public class JsonRead
 			String nodeField = nodeFields.next();
 			if(nodeField == field)
 			{
-				return objNode.get(nodeField).toString();
+				return objNode.get(nodeField).asText();
 			}
 		}
 		

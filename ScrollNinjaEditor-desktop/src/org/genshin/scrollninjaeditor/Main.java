@@ -11,8 +11,7 @@ public class Main {
 		cfg.useGL20 = false;
 		cfg.width = 1024;
 		cfg.height = 512;
-		//cfg.width = 600;
-		//cfg.height = 600;
+		
 		
 		new LwjglApplication(new ScrollNinjaEditor(), cfg);
 	}
