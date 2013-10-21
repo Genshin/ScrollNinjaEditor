@@ -274,6 +274,9 @@ public class MapEditorScreen implements Screen {
 		texture.dispose();
 	}
 	
+	/**
+	 * Import process
+	 */
 	public void fileImport(){
 		File current = new File("./bin/data");
 		JFileChooser FileChooser = new JFileChooser(current.getAbsolutePath());
@@ -289,29 +292,23 @@ public class MapEditorScreen implements Screen {
 		
 		int res = FileChooser.showOpenDialog(FileChooser);
 
-		if(res == JFileChooser.APPROVE_OPTION)
-		{
+		if(res == JFileChooser.APPROVE_OPTION) {
 			File file = FileChooser.getSelectedFile();
 			//開いたファイルの種類のチェック
-			for(int i = 0 ;i < filter.length ; i++)
-			{	
+			for(int i = 0 ;i < filter.length ; i++)	{	
 				//開いたファイルが正しい場合
-				if(filter[i].accept(file))
-				{
+				if(filter[i].accept(file)) {
 					JsonRead read = new JsonRead(Gdx.files.absolute(file.getAbsolutePath()).path());
 					
-					for(int node = 0;read.getRootNode(node) != null;node++)
-					{
-						Sprite sp;
+					for(int node = 0;read.getRootNode(node) != null;node++)	{
+						//Sprite sp;
 						MapObject setObj = null;
 						//スプライトの種類チェック
-						for(MapObject obj:mpobject.getMapObjectList())
-						{
+						for(MapObject obj:mpobject.getMapObjectList()) {
 							String label = read.getObjectString("label", node);
 															
-							if(label.matches(obj.getLabelName()))
-							{	
-								sp = obj.getSp();
+							if(label.matches(obj.getLabelName())) {	
+								//sp = obj.getSp();
 								setObj = new MapObject(obj);
 								break;
 							}
@@ -324,16 +321,17 @@ public class MapEditorScreen implements Screen {
 		}
 	}
 
-	public void fileExport(){
+	/**
+	 * Export process
+	 */
+	public void fileExport() {
 		File current = new File("./bin/data");
 		JFileChooser fileChooser = new JFileChooser(current.getAbsolutePath());
 		int select = fileChooser.showSaveDialog(fileChooser);
 		
-		if(select == JFileChooser.APPROVE_OPTION)
-		{	
+		if(select == JFileChooser.APPROVE_OPTION) {	
 			JsonWrite write = new JsonWrite();
-			for(MapObject obj:mpobject.getMapObjects())
-			{		
+			for(MapObject obj:mpobject.getMapObjects())	{		
 				write.addObject();
 				write.putObject("name", obj.getFileName());
 				write.putObject("label", obj.getLabelName());

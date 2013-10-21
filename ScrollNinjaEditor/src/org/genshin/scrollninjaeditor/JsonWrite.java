@@ -16,44 +16,36 @@ public class JsonWrite
 	private ObjectNode objectNode;
 	private ObjectNode fieldNode;
 	
-	public JsonWrite()
-	{
+	public JsonWrite() {
 		mapper = new ObjectMapper();
 		rootNode = mapper.createArrayNode();
 	}
 	
-	public void putObject(String object,String value)
-	{
+	public void putObject(String object,String value) {
 		objectNode.put(object,value);
 	}
 	
-	public void putObject(String object,int value)
-	{
+	public void putObject(String object,int value) {
 		objectNode.put(object,value);
 	}
 	
-	public void putObject(String object,float value)
-	{
+	public void putObject(String object,float value) {
 		objectNode.put(object,value);
 	}
 	
-	public void setFieldNode(String object)
-	{
+	public void setFieldNode(String object) {
 		fieldNode = objectNode.putObject(object);
 	}
 	
-	public void putObjectField(String field,String value)
-	{
+	public void putObjectField(String field,String value) {
 		fieldNode.put(field,value);
 	}
 	
-	public void addObject()
-	{
+	public void addObject()	{
 		objectNode = rootNode.addObject();
 	}
 	
-	public void writeData(String name)
-	{
+	public void writeData(String name) {
 		try {
 			mapper.writeValue(new File(name),rootNode);
 		} catch (JsonGenerationException e) {

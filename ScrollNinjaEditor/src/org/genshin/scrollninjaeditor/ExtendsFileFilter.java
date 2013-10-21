@@ -2,8 +2,7 @@ package org.genshin.scrollninjaeditor;
 
 import javax.swing.filechooser.FileFilter;
 
-public class ExtendsFileFilter extends FileFilter
-{
+public class ExtendsFileFilter extends FileFilter {
 	private String extension;
 	private String msg;
 
