@@ -34,7 +34,7 @@ public class SelectScreen implements Screen {
 	private static boolean loadflag = false;
 	private static boolean changeflag = false;
 	private Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-	private TextField fileLabel;
+	private TextField fileText;
 
 	private Texture texture;
 	private Sprite sprite;
@@ -68,8 +68,8 @@ public class SelectScreen implements Screen {
 		//ボタン作成
 		TextButton openButton;
 		openButton = new TextButton("OPEN",skin);
-		fileLabel = new TextField(" ",skin);
-		selTable.add(fileLabel).size(selTable.getWidth() - 64,32);
+		fileText = new TextField(" ",skin);
+		selTable.add(fileText).size(selTable.getWidth() - 64,32);
 		selTable.right().add(openButton).size(64, 32);
 
 		//----------------------------------------
@@ -96,10 +96,9 @@ public class SelectScreen implements Screen {
 		creTable.add(createButton).size(64, 32);
 		
 		//ボタン機能設定
-		openButton.addListener(new ClickListener(){
+		openButton.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event,float x,float y)
-			{
+			public void clicked(InputEvent event,float x,float y) {
 				File current = new File("./bin/data/stage");
 				JFileChooser FileChooser = new JFileChooser(current.getAbsolutePath());
 				
@@ -114,17 +113,14 @@ public class SelectScreen implements Screen {
 				
 				int res = FileChooser.showOpenDialog(FileChooser);
 				
-				if(res == JFileChooser.APPROVE_OPTION)
-				{
+				if(res == JFileChooser.APPROVE_OPTION) {
 					File file = FileChooser.getSelectedFile();
 					//開いたファイルの種類のチェック
-					for(int i = 0 ;i < filter.length ; i++)
-					{	
+					for(int i = 0 ;i < filter.length ; i++)	{	
 						//開いたファイルが正しい場合
-						if(filter[i].accept(file))
-						{
+						if(filter[i].accept(file)) {
 							changeTex(file.getName());	//画像切替
-							fileLabel.setText(file.getName());
+							fileText.setText(file.getName());
 							fileName = "data/stage/" + file.getName();	//パス保存
 							loadflag = true;
 						
@@ -138,8 +134,7 @@ public class SelectScreen implements Screen {
 		createButton.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event,float x,float y){
-				if(loadflag)
-				{
+				if(loadflag) {
 					changeflag = true;
 				}
 			}
@@ -176,7 +171,7 @@ public class SelectScreen implements Screen {
 		if(sprite != null)
 			sprite.draw(batch);
 		batch.end();
-		
+
 		Table.drawDebug(stage);			//テーブル枠組み描画
 	}
 	
@@ -214,15 +209,13 @@ public class SelectScreen implements Screen {
 	}
 	
 	private void setdata(String str) {
-		if(str != null)
-		{
+		if(str != null)	{
 			this.texture = TextureFactory.getInstance().get("data/stage/" + str);
 			this.region = new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight());
 			this.sprite = new Sprite(region);
 			this.sd = new SpriteDrawable(sprite);
 		}
-		else
-		{
+		else {
 			this.texture = null;
 			this.region = null;
 			this.sprite = null;
@@ -230,8 +223,7 @@ public class SelectScreen implements Screen {
 		}
 	}
 
-	private void changeTex(String str)
-	{
+	private void changeTex(String str) {
 		setdata(str);
 		
 		image.setDrawable(sd);
