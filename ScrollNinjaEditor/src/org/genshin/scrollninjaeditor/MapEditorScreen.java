@@ -1,9 +1,5 @@
 package org.genshin.scrollninjaeditor;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -28,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.sun.corba.se.impl.ior.OldPOAObjectKeyTemplate;
 
 public class MapEditorScreen implements Screen {
 	ScrollNinjaEditor editor;
@@ -61,7 +56,6 @@ public class MapEditorScreen implements Screen {
 	private ArrayList<Texture> 	array_tex = new ArrayList<Texture>();	// テクスチャ用配列
 	private int 				loopCnt = 0;							// ループカウンタ用
 	private int 				objectClickFlg = -1;					// オブジェクト用フラグ
-	private Boolean				cameraMove = false;
 
 	/**
 	 * Constructor
@@ -91,13 +85,12 @@ public class MapEditorScreen implements Screen {
 		backSprite.setSize(backSprite.getRegionWidth(),backSprite.getRegionHeight());		// サイズ設定
 		backSprite.setOrigin(backSprite.getWidth()/2, backSprite.getHeight()/2);			// 原点設定(回転時に中心で回るように)
 		backSprite.setPosition(-backSprite.getWidth()/2, -backSprite.getHeight()/2);		// 表示位置設定
-		
+
 		//====ボタン
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);				// インプットが可能なステージを選択(一つのみ以降は上書き)
 		table = new Table();
 		manager = MapObjectManager.create();			// 生成
-		
 		
 		// - 複数化 - 
 		for (loopCnt = 0 ; loopCnt < manager.getMapObjectList().size() ; loopCnt ++){
@@ -172,70 +165,61 @@ public class MapEditorScreen implements Screen {
 	 */
 	public void update(float delta) {
 		//===カメラ移動
-		if(Gdx.input.isKeyPressed(Keys.SPACE))
-		{
-			oldmousePositionX = mousePositionX;
-			oldmousePositionY = mousePositionY;
-			
-			mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
-			mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
-			
-			if(Gdx.input.isButtonPressed(Buttons.LEFT))
-			{
-				cameraMove = true;
-
-				camera.position.x -= (mousePositionX - oldmousePositionX) / 2;
-				camera.position.y += (mousePositionY - oldmousePositionY) / 2;
-			}	
+		if (Gdx.input.isKeyPressed(Keys.LEFT)){
+			camera.position.x -= 50;
+			if (camera.position.x < backSprite.getX() + Gdx.graphics.getWidth()/2)
+				camera.position.x = backSprite.getX() + Gdx.graphics.getWidth()/2;
 		}
-		else
-		{
-			cameraMove = false;
+		if (Gdx.input.isKeyPressed(Keys.RIGHT)){
+			camera.position.x += 50;
+			if (camera.position.x > backSprite.getOriginX() - Gdx.graphics.getWidth()/2)
+				camera.position.x = backSprite.getOriginX() - Gdx.graphics.getWidth()/2;
 		}
-		
-		
+		if (Gdx.input.isKeyPressed(Keys.UP)){
+			camera.position.y += 30;
+			if (camera.position.y > backSprite.getOriginY() - Gdx.graphics.getHeight()/2)
+				camera.position.y = backSprite.getOriginY() - Gdx.graphics.getHeight()/2;
+		}
+		if (Gdx.input.isKeyPressed(Keys.DOWN)){
+			camera.position.y -= 30;
+			if (camera.position.y < backSprite.getY() + Gdx.graphics.getHeight()/2)
+				camera.position.y = backSprite.getY() + Gdx.graphics.getHeight()/2;
+		}
 		camera.update();
-		
-		
+
 		//===オブジェクトクリック
-		if(!cameraMove)
-		{
-			if(objectClickFlg == -1){
-				for(loopCnt = 0 ; loopCnt < manager.getFrontObjects().size() ; loopCnt ++){
-					mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
-					mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
-					if(manager.getFrontObjects().get(loopCnt).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
-						if (Gdx.input.isButtonPressed(Buttons.LEFT)){
-							objectPositionX = manager.getFrontObjects().get(loopCnt).getSp().getX();
-							objectPositionY = -manager.getFrontObjects().get(loopCnt).getSp().getY();
-							objectClickFlg = loopCnt;
-							break;
-						}
-						if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
-							manager.getFrontObjects().remove(loopCnt);
-							break;
-						}
+		if(objectClickFlg == -1){
+			for(loopCnt = 0 ; loopCnt < manager.getFrontObjects().size() ; loopCnt ++){
+				mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
+				mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
+				if(manager.getFrontObjects().get(loopCnt).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
+					if (Gdx.input.isButtonPressed(Buttons.LEFT)){
+						objectClickFlg = loopCnt;
+						break;
+					}
+					if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
+						manager.getFrontObjects().remove(loopCnt);
+						break;
 					}
 				}
-			}
-	
-			else{
-				if (Gdx.input.isButtonPressed(0)){
-					oldmousePositionX = mousePositionX;
-					oldmousePositionY = mousePositionY;
-					mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
-					mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
-					if(manager.getFrontObjects().get(objectClickFlg).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
-						objectPositionX += mousePositionX - oldmousePositionX;
-						objectPositionY += mousePositionY - oldmousePositionY;
-						manager.getFrontObjects().get(objectClickFlg).setPosition(objectPositionX, -objectPositionY);
-					}
-				}
-				else
-					objectClickFlg = -1;
 			}
 		}
-	
+
+		else{
+			if (Gdx.input.isButtonPressed(0)){
+				oldmousePositionX = mousePositionX;
+				oldmousePositionY = mousePositionY;
+				mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
+				mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
+				if(manager.getFrontObjects().get(objectClickFlg).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
+					objectPositionX = mousePositionX - manager.getFrontObjects().get(objectClickFlg).getSp().getWidth() / 2;
+					objectPositionY = mousePositionY + manager.getFrontObjects().get(objectClickFlg).getSp().getHeight() / 2;
+					manager.getFrontObjects().get(objectClickFlg).setPosition(objectPositionX, -objectPositionY);
+				}
+			}
+			else
+				objectClickFlg = -1;
+		}
 	}
 
 	/**

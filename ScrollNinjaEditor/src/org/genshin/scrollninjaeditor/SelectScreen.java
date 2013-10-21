@@ -25,8 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class SelectScreen implements Screen {
-	ScrollNinjaEditor editor;
-	String fileName;
+	private ScrollNinjaEditor editor;
+	private String fileName;
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Stage stage;
@@ -104,34 +104,27 @@ public class SelectScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event,float x,float y) {
 				File current = new File("./bin/data/stage");
-				JFileChooser FileChooser = new JFileChooser(current.getAbsolutePath());
+				JFileChooser fileChooser = new JFileChooser(current.getAbsolutePath());
 				
 				//ファイル選択フィルター宣言
-				ExtendsFileFilter filter[] = {
-					new ExtendsFileFilter(".png","PNG  ファイル(*.png)"),
-				};
+				ExtendsFileFilter filter = new ExtendsFileFilter(".png","PNG  ファイル(*.png)");
 				
 				//フィルター設定
-				for(int i = 0; i < filter.length ; i ++)
-					FileChooser.addChoosableFileFilter(filter[i]);
+				fileChooser.addChoosableFileFilter(filter);
 				
-				int res = FileChooser.showOpenDialog(FileChooser);
+				int res = fileChooser.showOpenDialog(fileChooser);
 				
 				if(res == JFileChooser.APPROVE_OPTION) {
-					File file = FileChooser.getSelectedFile();
-					//開いたファイルの種類のチェック
-					for(int i = 0 ;i < filter.length ; i++)	{	
-						//開いたファイルが正しい場合
-						if(filter[i].accept(file)) {
-							changeTex(file.getName());	//画像切替
-							fileText.setText(file.getName());
-							fileName = "data/stage/" + file.getName();	//パス保存
-							preTable.setSize(ratioX, ratioY);
-							preTable.translate(Gdx.graphics.getWidth() / 2 - preTable.getWidth() / 2, 0.0f);
-							loadflag = true;
-						
-							break;
-						}
+					File file = fileChooser.getSelectedFile();
+	
+					//開いたファイルが正しい場合
+					if(filter.accept(file)) {
+						changeTex(file.getName());	//画像切替
+						fileText.setText(file.getName());
+						fileName = "data/stage/" + file.getName();	//パス保存
+						preTable.setSize(ratioX, ratioY);
+						preTable.translate(Gdx.graphics.getWidth() / 2 - preTable.getWidth() / 2, 0.0f);
+						loadflag = true;
 					}
 				}
 			}
@@ -165,7 +158,6 @@ public class SelectScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void draw(float delta) {
-
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
@@ -177,8 +169,6 @@ public class SelectScreen implements Screen {
 		if(sprite != null)
 			sprite.draw(batch);
 		batch.end();
-
-		Table.drawDebug(stage);			//テーブル枠組み描画
 	}
 	
 	@Override
