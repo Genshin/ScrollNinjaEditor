@@ -178,7 +178,6 @@ public class SelectScreen implements Screen {
 		batch.end();
 		
 		Table.drawDebug(stage);			//テーブル枠組み描画
-
 	}
 	
 	@Override

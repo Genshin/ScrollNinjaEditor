@@ -26,28 +26,28 @@ public class MapEditorScreen implements Screen {
 	ScrollNinjaEditor editor;
 	String fileName;
 
-	private OrthographicCamera 	camera;									// カメラ
-	private SpriteBatch 		batch;									// バッチ
-	private Texture				texture;								// 画像
-	private Sprite 				backsprite;								// 背景用
-	private Sprite 				subsprite;								// スプライト
-	private Stage 				stage;									// ステージ
+	private OrthographicCamera 	camera;									// カメラ用
+	private SpriteBatch 		batch;									// バッチ用
+	private Texture				texture;								// 画像用
+	private Sprite 				backSprite;								// 背景用
+	private Sprite 				sprite;									// スプライト用
+	private Stage 				stage;									// ステージ用
 	private TextureRegion 		region;									// 画像の注視位置設定用
-	private Table 				table;									// テーブル
+	private Table 				table;									// テーブル用
 	private Table 				scroTable;								// スクロール用テーブル
 	private ImageButton 		importButton;							// インポートボタン
 	private ImageButton 		exportButton;							// エクスポートボタン
 	private SpriteDrawable 		sd = new SpriteDrawable();				// ここにスプライトを入れてテーブルに入れる
-	private Skin 				skin;									// スキン
-	private ScrollPane 			scro;									// スクロールペイン
-	private float 				mousePositionX = 0, 					// マウスポジションX
-								mousePositionY = 0,						// マウスポジションY
-								spritePositionX = 0,	 				// スプライトポジションX
-								spritePositionY = 0;					// スプライトポジションY
-	private int 				i = 0;									// ループカウンタ
-	private MapObjectManager 	mpobject= new MapObjectManager();		// オブジェクトセレクト用
+	private Skin 				skin;									// スキン用
+	private ScrollPane 			scro;									// スクロールペイン用
+	private float 				mousePositionX = 0, 					// マウスX座標
+								mousePositionY = 0,						// マウスY座標
+								objectPositionX = 0,	 				// オブジェクトX座標
+								objectPositionY = 0;					// オブジェクトY座標
+	private MapObjectManager 	mapoOject= new MapObjectManager();		// オブジェクト用
 	private ArrayList<Texture> 	array_tex = new ArrayList<Texture>();	// テクスチャ用配列
-	private int f = -1;
+	private int 				loopCnt = 0;							// ループカウンタ用
+	private int 				objectClickFlg = -1;					// オブジェクト用フラグ
 
 	/**
 	 * Constructor
@@ -73,56 +73,56 @@ public class MapEditorScreen implements Screen {
 
 		//====最背面(選択マップ)
 		region = new TextureRegion(array_tex.get(0), 0, 0, array_tex.get(0).getWidth(),array_tex.get(0).getHeight());
-		backsprite = new Sprite(region);
-		backsprite.setSize(backsprite.getRegionWidth(),backsprite.getRegionHeight());
-		backsprite.setOrigin(backsprite.getWidth()/2, backsprite.getHeight()/2);
-		backsprite.setPosition(-backsprite.getWidth()/2, -backsprite.getHeight()/2);
+		backSprite = new Sprite(region);
+		backSprite.setSize(backSprite.getRegionWidth(),backSprite.getRegionHeight());		// サイズ設定
+		backSprite.setOrigin(backSprite.getWidth()/2, backSprite.getHeight()/2);			// 原点設定(回転時に中心で回るように)
+		backSprite.setPosition(-backSprite.getWidth()/2, -backSprite.getHeight()/2);		// 表示位置設定
 
 		//====ボタン
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
+		Gdx.input.setInputProcessor(stage);				// インプットが可能なステージを選択(一つのみ以降は上書き)
 		table = new Table();
-		mpobject = MapObjectManager.create();
+		mapoOject = MapObjectManager.create();			// 生成
 		
 		// - 複数化 - 
-		for (i = 0 ; i < mpobject.getMapObjectList().size() ; i ++){
-			mpobject.getMapObjectList().get(i).getSp().setSize(64,64);
-			sd = new SpriteDrawable();															// 上書きが必要
-			sd.setSprite(mpobject.getMapObjectList().get(i).getSp());							// 上書きではないので注意
-			final ObjectButton objB = new ObjectButton(sd, mpobject.getMapObjectList().get(i));
+		for (loopCnt = 0 ; loopCnt < mapoOject.getMapObjectList().size() ; loopCnt ++){
+			mapoOject.getMapObjectList().get(loopCnt).getSp().setSize(64,64);
+			sd = new SpriteDrawable();												// 上書きが必要
+			sd.setSprite(mapoOject.getMapObjectList().get(loopCnt).getSp());		// 上書きではないので注意
+			final ObjectButton objB = new ObjectButton(sd, mapoOject.getMapObjectList().get(loopCnt));
 			
 			objB.addListener(new ClickListener(){
 				@Override
 				public void clicked(InputEvent event ,float x,float y){
-					MapObject mapobj = new MapObject(objB.mapObject);
-					mpobject.setMapObject(mapobj);
-					mpobject.getMapObjects().get(i).setPosition(camera.position.x,camera.position.y); // カメラに映るように描画
+					MapObject mapobj = new MapObject(objB.mapObject);										 // クリックされたオブジェクト情報を読み込み
+					mapoOject.setMapObject(mapobj);															 // オブジェクトをセット
+					mapoOject.getMapObjects().get(loopCnt).setPosition(camera.position.x,camera.position.y); // カメラに映るように描画
 				}
 			});
 			table.add(objB);
 		}
 
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		scro = new ScrollPane(table,skin);
-		scro.setFlickScroll(false);					// フリックの有無
-		scro.setFadeScrollBars(true);				// ここでfalseなら常に。trueなら使用するとき。
-		scro.setScrollingDisabled(false, false);	// 一番目は縦、二番目は横。これによりスクロールをするかしないか
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));	// スキンファイルを読み込み
+		scro = new ScrollPane(table,skin);							// スクロールに情報を読み込み
+		scro.setFlickScroll(false);									// フリックの有無
+		scro.setFadeScrollBars(true);								// ここでfalseなら常に。trueなら使用するとき。
+		scro.setScrollingDisabled(false, false);					// 一番目は縦、二番目は横。これによりスクロールをするかしないか
 		scroTable = new Table();
-		scroTable.setFillParent(true);
-		scroTable.setY(200);
+		scroTable.setFillParent(true);								// 表示位置を中心(true)に設定
+		scroTable.setY(200);										// 入力した分表示位置をずらす
 		scroTable.add(scro);
 		stage.addActor(scroTable);
 
 		// - インポート、エクスポートボタン - 
-		for(i = 1 ; i < 3 ; i ++){
+		for(loopCnt = 1 ; loopCnt < 3 ; loopCnt ++){	// array_tex.get(0)は最背面で使用しているためカウンタは1から
 			table = new Table();
-			table.setLayoutEnabled(false);
-			table.setX((i-1) * 150);
-			region = new TextureRegion(array_tex.get(i % 3),0,0,array_tex.get(i % 3).getWidth(),array_tex.get(i % 3).getHeight());
-			subsprite = new Sprite(region);
+			table.setLayoutEnabled(false);				// この設定で任意の設定が可能
+			table.setX((loopCnt - 1) * 150);
+			region = new TextureRegion(array_tex.get(loopCnt % 3),0,0,array_tex.get(loopCnt % 3).getWidth(),array_tex.get(loopCnt % 3).getHeight());
+			sprite = new Sprite(region);
 			sd = new SpriteDrawable();
-			sd.setSprite(subsprite);
-			if(i == 1){
+			sd.setSprite(sprite);
+			if(loopCnt == 1){
 				importButton = new ImageButton(sd);
 				importButton.addListener(new ClickListener(){
 					@Override
@@ -133,7 +133,7 @@ public class MapEditorScreen implements Screen {
 				table.add(importButton);
 				stage.addActor(table);
 			}
-			else if(i == 2){
+			else if(loopCnt == 2){
 				exportButton = new ImageButton(sd);
 				exportButton.addListener(new ClickListener(){
 					@Override
@@ -155,38 +155,38 @@ public class MapEditorScreen implements Screen {
 		//===カメラ移動
 		if (Gdx.input.isKeyPressed(Keys.LEFT)){
 			camera.position.x -= 50;
-			if (camera.position.x < backsprite.getX() + Gdx.graphics.getWidth()/2)
-				camera.position.x = backsprite.getX() + Gdx.graphics.getWidth()/2;
+			if (camera.position.x < backSprite.getX() + Gdx.graphics.getWidth()/2)
+				camera.position.x = backSprite.getX() + Gdx.graphics.getWidth()/2;
 		}
 		if (Gdx.input.isKeyPressed(Keys.RIGHT)){
 			camera.position.x += 50;
-			if (camera.position.x > backsprite.getOriginX() - Gdx.graphics.getWidth()/2)
-				camera.position.x = backsprite.getOriginX() - Gdx.graphics.getWidth()/2;
+			if (camera.position.x > backSprite.getOriginX() - Gdx.graphics.getWidth()/2)
+				camera.position.x = backSprite.getOriginX() - Gdx.graphics.getWidth()/2;
 		}
 		if (Gdx.input.isKeyPressed(Keys.UP)){
 			camera.position.y += 30;
-			if (camera.position.y > backsprite.getOriginY() - Gdx.graphics.getHeight()/2)
-				camera.position.y = backsprite.getOriginY() - Gdx.graphics.getHeight()/2;
+			if (camera.position.y > backSprite.getOriginY() - Gdx.graphics.getHeight()/2)
+				camera.position.y = backSprite.getOriginY() - Gdx.graphics.getHeight()/2;
 		}
 		if (Gdx.input.isKeyPressed(Keys.DOWN)){
 			camera.position.y -= 30;
-			if (camera.position.y < backsprite.getY() + Gdx.graphics.getHeight()/2)
-				camera.position.y = backsprite.getY() + Gdx.graphics.getHeight()/2;
+			if (camera.position.y < backSprite.getY() + Gdx.graphics.getHeight()/2)
+				camera.position.y = backSprite.getY() + Gdx.graphics.getHeight()/2;
 		}
 		camera.update();
 
-		//===スプライトクリック
-		if(f == -1){
-			for(i = 0 ; i < mpobject.getMapObjects().size() ; i ++){
+		//===オブジェクトクリック
+		if(objectClickFlg == -1){
+			for(loopCnt = 0 ; loopCnt < mapoOject.getMapObjects().size() ; loopCnt ++){
 				mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
 				mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
-				if(mpobject.getMapObjects().get(i).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
+				if(mapoOject.getMapObjects().get(loopCnt).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
 					if (Gdx.input.isButtonPressed(Buttons.LEFT)){
-						f = i;
+						objectClickFlg = loopCnt;
 						break;
 					}
 					if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
-						mpobject.getMapObjects().remove(i);
+						mapoOject.getMapObjects().remove(loopCnt);
 						break;
 					}
 				}
@@ -197,14 +197,14 @@ public class MapEditorScreen implements Screen {
 			if (Gdx.input.isButtonPressed(0)){
 				mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
 				mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
-				if(mpobject.getMapObjects().get(f).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
-					spritePositionX = mousePositionX - mpobject.getMapObjects().get(f).getSp().getWidth() / 2;
-					spritePositionY = mousePositionY + mpobject.getMapObjects().get(f).getSp().getHeight() / 2;
-					mpobject.getMapObjects().get(f).setPosition(spritePositionX, -spritePositionY);
+				if(mapoOject.getMapObjects().get(objectClickFlg).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
+					objectPositionX = mousePositionX - mapoOject.getMapObjects().get(objectClickFlg).getSp().getWidth() / 2;
+					objectPositionY = mousePositionY + mapoOject.getMapObjects().get(objectClickFlg).getSp().getHeight() / 2;
+					mapoOject.getMapObjects().get(objectClickFlg).setPosition(objectPositionX, -objectPositionY);
 				}
 			}
 			else
-				f = -1;
+				objectClickFlg = -1;
 		}
 	}
 
@@ -217,10 +217,10 @@ public class MapEditorScreen implements Screen {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		backsprite.draw(batch);					// 背景描画
-		mpobject.drawMapObjects(batch);			// オブジェボタン描画
+		backSprite.draw(batch);						// 背景描画
+		mapoOject.drawMapObjects(batch);			// オブジェボタン描画
 		batch.end();
-		stage.act(Gdx.graphics.getDeltaTime());	// ステージ描画
+		stage.act(Gdx.graphics.getDeltaTime());		// ステージ描画
 		stage.draw();
 	}
 
