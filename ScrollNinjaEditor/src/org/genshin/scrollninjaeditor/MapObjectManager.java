@@ -17,7 +17,8 @@ public class MapObjectManager {
 	private static MapObjectManager instance = new MapObjectManager();
 	
 	private ArrayList<MapObject> mapObjectList = new ArrayList<MapObject>();
-	private ArrayList<MapObject> mapObjects = new ArrayList<MapObject>();
+	private ArrayList<MapObject> frontObjects = new ArrayList<MapObject>();
+	private ArrayList<MapObject> backObjects = new ArrayList<MapObject>();
 	
 	private boolean isInitialized = false;
 	
@@ -48,7 +49,8 @@ public class MapObjectManager {
 		try
         {
             ObjectMapper objectMapper = new ObjectMapper();
-            mapObjectList = objectMapper.readValue(Gdx.files.internal("data/objects/objects.json").read(), new TypeReference<ArrayList<MapObject>>(){});
+            mapObjectList = objectMapper.readValue(Gdx.files.internal("data/objects/objects.json").read(),
+            									   new TypeReference<ArrayList<MapObject>>(){});
         }
         catch (JsonParseException e) { e.printStackTrace(); }
         catch (JsonMappingException e) { e.printStackTrace(); }
@@ -63,46 +65,90 @@ public class MapObjectManager {
 	}
 	
 	/**
-	 * draw sprite
-	 * @param batch		SproteBatch
+	 * draw front object's sprite
+	 * @param batch		SpriteBatch
 	 */
-	public void drawMapObjects(SpriteBatch batch) {
-		if (mapObjects != null) {
-			for (MapObject obj : mapObjects) {
+	public void drawFrontObjects(SpriteBatch batch) {
+		if (frontObjects != null) {
+			for (MapObject obj : frontObjects) {
 				obj.draw(batch);
 			}
 		}
 	}
 	
 	/**
-	 * add mapObject to mapObjects
-	 * @param obj
+	 * draw back object's sprite
+	 * @param batch		SpriteBatch
 	 */
-	public void setMapObject(MapObject obj) {
-		mapObjects.add(obj);
+	public void drawBackObject(SpriteBatch batch) {
+		if (backObjects != null) {
+			for (MapObject obj : backObjects) {
+				obj.draw(batch);
+			}
+		}
 	}
 	
 	/**
-	 * remove mapObject from mapObjects
+	 * add mapObject to frontObjects
 	 * @param obj
 	 */
-	public void removeMapObject(MapObject obj) {
-		mapObjects.remove(obj);
+	public void setFrontObject(MapObject obj) {
+		frontObjects.add(obj);
+	}
+	
+	/**
+	 * add mapObject to backObjects
+	 * @param obj
+	 */
+	public void setBackObject(MapObject obj) {
+		backObjects.add(obj);
+	}
+	
+	/**
+	 * remove mapObject from frontObjects
+	 * @param obj
+	 */
+	public void removefrontObject(MapObject obj) {
+		frontObjects.remove(obj);
+	}
+	
+	/**
+	 * remove mapObject from backObjects
+	 * @param obj
+	 */
+	public void removeBackObject(MapObject obj) {
+		backObjects.remove(obj);
 	}
 	
 	/**
 	 * @param index
-	 * @return	mapObject
+	 * @return front mapObject
 	 */
-	public MapObject getMapObject(int index) {
-		return mapObjects.get(index);
+	public MapObject getFrontObject(int index) {
+		return frontObjects.get(index);
 	}
 	
 	/**
-	 * @return mapObjects
+	 * 
+	 * @param index
+	 * @return back mapObject
 	 */
-	public ArrayList<MapObject> getMapObjects() {
-		return mapObjects;
+	public MapObject getBackObject(int index) {
+		return backObjects.get(index);
+	}
+	
+	/**
+	 * @return front mapObjects
+	 */
+	public ArrayList<MapObject> getFrontObjects() {
+		return frontObjects;
+	}
+	
+	/**
+	 * @return back mapObjects
+	 */
+	public ArrayList<MapObject> getBackObjects() {
+		return backObjects;
 	}
 
 	/**

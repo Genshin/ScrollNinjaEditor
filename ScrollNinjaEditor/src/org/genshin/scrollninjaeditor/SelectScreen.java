@@ -171,9 +171,8 @@ public class SelectScreen implements Screen {
 		if(sprite != null)
 			sprite.draw(batch);
 		batch.end();
-		
-		Table.drawDebug(stage);	
 
+		Table.drawDebug(stage);			//テーブル枠組み描画
 	}
 	
 	@Override
