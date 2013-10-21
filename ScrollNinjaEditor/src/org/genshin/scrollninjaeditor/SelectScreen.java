@@ -172,7 +172,7 @@ public class SelectScreen implements Screen {
 			sprite.draw(batch);
 		batch.end();
 		
-		Table.drawDebug(stage);			//テーブル枠組み描画
+		Table.drawDebug(stage);	
 
 	}
 	

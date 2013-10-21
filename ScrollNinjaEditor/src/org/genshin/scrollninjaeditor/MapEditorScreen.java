@@ -46,6 +46,8 @@ public class MapEditorScreen implements Screen {
 	private ScrollPane 			scro;									// スクロールペイン
 	private float 				mousePositionX = 0, 					// マウスポジションX
 								mousePositionY = 0,						// マウスポジションY
+								oldmousePositionX = 0,					// 前回マウスX座標
+								oldmousePositionY = 0,					// 前回マウスY座標
 								spritePositionX = 0,	 				// スプライトポジションX
 								spritePositionY = 0;					// スプライトポジションY
 	private int 				i = 0;									// ループカウンタ
@@ -213,11 +215,13 @@ public class MapEditorScreen implements Screen {
 
 		else{
 			if (Gdx.input.isButtonPressed(0)){
+				oldmousePositionX = mousePositionX;
+				oldmousePositionY = mousePositionY;
 				mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
 				mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
 				if(mpobject.getMapObjects().get(f).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
-					spritePositionX = mousePositionX - mpobject.getMapObjects().get(f).getSp().getWidth() / 2;
-					spritePositionY = mousePositionY + mpobject.getMapObjects().get(f).getSp().getHeight() / 2;
+					spritePositionX += mousePositionX - oldmousePositionX;
+					spritePositionY += mousePositionY - oldmousePositionY;
 					mpobject.getMapObjects().get(f).setPosition(spritePositionX, -spritePositionY);
 				}
 			}
@@ -301,14 +305,12 @@ public class MapEditorScreen implements Screen {
 					JsonRead read = new JsonRead(Gdx.files.absolute(file.getAbsolutePath()).path());
 					
 					for(int node = 0;read.getRootNode(node) != null;node++)	{
-						//Sprite sp;
 						MapObject setObj = null;
 						//スプライトの種類チェック
 						for(MapObject obj:mpobject.getMapObjectList()) {
 							String label = read.getObjectString("label", node);
 															
 							if(label.matches(obj.getLabelName())) {	
-								//sp = obj.getSp();
 								setObj = new MapObject(obj);
 								break;
 							}
