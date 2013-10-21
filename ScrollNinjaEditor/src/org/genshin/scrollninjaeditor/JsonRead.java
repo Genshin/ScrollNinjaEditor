@@ -10,34 +10,35 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonRead
-{
+public class JsonRead {
 	private ObjectMapper mapper;
 	private JsonNode rootNode;
 	private JsonNode currentNode;
 
-	
-	public JsonRead(String path)
-	{
+	/**
+	 * Constructor
+	 * @param path   JsonFile path
+	 */
+	public JsonRead(String path) {
 		
 		mapper = new ObjectMapper();
 		try {
 			rootNode = mapper.readValue(new File(path),JsonNode.class);
 		} catch (JsonParseException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 	}
 	
-
-	public String getObjectString(String object, int nodeNo)
-	{
+	/**
+	 * @param object ObjectName
+	 * @param nodeNo NodeNo
+	 * @return	ObjectValue toString
+	 */
+	public String getObjectString(String object, int nodeNo) {
 		currentNode = rootNode.get(nodeNo);
 		
 		JsonNode getNode = currentNode.get(object);
@@ -45,16 +46,25 @@ public class JsonRead
 		return getNode.textValue();
 	}
 	
-	public int getObjectInt(String object, int nodeNo)
-	{
+	/**
+	 * @param object ObjectName
+	 * @param nodeNo NodeNo
+	 * @return	ObjectValue toInt
+	 */
+	public int getObjectInt(String object, int nodeNo) {
 		currentNode = rootNode.get(nodeNo);
 		
 		JsonNode getNode = currentNode.get(object);
 		
 		return getNode.intValue();
 	}
-	public float getObjectFloat(String object, int nodeNo)
-	{
+	
+	/**
+	 * @param object ObjectName
+	 * @param nodeNo NodeNo
+	 * @return	ObjectValue toFloat
+	 */
+	public float getObjectFloat(String object, int nodeNo) {
 		currentNode = rootNode.get(nodeNo);
 		
 		JsonNode getNode = currentNode.get(object);
@@ -62,64 +72,32 @@ public class JsonRead
 		return getNode.floatValue();
 	}
 	
-	public String getObjectFieldString(String object,String field , int nodeNo)
-	{
+	/**
+	 * @param object ObjectName
+	 * @param field  FieldName
+	 * @param nodeNo NodeNo
+	 * @return FieldValue toString
+	 */
+	public String getObjectField(String object,String field , int nodeNo)	{
 		currentNode = rootNode.get(nodeNo);
 		
 		JsonNode objNode = currentNode.get(object);
 		Iterator<String> nodeFields = objNode.fieldNames();
-		while(nodeFields.hasNext())
-		{
+		while(nodeFields.hasNext())	{
 			String nodeField = nodeFields.next();
-			if(nodeField == field)
-			{
+			if(nodeField == field) {
 				return objNode.get(nodeField).asText();
 			}
 		}
-		
 		return null;
-		
 	}
 	
-	public int getObjectFieldInt(String object,String field , int nodeNo)
-	{
-		currentNode = rootNode.get(nodeNo);
-		
-		JsonNode objNode = currentNode.get(object);
-		Iterator<String> nodeFields = objNode.fieldNames();
-		while(nodeFields.hasNext())
-		{
-			String nodeField = nodeFields.next();
-			if(nodeField == field)
-			{
-				return objNode.get(nodeField).asInt();
-			}
-		}
-		
-		return 0;
-		
-	}
-
-	public float getObjectFieldFloat(String object,String field , int nodeNo)
-	{
-		currentNode = rootNode.get(nodeNo);
-		
-		JsonNode objNode = currentNode.get(object);
-		Iterator<String> nodeFields = objNode.fieldNames();
-		while(nodeFields.hasNext())
-		{
-			String nodeField = nodeFields.next();
-			if(nodeField == field)
-			{
-				return objNode.get(nodeField).floatValue();
-			}
-		}
-		
-		return 0;
-		
-	}
-	public JsonNode getRootNode(int nodeNo)
-	{
+	
+	/**
+	 * @param nodeNo NodeNo
+	 * @return Node
+	 */
+	public JsonNode getRootNode(int nodeNo)	{
 		return rootNode.get(nodeNo);
 	}
 	
