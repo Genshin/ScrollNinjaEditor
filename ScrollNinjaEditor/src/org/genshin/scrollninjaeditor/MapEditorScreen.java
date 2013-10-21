@@ -86,6 +86,8 @@ public class MapEditorScreen implements Screen {
 		
 		// - 複数化 - 
 		for (loopCnt = 0 ; loopCnt < mapoOject.getMapObjectList().size() ; loopCnt ++){
+			if(loopCnt % 3 == 0)
+				table.row();
 			mapoOject.getMapObjectList().get(loopCnt).getSp().setSize(64,64);
 			sd = new SpriteDrawable();												// 上書きが必要
 			sd.setSprite(mapoOject.getMapObjectList().get(loopCnt).getSp());		// 上書きではないので注意
@@ -108,8 +110,10 @@ public class MapEditorScreen implements Screen {
 		scro.setFadeScrollBars(true);								// ここでfalseなら常に。trueなら使用するとき。
 		scro.setScrollingDisabled(false, false);					// 一番目は縦、二番目は横。これによりスクロールをするかしないか
 		scroTable = new Table();
-		scroTable.setFillParent(true);								// 表示位置を中心(true)に設定
-		scroTable.setY(200);										// 入力した分表示位置をずらす
+		scroTable.setLayoutEnabled(false);
+		scroTable.setX(w - scro.getWidth());
+		scroTable.setY(h - scro.getHeight());
+		
 		scroTable.add(scro);
 		stage.addActor(scroTable);
 
