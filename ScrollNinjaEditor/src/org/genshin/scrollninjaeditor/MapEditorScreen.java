@@ -1,6 +1,9 @@
 package org.genshin.scrollninjaeditor;
 
+import java.io.File;
 import java.util.ArrayList;
+
+import javax.swing.JFileChooser;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -38,13 +41,18 @@ public class MapEditorScreen implements Screen {
 	private ImageButton 		importButton;							// インポートボタン
 	private ImageButton 		exportButton;							// エクスポートボタン
 	private SpriteDrawable 		sd = new SpriteDrawable();				// ここにスプライトを入れてテーブルに入れる
-	private Skin 				skin;									// スキン用
-	private ScrollPane 			scro;									// スクロールペイン用
-	private float 				mousePositionX = 0, 					// マウスX座標
-								mousePositionY = 0,						// マウスY座標
+	private Skin 				skin;									// スキン
+	private ScrollPane 			scro;									// スクロールペイン
+	private float 				mousePositionX = 0, 					// マウスポジションX
+								mousePositionY = 0,						// マウスポジションY
+								oldmousePositionX = 0,					// 前回マウスX座標
+								oldmousePositionY = 0,					// 前回マウスY座標
 								objectPositionX = 0,	 				// オブジェクトX座標
-								objectPositionY = 0;					// オブジェクトY座標
-	private MapObjectManager 	mapoOject= new MapObjectManager();		// オブジェクト用
+								objectPositionY = 0,					// オブジェクトY座標
+								spritePositionX = 0,	 				// スプライトポジションX
+								spritePositionY = 0;					// スプライトポジションY
+	private int 				i = 0;									// ループカウンタ
+	private MapObjectManager 	manager= new MapObjectManager();		// オブジェクトセレクト用
 	private ArrayList<Texture> 	array_tex = new ArrayList<Texture>();	// テクスチャ用配列
 	private int 				loopCnt = 0;							// ループカウンタ用
 	private int 				objectClickFlg = -1;					// オブジェクト用フラグ
@@ -82,23 +90,23 @@ public class MapEditorScreen implements Screen {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);				// インプットが可能なステージを選択(一つのみ以降は上書き)
 		table = new Table();
-		mapoOject = MapObjectManager.create();			// 生成
+		manager = MapObjectManager.create();			// 生成
 		
 		// - 複数化 - 
-		for (loopCnt = 0 ; loopCnt < mapoOject.getMapObjectList().size() ; loopCnt ++){
+		for (loopCnt = 0 ; loopCnt < manager.getMapObjectList().size() ; loopCnt ++){
 			if(loopCnt % 3 == 0)
 				table.row();
-			mapoOject.getMapObjectList().get(loopCnt).getSp().setSize(64,64);
+			manager.getMapObjectList().get(loopCnt).getSp().setSize(64,64);
 			sd = new SpriteDrawable();												// 上書きが必要
-			sd.setSprite(mapoOject.getMapObjectList().get(loopCnt).getSp());		// 上書きではないので注意
-			final ObjectButton objB = new ObjectButton(sd, mapoOject.getMapObjectList().get(loopCnt));
+			sd.setSprite(manager.getMapObjectList().get(loopCnt).getSp());		// 上書きではないので注意
+			final ObjectButton objB = new ObjectButton(sd, manager.getMapObjectList().get(loopCnt));
 			
 			objB.addListener(new ClickListener(){
 				@Override
 				public void clicked(InputEvent event ,float x,float y){
 					MapObject mapobj = new MapObject(objB.mapObject);										 // クリックされたオブジェクト情報を読み込み
-					mapoOject.setMapObject(mapobj);															 // オブジェクトをセット
-					mapoOject.getMapObjects().get(loopCnt).setPosition(camera.position.x,camera.position.y); // カメラに映るように描画
+					manager.setFrontObject(mapobj);															 // オブジェクトをセット
+					manager.getFrontObjects().get(loopCnt).setPosition(camera.position.x,camera.position.y); // カメラに映るように描画
 				}
 			});
 			table.add(objB);
@@ -181,16 +189,16 @@ public class MapEditorScreen implements Screen {
 
 		//===オブジェクトクリック
 		if(objectClickFlg == -1){
-			for(loopCnt = 0 ; loopCnt < mapoOject.getMapObjects().size() ; loopCnt ++){
+			for(loopCnt = 0 ; loopCnt < manager.getFrontObjects().size() ; loopCnt ++){
 				mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
 				mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
-				if(mapoOject.getMapObjects().get(loopCnt).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
+				if(manager.getFrontObjects().get(loopCnt).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
 					if (Gdx.input.isButtonPressed(Buttons.LEFT)){
 						objectClickFlg = loopCnt;
 						break;
 					}
 					if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
-						mapoOject.getMapObjects().remove(loopCnt);
+						manager.getFrontObjects().remove(loopCnt);
 						break;
 					}
 				}
@@ -199,12 +207,14 @@ public class MapEditorScreen implements Screen {
 
 		else{
 			if (Gdx.input.isButtonPressed(0)){
+				oldmousePositionX = mousePositionX;
+				oldmousePositionY = mousePositionY;
 				mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
 				mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
-				if(mapoOject.getMapObjects().get(objectClickFlg).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
-					objectPositionX = mousePositionX - mapoOject.getMapObjects().get(objectClickFlg).getSp().getWidth() / 2;
-					objectPositionY = mousePositionY + mapoOject.getMapObjects().get(objectClickFlg).getSp().getHeight() / 2;
-					mapoOject.getMapObjects().get(objectClickFlg).setPosition(objectPositionX, -objectPositionY);
+				if(manager.getFrontObjects().get(objectClickFlg).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
+					objectPositionX = mousePositionX - manager.getFrontObjects().get(objectClickFlg).getSp().getWidth() / 2;
+					objectPositionY = mousePositionY + manager.getFrontObjects().get(objectClickFlg).getSp().getHeight() / 2;
+					manager.getFrontObjects().get(objectClickFlg).setPosition(objectPositionX, -objectPositionY);
 				}
 			}
 			else
@@ -222,7 +232,7 @@ public class MapEditorScreen implements Screen {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		backSprite.draw(batch);						// 背景描画
-		mapoOject.drawMapObjects(batch);			// オブジェボタン描画
+		manager.drawFrontObjects(batch);			// オブジェボタン描画
 		batch.end();
 		stage.act(Gdx.graphics.getDeltaTime());		// ステージ描画
 		stage.draw();
@@ -260,12 +270,70 @@ public class MapEditorScreen implements Screen {
 		texture.dispose();
 	}
 	
+	/**
+	 * Import process
+	 */
 	public void fileImport(){
-		Gdx.app.log("tag","インポート:" + importButton);
-	}
-	
-	public void fileExport(){
-		Gdx.app.log("tag","エクスポート:" + exportButton);
+		File current = new File("./bin/data");
+		JFileChooser FileChooser = new JFileChooser(current.getAbsolutePath());
+		
+		//ファイル選択フィルター宣言
+		ExtendsFileFilter filter[] = {
+			new ExtendsFileFilter(".json","JSON  ファイル(*.json)"),
+		};
+		
+		//フィルター設定
+		for(int i = 0; i < filter.length ; i ++)
+			FileChooser.addChoosableFileFilter(filter[i]);
+		
+		int res = FileChooser.showOpenDialog(FileChooser);
+
+		if(res == JFileChooser.APPROVE_OPTION) {
+			File file = FileChooser.getSelectedFile();
+			//開いたファイルの種類のチェック
+			for(int i = 0 ;i < filter.length ; i++)	{	
+				//開いたファイルが正しい場合
+				if(filter[i].accept(file)) {
+					JsonRead read = new JsonRead(Gdx.files.absolute(file.getAbsolutePath()).path());
+					
+					for(int node = 0;read.getRootNode(node) != null;node++)	{
+						MapObject setObj = null;
+						//スプライトの種類チェック
+						for(MapObject obj:manager.getMapObjectList()) {
+							String label = read.getObjectString("label", node);
+															
+							if(label.matches(obj.getLabelName())) {	
+								setObj = new MapObject(obj);
+								break;
+							}
+						}
+						setObj.setPosition(read.getObjectFloat("x", node), read.getObjectFloat("y", node));
+						manager.setFrontObject(setObj);
+					}
+				}
+			}
+		}
 	}
 
+	/**
+	 * Export process
+	 */
+	public void fileExport() {
+		File current = new File("./bin/data");
+		JFileChooser fileChooser = new JFileChooser(current.getAbsolutePath());
+		int select = fileChooser.showSaveDialog(fileChooser);
+		
+		if(select == JFileChooser.APPROVE_OPTION) {	
+			JsonWrite write = new JsonWrite();
+			for(MapObject obj : manager.getFrontObjects())	{		
+				write.addObject();
+				write.putObject("name", obj.getFileName());
+				write.putObject("label", obj.getLabelName());
+				write.putObject("x", obj.getX());
+				write.putObject("y", obj.getY());
+			}
+			write.writeData(fileChooser.getSelectedFile().toString() + ".json");
+		}
+		Gdx.app.log("tag","エクスポート:" + exportButton);
+	}
 }
