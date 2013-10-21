@@ -41,6 +41,9 @@ public class SelectScreen implements Screen {
 	private TextureRegion region;
 	private SpriteDrawable sd;
 	
+	private float ratioX;
+	private float ratioY;
+	
 	/**
 	 * Constructor
 	 * @param editor
@@ -76,9 +79,10 @@ public class SelectScreen implements Screen {
 		//プレビュー
 		//----------------------------------------
 		//プレビュー用table作成
-		Table preTable = new Table();
-		preTable.size(w/5*4, h/5*3);
-		preTable.translate(w/10, h/5);
+		ratioX = w/5*4;
+		ratioY = h/5*3; 
+		final Table preTable = new Table();
+		preTable.translate(0, h/5);
 		setdata(null);
 		image = new Image(sd);
 		preTable.add(image);
@@ -122,6 +126,8 @@ public class SelectScreen implements Screen {
 							changeTex(file.getName());	//画像切替
 							fileText.setText(file.getName());
 							fileName = "data/stage/" + file.getName();	//パス保存
+							preTable.setSize(ratioX, ratioY);
+							preTable.translate(Gdx.graphics.getWidth() / 2 - preTable.getWidth() / 2, 0.0f);
 							loadflag = true;
 						
 							break;
@@ -212,6 +218,7 @@ public class SelectScreen implements Screen {
 		if(str != null)	{
 			this.texture = TextureFactory.getInstance().get("data/stage/" + str);
 			this.region = new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight());
+			setRatio(texture.getWidth(), texture.getHeight());
 			this.sprite = new Sprite(region);
 			this.sd = new SpriteDrawable(sprite);
 		}
@@ -227,5 +234,10 @@ public class SelectScreen implements Screen {
 		setdata(str);
 		
 		image.setDrawable(sd);
+	}
+	
+	private void setRatio(int width,int height)	{		
+		ratioX = width / height;
+		ratioX = ratioY * ratioX;
 	}
 }
