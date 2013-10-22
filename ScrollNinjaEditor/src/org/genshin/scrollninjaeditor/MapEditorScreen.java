@@ -25,10 +25,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class MapEditorScreen implements Screen {
-	ScrollNinjaEditor editor;
-	String fileName;
+	private ScrollNinjaEditor editor;
+	private String fileName;
 
-	private OrthographicCamera 	camera;									// カメラ用
+	private Camera				camera;
 	private SpriteBatch 		batch;									// バッチ用
 	private Texture				texture;								// 画像用
 	private Sprite 				backSprite;								// 背景用
@@ -36,8 +36,6 @@ public class MapEditorScreen implements Screen {
 	private Stage 				stage;									// ステージ用
 	private TextureRegion 		region;									// 画像の注視位置設定用
 	private Table 				table;									// テーブル用
-	private ImageButton 		importButton;							// インポートボタン
-	private ImageButton 		exportButton;							// エクスポートボタン
 	private ImageButton 		imageButton;							// イメージボタン
 	private SpriteDrawable 		spriteDrawble = new SpriteDrawable();	// ここにスプライトを入れてテーブルに入れる
 	private float 				mousePositionX = 0, 					// マウスポジションX
@@ -46,8 +44,8 @@ public class MapEditorScreen implements Screen {
 								oldmousePositionY = 0,					// 前回マウスY座標
 								objectPositionX = 0,	 				// オブジェクトX座標
 								objectPositionY = 0,					// オブジェクトY座標
-								screenWudth = 0,
-								h = 0;
+								screenWidth = 0,
+								screenHeight = 0;
 	private MapObjectManager 	manager= new MapObjectManager();		// オブジェクトセレクト用
 	private ArrayList<Texture> 	array_tex = new ArrayList<Texture>();	// テクスチャ用配列
 	private int 				loopCnt = 0;							// ループカウンタ用
@@ -64,9 +62,9 @@ public class MapEditorScreen implements Screen {
 	public MapEditorScreen(ScrollNinjaEditor editor, String fileName) {
 		this.editor = editor;
 		this.fileName = fileName;
-		screenWudth = Gdx.graphics.getWidth();
-		h = Gdx.graphics.getHeight();
-		camera = new OrthographicCamera(screenWudth , h);
+		screenWidth = Gdx.graphics.getWidth();
+		screenHeight = Gdx.graphics.getHeight();
+		camera = new Camera(screenWidth, screenHeight);
 		batch = new SpriteBatch();
 
 		//===テクスチャ読み込み
@@ -106,24 +104,12 @@ public class MapEditorScreen implements Screen {
 			spriteDrawble = new SpriteDrawable();
 			spriteDrawble.setSprite(sprite);
 			if(loopCnt == 1){
-				importButton = new ImageButton(spriteDrawble);
-				importButton.addListener(new ClickListener(){
-					@Override
-					public void clicked(InputEvent event ,float x,float y){
-						fileImport();
-					}
-				});
+				Import importButton = new Import(spriteDrawble);
 				table.add(importButton).top().left().size(32,32);
 				mapEditorStage.addButton(stage, table);
 			}
 			else if(loopCnt == 2){
-				exportButton = new ImageButton(spriteDrawble);
-				exportButton.addListener(new ClickListener(){
-					@Override
-					public void clicked(InputEvent event ,float x,float y){
-						fileExport();
-					}
-				});
+				Export exportButton = new Export(spriteDrawble);
 				table.add(exportButton).top().left().size(32,32);
 				mapEditorStage.addButton(stage, table);
 			}
@@ -141,13 +127,13 @@ public class MapEditorScreen implements Screen {
 				if(!menuClickFlg)
 				{
 					mapEditorStage.addScrollPane(stage);
-					table.getChildren().get(2).setX(screenWudth - imageButton.getWidth() - mapEditorStage.getWidth());
+					table.getChildren().get(2).setX(screenWidth - imageButton.getWidth() - mapEditorStage.getWidth());
 					menuClickFlg = true;
 				}
 				else
 				{
 					mapEditorStage.remove(stage);
-					table.getChildren().get(2).setX(screenWudth - imageButton.getWidth());
+					table.getChildren().get(2).setX(screenWidth - imageButton.getWidth());
 					menuClickFlg = false;
 				}
 			}
@@ -161,71 +147,90 @@ public class MapEditorScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void update(float delta) {
-		//===カメラ移動
-		if(Gdx.input.isKeyPressed(Keys.SPACE))
-		{
-			oldmousePositionX = mousePositionX;
-			oldmousePositionY = mousePositionY;
-			
-			mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
-			mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
-			
-			if(Gdx.input.isButtonPressed(Buttons.LEFT))
-			{
-				cameraMove = true;
-
-				camera.position.x -= (mousePositionX - oldmousePositionX)/2;
-				camera.position.y += (mousePositionY - oldmousePositionY)/2;
-			}	
-		}
-		else
-		{
-			cameraMove = false;
-		}
-		if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT ) || (Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))))
-		{
-			if(Gdx.input.isKeyPressed(Keys.NUM_0))
-			{
-				camera.zoom = 2.0f;
-			}
-		}
-		camera.update();	
-
+		//===カメラ処理
+		cameraMove = camera.update(2.0f);		 
+		 
 		//===オブジェクトクリック
-		if(objectClickFlg == -1){
-			for(loopCnt = 0 ; loopCnt < manager.getFrontObjects().size() ; loopCnt ++){
-				mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x * camera.zoom;
-				mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y * camera.zoom;
-				if(manager.getFrontObjects().get(loopCnt).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
-					if (Gdx.input.isButtonPressed(Buttons.LEFT)){
-						objectClickFlg = loopCnt;
-						break;
-					}
-					if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
-						manager.getFrontObjects().remove(loopCnt);
-						break;
+		/*if(!cameraMove)
+		{
+			if(objectClickFlg == -1){
+					
+				for(loopCnt = 0 ; loopCnt < manager.getFrontObjects().size() ; loopCnt ++){
+					mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x * camera.zoom;
+					mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y * camera.zoom;
+					if(manager.getFrontObjects().get(loopCnt).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
+						if (Gdx.input.isButtonPressed(Buttons.LEFT)){
+							
+							objectPositionX = manager.getFrontObjects().get(loopCnt).getX();
+	                        objectPositionY = manager.getFrontObjects().get(loopCnt).getY();
+							objectClickFlg = loopCnt;
+							break;
+						}
+						if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
+							manager.getFrontObjects().remove(loopCnt);
+							break;
+						}
 					}
 				}
 			}
-		}
-
-		else{
-			if (Gdx.input.isButtonPressed(0)){
-				oldmousePositionX = mousePositionX;
-				oldmousePositionY = mousePositionY;
-				mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x * camera.zoom;
-				mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y * camera.zoom;
-				if(manager.getFrontObjects().get(objectClickFlg).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
-					objectPositionX = mousePositionX - manager.getFrontObjects().get(objectClickFlg).getSp().getWidth() / 2;
-					objectPositionY = mousePositionY + manager.getFrontObjects().get(objectClickFlg).getSp().getHeight() / 2;
-					manager.getFrontObjects().get(objectClickFlg).setPosition(objectPositionX, -objectPositionY);
-
-				}
-				else
-					objectClickFlg = -1;
-			}
-		}
 	
+			else{
+				if (Gdx.input.isButtonPressed(0)){
+					oldmousePositionX = mousePositionX;
+					oldmousePositionY = mousePositionY;
+					mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x * camera.zoom;
+					mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y * camera.zoom;
+					if(manager.getFrontObjects().get(objectClickFlg).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
+						objectPositionX += mousePositionX - oldmousePositionX ;
+						objectPositionY += mousePositionY - oldmousePositionY ;
+						manager.getFrontObjects().get(objectClickFlg).setPosition(objectPositionX, -objectPositionY);
+	
+					}
+					else
+						objectClickFlg = -1;					
+				}
+				
+				
+			}
+		}*/	
+        if(!cameraMove)
+        {
+                if(objectClickFlg == -1){
+                        for(loopCnt = 0 ; loopCnt < manager.getFrontObjects().size() ; loopCnt ++){
+                                mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x * camera.zoom;
+                                mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y * camera.zoom;
+                                if(manager.getFrontObjects().get(loopCnt).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
+                                        if (Gdx.input.isButtonPressed(Buttons.LEFT)){
+                                                objectPositionX = manager.getFrontObjects().get(loopCnt).getSp().getX();
+                                                objectPositionY = -manager.getFrontObjects().get(loopCnt).getSp().getY();
+                                                objectClickFlg = loopCnt;
+                                                break;
+                                        }
+                                        if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
+                                                manager.getFrontObjects().remove(loopCnt);
+                                                break;
+                                        }
+                                }
+                        }
+                }
+
+                else{
+                        if (Gdx.input.isButtonPressed(0)){
+                                oldmousePositionX = mousePositionX;
+                                oldmousePositionY = mousePositionY;
+                                mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x * camera.zoom;
+                                mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y * camera.zoom;
+                                if(manager.getFrontObjects().get(objectClickFlg).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
+                                        objectPositionX += mousePositionX - oldmousePositionX;
+                                        objectPositionY += mousePositionY - oldmousePositionY;
+                                        manager.getFrontObjects().get(objectClickFlg).setPosition(objectPositionX, -objectPositionY);
+                                                      
+                                 }
+                        }
+                        else
+                                objectClickFlg = -1;
+                }
+        }
 	}
 
 	/**
@@ -341,7 +346,7 @@ public class MapEditorScreen implements Screen {
 			}
 			write.writeData(fileChooser.getSelectedFile().toString() + ".json");
 		}
-		Gdx.app.log("tag","エクスポート:" + exportButton);
+		
 	}
 	
 	/*private boolean checkBoundingSprite(Sprite target,Sprite other)
