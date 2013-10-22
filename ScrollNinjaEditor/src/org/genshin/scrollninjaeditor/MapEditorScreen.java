@@ -71,7 +71,7 @@ public class MapEditorScreen implements Screen {
 	private int 				objectClickFlg = -1;					// オブジェクト用フラグ
 	private Boolean				cameraMove = false;
 	private boolean 			menuClickFlg = false;					// メニュー用フラグ
-	private Import				importB;
+	
 	
 	/**
 	 * Constructor
@@ -214,48 +214,6 @@ public class MapEditorScreen implements Screen {
 		cameraMove = camera.update(2.0f);		 
 		 
 		//===オブジェクトクリック
-		/*if(!cameraMove)
-		{
-			if(objectClickFlg == -1){
-					
-				for(loopCnt = 0 ; loopCnt < manager.getFrontObjects().size() ; loopCnt ++){
-					mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x * camera.zoom;
-					mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y * camera.zoom;
-					if(manager.getFrontObjects().get(loopCnt).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
-						if (Gdx.input.isButtonPressed(Buttons.LEFT)){
-							
-							objectPositionX = manager.getFrontObjects().get(loopCnt).getX();
-	                        objectPositionY = manager.getFrontObjects().get(loopCnt).getY();
-							objectClickFlg = loopCnt;
-							break;
-						}
-						if (Gdx.input.isButtonPressed(Buttons.RIGHT)){
-							manager.getFrontObjects().remove(loopCnt);
-							break;
-						}
-					}
-				}
-			}
-	
-			else{
-				if (Gdx.input.isButtonPressed(0)){
-					oldmousePositionX = mousePositionX;
-					oldmousePositionY = mousePositionY;
-					mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x * camera.zoom;
-					mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y * camera.zoom;
-					if(manager.getFrontObjects().get(objectClickFlg).getSp().getBoundingRectangle().contains(mousePositionX,-mousePositionY)){
-						objectPositionX += mousePositionX - oldmousePositionX ;
-						objectPositionY += mousePositionY - oldmousePositionY ;
-						manager.getFrontObjects().get(objectClickFlg).setPosition(objectPositionX, -objectPositionY);
-	
-					}
-					else
-						objectClickFlg = -1;					
-				}
-				
-				
-			}
-		}*/	
         if(!cameraMove)
         {
                 if(objectClickFlg == -1){
