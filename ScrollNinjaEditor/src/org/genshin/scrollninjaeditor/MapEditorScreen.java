@@ -1,22 +1,14 @@
 package org.genshin.scrollninjaeditor;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+
 import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -28,12 +20,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.sun.corba.se.impl.ior.OldPOAObjectKeyTemplate;
 
 public class MapEditorScreen implements Screen {
 	ScrollNinjaEditor editor;
@@ -47,32 +36,25 @@ public class MapEditorScreen implements Screen {
 	private Stage 				stage;									// ステージ用
 	private TextureRegion 		region;									// 画像の注視位置設定用
 	private Table 				table;									// テーブル用
-	private Table 				scroTable;								// スクロール用テーブル
 	private ImageButton 		importButton;							// インポートボタン
 	private ImageButton 		exportButton;							// エクスポートボタン
 	private ImageButton 		imageButton;							// イメージボタン
-	private SpriteDrawable 		sd = new SpriteDrawable();				// ここにスプライトを入れてテーブルに入れる
-	private Skin 				skin;									// スキン
-	private ScrollPane 			scro;									// スクロールペイン
+	private SpriteDrawable 		spriteDrawble = new SpriteDrawable();	// ここにスプライトを入れてテーブルに入れる
 	private float 				mousePositionX = 0, 					// マウスポジションX
 								mousePositionY = 0,						// マウスポジションY
 								oldmousePositionX = 0,					// 前回マウスX座標
 								oldmousePositionY = 0,					// 前回マウスY座標
 								objectPositionX = 0,	 				// オブジェクトX座標
 								objectPositionY = 0,					// オブジェクトY座標
-								spritePositionX = 0,	 				// スプライトポジションX
-								spritePositionY = 0,					// スプライトポジションY
-								menuPositionX = 0,						// メニュー座標X
-								menuPositionY = 0,						// メニュー座標Y
-								w = 0,
+								screenWudth = 0,
 								h = 0;
-	private int 				i = 0;									// ループカウンタ
 	private MapObjectManager 	manager= new MapObjectManager();		// オブジェクトセレクト用
 	private ArrayList<Texture> 	array_tex = new ArrayList<Texture>();	// テクスチャ用配列
 	private int 				loopCnt = 0;							// ループカウンタ用
 	private int 				objectClickFlg = -1;					// オブジェクト用フラグ
-	private Boolean				cameraMove = false;
+	private boolean				cameraMove = false;
 	private boolean 			menuClickFlg = false;					// メニュー用フラグ
+	private MapEditorStage 		mapEditorStage;
 
 	/**
 	 * Constructor
@@ -82,9 +64,9 @@ public class MapEditorScreen implements Screen {
 	public MapEditorScreen(ScrollNinjaEditor editor, String fileName) {
 		this.editor = editor;
 		this.fileName = fileName;
-		w = Gdx.graphics.getWidth();
+		screenWudth = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
-		camera = new OrthographicCamera(w , h);
+		camera = new OrthographicCamera(screenWudth , h);
 		batch = new SpriteBatch();
 
 		//===テクスチャ読み込み
@@ -109,114 +91,69 @@ public class MapEditorScreen implements Screen {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);				// インプットが可能なステージを選択(一つのみ以降は上書き)
 		table = new Table();
+		table.setFillParent(true);
+		table.debug();
 		manager = MapObjectManager.create();			// 生成
 		
-		
-		
-		// - 複数化 - 
-		for (loopCnt = 0 ; loopCnt < manager.getMapObjectList().size() ; loopCnt ++){
-			if(loopCnt % 3 == 0)
-				table.row();
-			manager.getMapObjectList().get(loopCnt).getSp().setSize(64,64);
-			sd = new SpriteDrawable();												// 上書きが必要
-			sd.setSprite(manager.getMapObjectList().get(loopCnt).getSp());		// 上書きではないので注意
-			final ObjectButton objB = new ObjectButton(sd, manager.getMapObjectList().get(loopCnt));
-			
-			objB.addListener(new ClickListener(){
-				@Override
-				public void clicked(InputEvent event ,float x,float y){
-					MapObject mapobj = new MapObject(objB.mapObject);										 // クリックされたオブジェクト情報を読み込み
-					manager.setFrontObject(mapobj);															 // オブジェクトをセット
-					manager.getFrontObjects().get(loopCnt).setPosition(camera.position.x,camera.position.y); // カメラに映るように描画
-				}
-			});
-		
-			table.add(objB);
-		}
-
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));	// スキンファイルを読み込み
-		scro = new ScrollPane(table,skin);							// スクロールに情報を読み込み
-		scro.setFlickScroll(false);									// フリックの有無
-		scro.setFadeScrollBars(true);								// ここでfalseなら常に。trueなら使用するとき。
-		scro.setScrollingDisabled(false, false);					// 一番目は縦、二番目は横。これによりスクロールをするかしないか
-		scroTable = new Table();
-		scroTable.setLayoutEnabled(false);
-		scro.setWidth(200);
-		scro.setHeight(h);
-		scroTable.setX(w - scro.getWidth());
-		scroTable.add(scro);
+		//====スクロールペイン
+		mapEditorStage = new MapEditorStage();
+		mapEditorStage.createScrollPane(stage, manager, spriteDrawble, camera);
 		
 		// - インポート、エクスポートボタン - 
 		for(loopCnt = 1 ; loopCnt < 3 ; loopCnt ++){	// array_tex.get(0)は最背面で使用しているためカウンタは1から
-			table = new Table();
-			table.setLayoutEnabled(false);				// この設定で任意の設定が可能
 			region = new TextureRegion(array_tex.get(loopCnt % 3),0,0,array_tex.get(loopCnt % 3).getWidth(),array_tex.get(loopCnt % 3).getHeight());
 			sprite = new Sprite(region);
-			sd = new SpriteDrawable();
-			sd.setSprite(sprite);
+			spriteDrawble = new SpriteDrawable();
+			spriteDrawble.setSprite(sprite);
 			if(loopCnt == 1){
-				importButton = new ImageButton(sd);
+				importButton = new ImageButton(spriteDrawble);
 				importButton.addListener(new ClickListener(){
 					@Override
 					public void clicked(InputEvent event ,float x,float y){
 						fileImport();
 					}
 				});
-				importButton.setSize(32, 32);
-				table.setX((loopCnt - 1) * importButton.getWidth());					// X座標
-				table.setY(h - importButton.getHeight());	// Y座標
-				table.add(importButton);
-				stage.addActor(table);
+				table.add(importButton).top().left().size(32,32);
+				mapEditorStage.addButton(stage, table);
 			}
 			else if(loopCnt == 2){
-				exportButton = new ImageButton(sd);
+				exportButton = new ImageButton(spriteDrawble);
 				exportButton.addListener(new ClickListener(){
 					@Override
 					public void clicked(InputEvent event ,float x,float y){
 						fileExport();
 					}
 				});
-				exportButton.setSize(32, 32);
-				table.setX((loopCnt - 1) * exportButton.getWidth());					// X座標
-				table.setY(h - exportButton.getHeight());	// Y座標
-				table.add(exportButton);
-				stage.addActor(table);
+				table.add(exportButton).top().left().size(32,32);
+				mapEditorStage.addButton(stage, table);
 			}
 		}
 		
 		// - ボタン  -
-		table = new Table();
-		table.setLayoutEnabled(false);
 		region = new TextureRegion(array_tex.get(3), 0, 0, array_tex.get(3).getWidth(), array_tex.get(3).getHeight());
 		sprite = new Sprite(region);
-		sd = new SpriteDrawable();
-		sd.setSprite(sprite);
-		imageButton = new ImageButton(sd);
+		spriteDrawble = new SpriteDrawable();
+		spriteDrawble.setSprite(sprite);
+		imageButton = new ImageButton(spriteDrawble);
 		imageButton.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event,float x,float y){
 				if(!menuClickFlg)
 				{
-					stage.addActor(scroTable);
-					menuPositionX = scroTable.getX();
-					table.setX(w - imageButton.getWidth() - scro.getWidth());
-					Gdx.app.log("tag", "" + stage.getRoot().getChildren());
+					mapEditorStage.addScrollPane(stage);
+					table.getChildren().get(2).setX(screenWudth - imageButton.getWidth() - mapEditorStage.getWidth());
 					menuClickFlg = true;
 				}
 				else
 				{
-					stage.getRoot().removeActor(scroTable);
-					table.setX(w - imageButton.getWidth());
-					Gdx.app.log("tag", "" + x);
+					mapEditorStage.remove(stage);
+					table.getChildren().get(2).setX(screenWudth - imageButton.getWidth());
 					menuClickFlg = false;
 				}
 			}
 		});
-		imageButton.setHeight(h);
-		table.setX(w - imageButton.getWidth());
-		table.setY(h - imageButton.getHeight());
-		table.add(imageButton);
-		stage.addActor(table);
+		table.add(imageButton).expand().right();
+		mapEditorStage.addButton(stage, table);
 	}
 
 	/**
@@ -305,6 +242,7 @@ public class MapEditorScreen implements Screen {
 		batch.end();
 		stage.act(Gdx.graphics.getDeltaTime());		// ステージ描画
 		stage.draw();
+		Table.drawDebug(stage);
 	}
 
 	@Override
