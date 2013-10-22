@@ -1,17 +1,22 @@
 package org.genshin.scrollninjaeditor;
 
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -107,6 +112,7 @@ public class MapEditorScreen implements Screen {
 		manager = MapObjectManager.create();			// 生成
 		
 		
+		
 		// - 複数化 - 
 		for (loopCnt = 0 ; loopCnt < manager.getMapObjectList().size() ; loopCnt ++){
 			if(loopCnt % 3 == 0)
@@ -124,6 +130,7 @@ public class MapEditorScreen implements Screen {
 					manager.getFrontObjects().get(loopCnt).setPosition(camera.position.x,camera.position.y); // カメラに映るように描画
 				}
 			});
+		
 			table.add(objB);
 		}
 
@@ -230,15 +237,14 @@ public class MapEditorScreen implements Screen {
 			{
 				cameraMove = true;
 
-				camera.position.x -= (mousePositionX - oldmousePositionX) / 2;
-				camera.position.y += (mousePositionY - oldmousePositionY) / 2;
+				camera.position.x -= (mousePositionX - oldmousePositionX)/2;
+				camera.position.y += (mousePositionY - oldmousePositionY)/2;
 			}	
 		}
 		else
 		{
 			cameraMove = false;
 		}
-
 		if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT ) || (Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))))
 		{
 			if(Gdx.input.isKeyPressed(Keys.NUM_0))
@@ -246,9 +252,8 @@ public class MapEditorScreen implements Screen {
 				camera.zoom = 2.0f;
 			}
 		}
-		camera.update();
-		
-		
+		camera.update();	
+
 		//===オブジェクトクリック
 		if(objectClickFlg == -1){
 			for(loopCnt = 0 ; loopCnt < manager.getFrontObjects().size() ; loopCnt ++){
@@ -277,6 +282,7 @@ public class MapEditorScreen implements Screen {
 					objectPositionX = mousePositionX - manager.getFrontObjects().get(objectClickFlg).getSp().getWidth() / 2;
 					objectPositionY = mousePositionY + manager.getFrontObjects().get(objectClickFlg).getSp().getHeight() / 2;
 					manager.getFrontObjects().get(objectClickFlg).setPosition(objectPositionX, -objectPositionY);
+
 				}
 				else
 					objectClickFlg = -1;
@@ -399,4 +405,16 @@ public class MapEditorScreen implements Screen {
 		}
 		Gdx.app.log("tag","エクスポート:" + exportButton);
 	}
+	
+	/*private boolean checkBoundingSprite(Sprite target,Sprite other)
+	{
+		if(target.getBoundingRectangle().contains(other.getBoundingRectangle()))
+		{
+			return true;
+		}
+		else
+			return false;
+	}*/
+
+
 }
