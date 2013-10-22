@@ -9,7 +9,6 @@ import org.genshin.scrollninjaeditor.factory.TextureFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,9 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class SelectScreen implements Screen {
-	ScrollNinjaEditor editor;
-	String fileName;
-	private OrthographicCamera camera;
+	private ScrollNinjaEditor editor;
+	private String fileName;
 	private SpriteBatch batch;
 	private Stage stage;
 	private Image image;
@@ -37,8 +35,8 @@ public class SelectScreen implements Screen {
 	private TextField fileText;
 
 	private Texture texture;
-	private Sprite sprite;
 	private TextureRegion region;
+	private Sprite sprite;
 	private SpriteDrawable sd;
 	
 	private float ratioX;
@@ -53,8 +51,7 @@ public class SelectScreen implements Screen {
 		
 		float  w = Gdx.graphics.getWidth();
 		float  h = Gdx.graphics.getHeight();
-		
-		camera = new OrthographicCamera(1,h/w);
+
 		batch = new SpriteBatch();
 		
 		//stage作成
@@ -107,31 +104,24 @@ public class SelectScreen implements Screen {
 				JFileChooser FileChooser = new JFileChooser(current.getAbsolutePath());
 				
 				//ファイル選択フィルター宣言
-				ExtendsFileFilter filter[] = {
-					new ExtendsFileFilter(".png","PNG  ファイル(*.png)"),
-				};
+				ExtendsFileFilter filter = new ExtendsFileFilter(".png","PNG  ファイル(*.png)");
 				
 				//フィルター設定
-				for(int i = 0; i < filter.length ; i ++)
-					FileChooser.addChoosableFileFilter(filter[i]);
+				FileChooser.addChoosableFileFilter(filter);
 				
 				int res = FileChooser.showOpenDialog(FileChooser);
 				
 				if(res == JFileChooser.APPROVE_OPTION) {
 					File file = FileChooser.getSelectedFile();
-					//開いたファイルの種類のチェック
-					for(int i = 0 ;i < filter.length ; i++)	{	
-						//開いたファイルが正しい場合
-						if(filter[i].accept(file)) {
-							changeTex(file.getName());	//画像切替
-							fileText.setText(file.getName());
-							fileName = "data/stage/" + file.getName();	//パス保存
-							preTable.setSize(ratioX, ratioY);
-							preTable.translate(Gdx.graphics.getWidth() / 2 - preTable.getWidth() / 2, 0.0f);
-							loadflag = true;
-						
-							break;
-						}
+
+					//開いたファイルが正しい場合
+					if(filter.accept(file)) {
+						changeTex(file.getName());	//画像切替
+						fileText.setText(file.getName());
+						fileName = "data/stage/" + file.getName();	//パス保存
+						preTable.setSize(ratioX, ratioY);
+						preTable.translate(Gdx.graphics.getWidth() / 2 - preTable.getWidth() / 2, 0.0f);
+						loadflag = true;
 					}
 				}
 			}
@@ -165,20 +155,11 @@ public class SelectScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void draw(float delta) {
-
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		if(sprite != null)
-			sprite.draw(batch);
-		batch.end();
-
-		Table.drawDebug(stage);			//テーブル枠組み描画
 	}
 	
 	@Override
@@ -214,28 +195,41 @@ public class SelectScreen implements Screen {
 		stage.dispose();
 	}
 	
+	/**
+	 * 選択した画像をセットする
+	 * @param str		ファイル名
+	 */
 	private void setdata(String str) {
 		if(str != null)	{
-			this.texture = TextureFactory.getInstance().get("data/stage/" + str);
-			this.region = new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight());
+			texture = TextureFactory.getInstance().get("data/stage/" + str);
+			region = new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight());
 			setRatio(texture.getWidth(), texture.getHeight());
-			this.sprite = new Sprite(region);
-			this.sd = new SpriteDrawable(sprite);
+			sprite = new Sprite(region);
+			sd = new SpriteDrawable(sprite);
 		}
 		else {
-			this.texture = null;
-			this.region = null;
-			this.sprite = null;
-			this.sd = null;
+			texture = null;
+			region = null;
+			sprite = null;
+			sd = null;
 		}
 	}
 
+	/**
+	 * 選択した画像に変更する
+	 * @param str	ファイル名
+	 */
 	private void changeTex(String str) {
 		setdata(str);
 		
 		image.setDrawable(sd);
 	}
 	
+	/**
+	 * 選択した画像を表示する際の縦横比を調整
+	 * @param width
+	 * @param height
+	 */
 	private void setRatio(int width,int height)	{		
 		ratioX = width / height;
 		ratioX = ratioY * ratioX;
