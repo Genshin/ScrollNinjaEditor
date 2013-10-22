@@ -1,13 +1,22 @@
 package org.genshin.scrollninjaeditor;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -24,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.sun.corba.se.impl.ior.OldPOAObjectKeyTemplate;
 
 public class MapEditorScreen implements Screen {
 	ScrollNinjaEditor editor;
@@ -61,6 +71,7 @@ public class MapEditorScreen implements Screen {
 	private ArrayList<Texture> 	array_tex = new ArrayList<Texture>();	// テクスチャ用配列
 	private int 				loopCnt = 0;							// ループカウンタ用
 	private int 				objectClickFlg = -1;					// オブジェクト用フラグ
+	private Boolean				cameraMove = false;
 	private boolean 			menuClickFlg = false;					// メニュー用フラグ
 
 	/**
@@ -93,12 +104,14 @@ public class MapEditorScreen implements Screen {
 		backSprite.setSize(backSprite.getRegionWidth(),backSprite.getRegionHeight());		// サイズ設定
 		backSprite.setOrigin(backSprite.getWidth()/2, backSprite.getHeight()/2);			// 原点設定(回転時に中心で回るように)
 		backSprite.setPosition(-backSprite.getWidth()/2, -backSprite.getHeight()/2);		// 表示位置設定
-
+		
 		//====ボタン
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);				// インプットが可能なステージを選択(一つのみ以降は上書き)
 		table = new Table();
 		manager = MapObjectManager.create();			// 生成
+		
+		
 		
 		// - 複数化 - 
 		for (loopCnt = 0 ; loopCnt < manager.getMapObjectList().size() ; loopCnt ++){
@@ -117,6 +130,7 @@ public class MapEditorScreen implements Screen {
 					manager.getFrontObjects().get(loopCnt).setPosition(camera.position.x,camera.position.y); // カメラに映るように描画
 				}
 			});
+		
 			table.add(objB);
 		}
 
@@ -211,27 +225,26 @@ public class MapEditorScreen implements Screen {
 	 */
 	public void update(float delta) {
 		//===カメラ移動
-		if (Gdx.input.isKeyPressed(Keys.LEFT)){
-			camera.position.x -= 50;
-			if (camera.position.x < backSprite.getX() + Gdx.graphics.getWidth()/2)
-				camera.position.x = backSprite.getX() + Gdx.graphics.getWidth()/2;
+		if(Gdx.input.isKeyPressed(Keys.SPACE))
+		{
+			oldmousePositionX = mousePositionX;
+			oldmousePositionY = mousePositionY;
+			
+			mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x;
+			mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() /2) - camera.position.y;
+			
+			if(Gdx.input.isButtonPressed(Buttons.LEFT))
+			{
+				cameraMove = true;
+
+				camera.position.x -= (mousePositionX - oldmousePositionX)/2;
+				camera.position.y += (mousePositionY - oldmousePositionY)/2;
+			}	
 		}
-		if (Gdx.input.isKeyPressed(Keys.RIGHT)){
-			camera.position.x += 50;
-			if (camera.position.x > backSprite.getOriginX() - Gdx.graphics.getWidth()/2)
-				camera.position.x = backSprite.getOriginX() - Gdx.graphics.getWidth()/2;
+		else
+		{
+			cameraMove = false;
 		}
-		if (Gdx.input.isKeyPressed(Keys.UP)){
-			camera.position.y += 30;
-			if (camera.position.y > backSprite.getOriginY() - Gdx.graphics.getHeight()/2)
-				camera.position.y = backSprite.getOriginY() - Gdx.graphics.getHeight()/2;
-		}
-		if (Gdx.input.isKeyPressed(Keys.DOWN)){
-			camera.position.y -= 30;
-			if (camera.position.y < backSprite.getY() + Gdx.graphics.getHeight()/2)
-				camera.position.y = backSprite.getY() + Gdx.graphics.getHeight()/2;
-		}
-		
 		if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT ) || (Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))))
 		{
 			if(Gdx.input.isKeyPressed(Keys.NUM_0))
@@ -239,7 +252,7 @@ public class MapEditorScreen implements Screen {
 				camera.zoom = 2.0f;
 			}
 		}
-		camera.update();
+		camera.update();	
 
 		//===オブジェクトクリック
 		if(objectClickFlg == -1){
@@ -269,11 +282,13 @@ public class MapEditorScreen implements Screen {
 					objectPositionX = mousePositionX - manager.getFrontObjects().get(objectClickFlg).getSp().getWidth() / 2;
 					objectPositionY = mousePositionY + manager.getFrontObjects().get(objectClickFlg).getSp().getHeight() / 2;
 					manager.getFrontObjects().get(objectClickFlg).setPosition(objectPositionX, -objectPositionY);
+
 				}
+				else
+					objectClickFlg = -1;
 			}
-			else
-				objectClickFlg = -1;
 		}
+	
 	}
 
 	/**
@@ -390,4 +405,16 @@ public class MapEditorScreen implements Screen {
 		}
 		Gdx.app.log("tag","エクスポート:" + exportButton);
 	}
+	
+	/*private boolean checkBoundingSprite(Sprite target,Sprite other)
+	{
+		if(target.getBoundingRectangle().contains(other.getBoundingRectangle()))
+		{
+			return true;
+		}
+		else
+			return false;
+	}*/
+
+
 }
