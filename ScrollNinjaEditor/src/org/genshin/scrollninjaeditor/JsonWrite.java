@@ -13,13 +13,21 @@ public class JsonWrite
 {
 	private ObjectMapper mapper;
 	private ArrayNode rootNode;
+	//private ArrayNode arrayNode;
 	private ObjectNode objectNode;
 	private ObjectNode fieldNode;
 	
 	public JsonWrite() {
 		mapper = new ObjectMapper();
 		rootNode = mapper.createArrayNode();
+		
 	}
+	/**
+	 * @param object  ObjectName
+	 */
+	/*public void putObject(String object) {
+		objectNode = objectNode.putObject(object);
+	}*/
 	
 	/**
 	 * @param object  ObjectName
@@ -59,10 +67,36 @@ public class JsonWrite
 	public void putObjectField(String field,String value) {
 		fieldNode.put(field,value);
 	}
+	/**
+	 * @param object  ObjectName
+	 * @param value   ObjectValue
+	 */
+	/*public void putObjectField(String object,int value) {
+		fieldNode.put(object,value);
+	}*/
+	
+	/**
+	 * @param object  ObjectName
+	 * @param value   ObjectValue
+	 */
+	/*public void putObjectField(String object,float value) {
+		fieldNode.put(object,value);
+	}*/
 	
 	public void addObject()	{
 		objectNode = rootNode.addObject();
+		
 	}
+	
+	/*public void addObject()	{
+		objectNode = arrayNode.addObject();
+		
+	}
+	public void addArray() {
+		arrayNode = rootNode.addArray();
+	}*/
+	
+	
 	
 	/**
 	 * @param name filename
