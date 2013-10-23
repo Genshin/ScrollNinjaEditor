@@ -33,7 +33,7 @@ public class MapEditorScreen implements Screen {
 	private Texture				texture;								// 画像用
 	private Sprite 				backSprite;								// 背景用
 	private Sprite 				sprite;									// スプライト用
-	private Stage 				stage;									// ステージ用
+	//private Stage 				stage;									// ステージ用
 	private TextureRegion 		region;									// 画像の注視位置設定用
 	private Table 				table;									// テーブル用
 	private ImageButton 		imageButton;							// イメージボタン
@@ -86,16 +86,18 @@ public class MapEditorScreen implements Screen {
 		backSprite.setPosition(-backSprite.getWidth()/2, -backSprite.getHeight()/2);		// 表示位置設定
 		
 		//====ボタン
-		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);				// インプットが可能なステージを選択(一つのみ以降は上書き)
+		//stage = new Stage();
+		//Gdx.input.setInputProcessor(stage);				// インプットが可能なステージを選択(一つのみ以降は上書き)
+		manager = MapObjectManager.create();			// 生成
+		
+		mapEditorStage = new MapEditorStage();
+		Gdx.input.setInputProcessor(mapEditorStage);
 		table = new Table();
 		table.setFillParent(true);
 		table.debug();
-		manager = MapObjectManager.create();			// 生成
 		
 		//====スクロールペイン
-		mapEditorStage = new MapEditorStage();
-		mapEditorStage.createScrollPane(stage, manager, spriteDrawble, camera);
+		mapEditorStage.createScrollPane( manager, camera);
 		
 		// - インポート、エクスポートボタン - 
 		for(loopCnt = 1 ; loopCnt < 3 ; loopCnt ++){	// array_tex.get(0)は最背面で使用しているためカウンタは1から
@@ -106,12 +108,12 @@ public class MapEditorScreen implements Screen {
 			if(loopCnt == 1){
 				Import importButton = new Import(spriteDrawble);
 				table.add(importButton).top().left().size(32,32);
-				mapEditorStage.addButton(stage, table);
+				mapEditorStage.addButton(table);
 			}
 			else if(loopCnt == 2){
 				Export exportButton = new Export(spriteDrawble);
 				table.add(exportButton).top().left().size(32,32);
-				mapEditorStage.addButton(stage, table);
+				mapEditorStage.addButton(table);
 			}
 		}
 		
@@ -126,20 +128,21 @@ public class MapEditorScreen implements Screen {
 			public void clicked(InputEvent event,float x,float y){
 				if(!menuClickFlg)
 				{
-					mapEditorStage.addScrollPane(stage);
+					mapEditorStage.addScrollPane();
 					table.getChildren().get(2).setX(screenWidth - imageButton.getWidth() - mapEditorStage.getWidth());
 					menuClickFlg = true;
 				}
 				else
 				{
-					mapEditorStage.remove(stage);
+					mapEditorStage.remove();
 					table.getChildren().get(2).setX(screenWidth - imageButton.getWidth());
 					menuClickFlg = false;
 				}
 			}
 		});
-		table.add(imageButton).expand().right();
-		mapEditorStage.addButton(stage, table);
+		table.add(imageButton).expand();
+		mapEditorStage.addButton(table);
+		
 	}
 
 	/**
@@ -148,8 +151,8 @@ public class MapEditorScreen implements Screen {
 	 */
 	public void update(float delta) {
 		//===カメラ処理
-		cameraMove = camera.update(2.0f);		 
-		 
+		cameraMove = camera.update(2.0f);
+		
 		//===オブジェクトクリック
 		/*if(!cameraMove)
 		{
@@ -245,9 +248,11 @@ public class MapEditorScreen implements Screen {
 		backSprite.draw(batch);						// 背景描画
 		manager.drawFrontObjects(batch);			// オブジェボタン描画
 		batch.end();
-		stage.act(Gdx.graphics.getDeltaTime());		// ステージ描画
-		stage.draw();
-		Table.drawDebug(stage);
+		//stage.act(Gdx.graphics.getDeltaTime());		// ステージ描画
+	//	stage.draw();
+		mapEditorStage.act(Gdx.graphics.getDeltaTime());
+		mapEditorStage.draw();
+		Table.drawDebug(mapEditorStage);
 	}
 
 	@Override

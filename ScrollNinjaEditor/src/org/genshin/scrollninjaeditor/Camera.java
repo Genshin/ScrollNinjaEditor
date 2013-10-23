@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 public class Camera extends OrthographicCamera {
 	
 	private boolean moveFlag          = false;
+	private boolean useFlg            = false;
 	private float   oldmousePositionX = 0.0f;
 	private float   oldmousePositionY = 0.0f;
 	private float   mousePositionX = 0.0f;
@@ -44,8 +45,17 @@ public class Camera extends OrthographicCamera {
 	}
 	
 	public void zoom(float zoomSize) {
-		if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && Gdx.input.isKeyPressed(Keys.NUM_0)) {
-			this.zoom = zoomSize;
+		if(!this.useFlg){
+			if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && Gdx.input.isKeyPressed(Keys.NUM_0)) {
+				this.zoom = zoomSize;
+				this.useFlg = true;
+			}
+		}
+		else{
+			if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && Gdx.input.isKeyPressed(Keys.NUM_0)) {
+				this.zoom = 1;
+				this.useFlg = false;
+			}
 		}
 	}
 	

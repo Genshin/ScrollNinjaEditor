@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-public class MapEditorStage extends Stage{
+public class CopyOfMapEditorStage extends Stage{
 	private ScrollPaneStage scrolloPaneStage;
 	
-	public MapEditorStage(){
+	public CopyOfMapEditorStage(){
+		super();
 	}
 	
 	public void createScrollPane(final MapObjectManager manager,final OrthographicCamera camera){
@@ -19,6 +20,7 @@ public class MapEditorStage extends Stage{
 	 * AddScrollPane process
 	 */
 	public void addScrollPane(){
+		//scrolloPaneStage.add();
 		addActor(scrolloPaneStage.getScrollTable());
 	}
 	
@@ -26,6 +28,7 @@ public class MapEditorStage extends Stage{
 	 * AddButton process
 	 */
 	public void addButton(Table table){
+		//stage.addActor(table);
 		addActor(table);
 	}
 	
@@ -33,6 +36,7 @@ public class MapEditorStage extends Stage{
 	 * Remove process
 	 */
 	public void remove(){
+		//scrolloPaneStage.remove();
 		getRoot().removeActor(scrolloPaneStage.getScrollTable());
 	}
 

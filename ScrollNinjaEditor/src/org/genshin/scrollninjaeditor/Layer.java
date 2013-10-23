@@ -74,7 +74,7 @@ public class Layer {
 			MapObject tmp = mapObjects.get(index + 1);
 			mapObjects.set(index + 1, mapObjects.get(index));
 			mapObjects.set(index, tmp);
-		}	
+		}
 	}
 	
 	public void previous(int index) {
