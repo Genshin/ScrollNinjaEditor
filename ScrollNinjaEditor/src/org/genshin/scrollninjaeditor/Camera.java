@@ -7,14 +7,23 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class Camera extends OrthographicCamera {
 	
+	private static Camera instance = new Camera();
 	private boolean moveFlag          = false;
 	private float   oldmousePositionX = 0.0f;
 	private float   oldmousePositionY = 0.0f;
 	private float   mousePositionX = 0.0f;
 	private float   mousePositionY = 0.0f;
 	
+	public Camera() {
+		
+	}
+	
 	public Camera(float width , float height) {
 		super(width , height);
+	}
+	
+	public static Camera getInstance() {
+		return instance;
 	}
 	
 	public void move() {
