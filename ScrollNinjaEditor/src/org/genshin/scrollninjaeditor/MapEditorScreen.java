@@ -86,12 +86,9 @@ public class MapEditorScreen implements Screen {
 		backSprite.setPosition(-backSprite.getWidth()/2, -backSprite.getHeight()/2);		// 表示位置設定
 		
 		//====ボタン
-		//stage = new Stage();
-		//Gdx.input.setInputProcessor(stage);				// インプットが可能なステージを選択(一つのみ以降は上書き)
-		manager = MapObjectManager.create();			// 生成
-		
 		mapEditorStage = new MapEditorStage();
 		Gdx.input.setInputProcessor(mapEditorStage);
+		manager = MapObjectManager.create();			// 生成
 		table = new Table();
 		table.setFillParent(true);
 		table.debug();
@@ -117,7 +114,7 @@ public class MapEditorScreen implements Screen {
 			}
 		}
 		
-		// - ボタン  -
+		// - メニューボタン  -
 		region = new TextureRegion(array_tex.get(3), 0, 0, array_tex.get(3).getWidth(), array_tex.get(3).getHeight());
 		sprite = new Sprite(region);
 		spriteDrawble = new SpriteDrawable();
@@ -129,7 +126,7 @@ public class MapEditorScreen implements Screen {
 				if(!menuClickFlg)
 				{
 					mapEditorStage.addScrollPane();
-					table.getChildren().get(2).setX(screenWidth - imageButton.getWidth() - mapEditorStage.getWidth());
+					table.getChildren().get(2).setX(screenWidth - imageButton.getWidth() - mapEditorStage.getPaneWidth());
 					menuClickFlg = true;
 				}
 				else
@@ -140,7 +137,7 @@ public class MapEditorScreen implements Screen {
 				}
 			}
 		});
-		table.add(imageButton).expand();
+		table.add(imageButton).expand().right();
 		mapEditorStage.addButton(table);
 		
 	}

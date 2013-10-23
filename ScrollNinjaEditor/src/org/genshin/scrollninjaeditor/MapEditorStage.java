@@ -8,6 +8,7 @@ public class MapEditorStage extends Stage{
 	private ScrollPaneStage scrolloPaneStage;
 	
 	public MapEditorStage(){
+		super();
 	}
 	
 	public void createScrollPane(final MapObjectManager manager,final OrthographicCamera camera){
@@ -40,7 +41,7 @@ public class MapEditorStage extends Stage{
 	 * getScrollPaneWidth
 	 * @return scrollPane.getWidth()
 	 */
-	public float getWidth(){
+	public float getPaneWidth(){
 		return scrolloPaneStage.getScrollPaneWidth();
 	}
 }
