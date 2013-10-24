@@ -1,18 +1,52 @@
 package org.genshin.scrollninjaeditor;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class MapEditorStage extends Stage{
 	private ScrollPaneStage scrolloPaneStage;
+	private Table			table;
+	private Import			importButton;
+	private Export			exportButton;
+	private MenuButton		menuButton;
 	
-	public MapEditorStage(){
+	public MapEditorStage(String fileName, Load load){
 		super();
+		scrolloPaneStage = new ScrollPaneStage();
+		table = new Table();
+		table.setFillParent(true);
+		table.debug();
+		
+		importButton = new Import(load.getSpriteDrawable(load.IMPORT));
+		
+		exportButton = new Export(load.getSpriteDrawable(load.EXPORT));
+		
+		menuButton = new MenuButton(load.getSpriteDrawable(load.MENU));
 	}
 	
-	public void createScrollPane(final MapObjectManager manager,final OrthographicCamera camera){
-		scrolloPaneStage = new ScrollPaneStage();
+	public void create(float screenWidth ,float screenHeight,final MapObjectManager manager,Camera camera){
+		createScrollPane(manager,camera);
+		menuButton.create(table, screenWidth, this);
+		addButton(screenWidth, screenHeight);
+		
+	}
+	
+	public void addButton(final float screenWidth ,final float screenHeight){
+		
+		// インポート
+		table.add(importButton).top().left().size(32,32);
+		addActor(table);
+		
+		// エクスポート
+		table.add(exportButton).top().left().size(32,32);
+		addActor(table);
+		
+		// メニュー
+		table.add(menuButton).expand().right();
+		addActor(table);
+	}
+	
+	public void createScrollPane(final MapObjectManager manager,Camera camera){
 		scrolloPaneStage.create(manager, camera);
 	}
 	
@@ -24,16 +58,9 @@ public class MapEditorStage extends Stage{
 	}
 	
 	/**
-	 * AddButton process
-	 */
-	public void addButton(Table table){
-		addActor(table);
-	}
-	
-	/**
 	 * Remove process
 	 */
-	public void remove(){
+	public void removeButton(){
 		getRoot().removeActor(scrolloPaneStage.getScrollTable());
 	}
 
