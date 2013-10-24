@@ -32,6 +32,7 @@ public class MapEditorScreen implements Screen {
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
 		camera = new Camera(screenWidth, screenHeight);
+		
 		batch = new SpriteBatch();
 		mouse = new Mouse();
 		//===テクスチャ読み込み
@@ -53,16 +54,16 @@ public class MapEditorScreen implements Screen {
 	 */
 	public void update(float delta) {
 		zoom = mapEditorStage.update() / 100;
-		Gdx.app.log("tag", "" + zoom);
 		if(zoom < 1){
 			zoom = 1;
 		}
+
 		//===カメラ処理
 		cameraMove = camera.update(zoom);
 		
 		//===オブジェクトクリック
-		if(!cameraMove)
-			mouse.update();
+        if(!cameraMove)
+           	mouse.update(camera);
 	}
 
 	/**
@@ -116,8 +117,4 @@ public class MapEditorScreen implements Screen {
 		batch.dispose();
 		load.dispose();
 	}
-	
-
-
-
 }

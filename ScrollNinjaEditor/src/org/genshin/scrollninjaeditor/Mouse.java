@@ -19,6 +19,7 @@ public class Mouse {
 	private float			 objectPositonY;
 	private int				 FRONT = 0;
 	private int				 BACK  = 1;
+	private int				 oldPressKey;
 
 	
 	public Mouse() {
@@ -26,11 +27,19 @@ public class Mouse {
 		camera = Camera.getInstance();
 	}
 	
-	public void update() {
+	public void update(Camera camera) {
+		this.camera = camera;
+		
+		if(camera.zoom == 1)
+			MouseOver();
+		
+		setOldMousePosition();
+		getMousePosition();
 		if(selectFlag == -1)
 			hitCheck();
 		else
 			drag();
+		
 	}
 	
 	
@@ -40,25 +49,11 @@ public class Mouse {
 	}
 	
 	private boolean checkFront() {
-		for(int i = 0; i < manager.getFrontObjects().size();i++) {
-			getMousePosition();
+		for(int i =  manager.getFrontObjects().size() - 1; i >= 0; i--) {
+
 			if(manager.getFrontObject(i).getSp().getBoundingRectangle().contains(mousePositionX , -mousePositionY)) {
 				if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
-					Gdx.app.log("mouseX", "" + mousePositionX);
-					Gdx.app.log("mouseY", "" + -mousePositionY);
-					Gdx.app.log("spriteX", "" + manager.getFrontObject(i).getSp().getX());
-					Gdx.app.log("spriteY", "" + manager.getFrontObject(i).getSp().getY());
-					Gdx.app.log("rectX", "" + manager.getFrontObject(i).getSp().getBoundingRectangle().getX());
-					Gdx.app.log("rectY", "" + manager.getFrontObject(i).getSp().getBoundingRectangle().getY());
-					Gdx.app.log("rectSizeX", "" + manager.getFrontObject(i).getSp().getBoundingRectangle().getWidth());
-					Gdx.app.log("rectSizeY", "" + manager.getFrontObject(i).getSp().getBoundingRectangle().getHeight());
-					Gdx.app.log("CameraX", "" + camera.position.x);
-					Gdx.app.log("CameraY", "" + camera.position.y);
-					Gdx.app.log("CameraX", "" + camera.getX());
-					Gdx.app.log("CameraY", "" + camera.getY());
-					
-					
-					
+	
 					objectPositonX = manager.getFrontObject(i).getSp().getX();
 					objectPositonY = -manager.getFrontObject(i).getSp().getY();
 					selectFlag = i;
@@ -76,8 +71,8 @@ public class Mouse {
 	}
 	
 	private void checkBack() {
-		for(int i = 0; i < manager.getBackObjects().size();i++) {
-			getMousePosition();
+		for(int i = manager.getBackObjects().size() - 1; i >= 0;i--) {
+		
 			if(manager.getBackObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY)) {
 				if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
 					objectPositonX = manager.getBackObject(i).getSp().getX();
@@ -96,45 +91,74 @@ public class Mouse {
 	
 	private void drag() {
 		if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
-			setOldMousePosition();
-			getMousePosition();
-			objectPositonX += mousePositionX - oldmousePositionX;
-			objectPositonY += mousePositionY - oldmousePositionY;
+
+			objectPositonX += (mousePositionX - oldmousePositionX);
+			objectPositonY += (mousePositionY - oldmousePositionY);
 			if(selectLayer == FRONT)
 			{
 				manager.getFrontObject(selectFlag).setPosition(objectPositonX, -objectPositonY);
 				
-				if(Gdx.input.isKeyPressed(Keys.A))
+				if(Gdx.input.isKeyPressed(Keys.A) && oldPressKey != Keys.A)
 				{
+					oldPressKey = Keys.A;
 					manager.setBackObject(manager.getFrontObject(selectFlag));
 					manager.removefrontObject(manager.getFrontObject(selectFlag));
 					selectLayer = BACK;
-					selectFlag = -1;
+					selectFlag = manager.getBackObjects().size() - 1;
 				}
 			}
 			else if(selectLayer == BACK)
 			{
 				manager.getBackObject(selectFlag).setPosition(objectPositonX, -objectPositonY);
-				if(Gdx.input.isKeyPressed(Keys.S))
+				if(Gdx.input.isKeyPressed(Keys.S) && oldPressKey != Keys.S)
 				{
-					
+					oldPressKey = Keys.S;
 					manager.setFrontObject(manager.getBackObject(selectFlag));
 					manager.removeBackObject(manager.getBackObject(selectFlag));
 					selectLayer = FRONT;
-					selectFlag = -1;
+					selectFlag = manager.getFrontObjects().size() - 1;
 				}
 			}
 		}
 		else
 		{
+			oldPressKey = -1;
 			selectLayer = -1;
 			selectFlag = -1;
 		}
 	}
 	
+	private void MouseOver() {
+		BackOver(FrontOver());
+	}
+	
+	private boolean FrontOver() {
+		boolean check = false;
+		for(int i = manager.getFrontObjects().size() - 1 ;i >=0 ;i-- ) {
+			if(manager.getFrontObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY) && !check) {
+				manager.getFrontObject(i).getSp().setColor(0.0f, 1.0f, 0.0f, 0.5f);
+				check = true;
+			}
+			else
+				manager.getFrontObject(i).getSp().setColor(1.0f, 1.0f, 1.0f, 1.0f);		
+		}
+		
+		return check;
+	}
+	private void BackOver(boolean check) {
+		for(int i = manager.getBackObjects().size() - 1 ;i >=0 ;i-- ) {
+			if(manager.getBackObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY) && !check) {
+				manager.getBackObject(i).getSp().setColor(0.0f, 1.0f, 0.0f, 0.5f);
+				
+			}
+			else
+				manager.getBackObject(i).getSp().setColor(1.0f, 1.0f, 1.0f, 1.0f);		
+		}
+	}
+	
 	private void getMousePosition() {
-		mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.getX() * camera.zoom;
-		mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - camera.getY() * camera.zoom;
+		mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x * camera.zoom;
+		mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - camera.position.y * camera.zoom;
 	}
 	
 	private void setOldMousePosition() {
