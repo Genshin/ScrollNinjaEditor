@@ -34,7 +34,7 @@ public class MapEditorScreen implements Screen {
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
 		camera = new Camera(screenWidth, screenHeight);
-		//camera = Camera.getInstance();
+		
 		batch = new SpriteBatch();
 		mouse = new Mouse();
 		//===テクスチャ読み込み
@@ -60,7 +60,7 @@ public class MapEditorScreen implements Screen {
 		
 		//===オブジェクトクリック
         if(!cameraMove)
-           	mouse.update();
+           	mouse.update(camera);
 	}
 
 	/**

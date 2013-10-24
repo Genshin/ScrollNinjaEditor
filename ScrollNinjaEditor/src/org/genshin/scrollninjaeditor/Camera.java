@@ -14,9 +14,9 @@ public class Camera extends OrthographicCamera {
 	private float   oldmousePositionY = 0.0f;
 	private float   mousePositionX = 0.0f;
 	private float   mousePositionY = 0.0f;
+	private boolean initialize = false;
 	
 	public Camera() {
-		
 	}
 	
 	public Camera(float width , float height) {
@@ -26,6 +26,8 @@ public class Camera extends OrthographicCamera {
 	public static Camera getInstance() {
 		return instance;
 	}
+	
+
 
 	public void move() {
 			
@@ -53,12 +55,16 @@ public class Camera extends OrthographicCamera {
 	public void zoom(float zoomSize) {
 		if(!this.useFlg){
 			if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && Gdx.input.isKeyPressed(Keys.NUM_0)) {
+				this.position.x = 0.0f;
+				this.position.y = 0.0f;
 				this.zoom = zoomSize;
 				this.useFlg = true;
 			}
 		}
 		else{
-			if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && Gdx.input.isKeyPressed(Keys.NUM_0)) {
+			if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && Gdx.input.isKeyPressed(Keys.NUM_9)) {
+				this.position.x = 0.0f;
+				this.position.y = 0.0f;
 				this.zoom = 1;
 				this.useFlg = false;
 			}
@@ -73,12 +79,4 @@ public class Camera extends OrthographicCamera {
 		return moveFlag;
 	}
 	
-	
-	public float getX() {
-		return this.position.x;
-	}
-	
-	public float getY() {
-		return this.position.y;
-	}
 }
