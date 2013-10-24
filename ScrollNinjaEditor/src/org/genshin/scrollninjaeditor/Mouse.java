@@ -54,9 +54,7 @@ public class Mouse {
 					Gdx.app.log("rectSizeY", "" + manager.getFrontObject(i).getSp().getBoundingRectangle().getHeight());
 					Gdx.app.log("CameraX", "" + camera.position.x);
 					Gdx.app.log("CameraY", "" + camera.position.y);
-					Gdx.app.log("CameraX", "" + camera.getX());
-					Gdx.app.log("CameraY", "" + camera.getY());
-					
+	
 					
 					
 					objectPositonX = manager.getFrontObject(i).getSp().getX();
