@@ -14,20 +14,31 @@ public class Layer {
 	private Label label;
 	private Boolean active;
 	private ArrayList<MapObject> mapObjects;
+	private int layerPlace;
+	
+	public static int FRONT = 0;
+	public static int BACK = 1;
 
-	public Layer(int num) {
+	public Layer(int num,int place) {
 		setLayerNumber(num);
 		setLabel(num);
+		setPlace(place);
 		active = false;
 		mapObjects = new ArrayList<MapObject>();
 	}
 
+	public void setPlace(int place)	{
+		this.layerPlace = place;
+	}
 	public void setLayerNumber(int num) {
 		this.layerNumber = num;
 	}
 	
 	public int getLayerNumber() {
 		return layerNumber;
+	}
+	public int getLayerPlace() {
+		return layerPlace;
 	}
 	
 	public void setLabel(int num) {

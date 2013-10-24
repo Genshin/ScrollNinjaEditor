@@ -14,7 +14,6 @@ public class Camera extends OrthographicCamera {
 	private float   oldmousePositionY = 0.0f;
 	private float   mousePositionX = 0.0f;
 	private float   mousePositionY = 0.0f;
-	private boolean initialize = false;
 	
 	public Camera() {
 	}

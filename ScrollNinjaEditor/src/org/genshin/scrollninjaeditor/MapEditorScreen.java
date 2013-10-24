@@ -22,7 +22,11 @@ public class MapEditorScreen implements Screen {
 	private MapEditorStage 		mapEditorStage;
 	private Load				load;
 	private Mouse				mouse;
-
+	//-----------------------------------------
+	private LayerManager		layermanager = new LayerManager();
+	//-----------------------------------------
+	
+	
 	/**
 	 * Constructor
 	 * @param editor
