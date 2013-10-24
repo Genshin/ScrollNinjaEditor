@@ -59,6 +59,7 @@ public class Import extends ImageButton{
 							for(int node = 0;read.getRootNode(node) != null;node++)	{
 								MapObject setObj = null;
 								//スプライトの種類チェック
+								String layer = read.getObjectString("layer", node);
 								for(MapObject obj:manager.getMapObjectList()) {
 									String label = read.getObjectString("label", node);
 																	
@@ -68,7 +69,10 @@ public class Import extends ImageButton{
 									}
 								}
 								setObj.setPosition(read.getObjectFloat("x", node), read.getObjectFloat("y", node));
-								manager.setFrontObject(setObj);
+								if(layer.matches("Front"))
+									manager.setFrontObject(setObj);
+								else if(layer.matches("Back"))
+									manager.setBackObject(setObj);
 							
 							}
 						}

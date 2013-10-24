@@ -35,14 +35,19 @@ public class Export extends ImageButton {
 		
 		if(select == JFileChooser.APPROVE_OPTION) {
 			JsonWrite write = new JsonWrite();
-			//write.addObject();
-			//write.putObject("Front");
-			//write.putObject("Front");
-			//write.addArray();
-			//write.addObject();
-			//write.putObject("Front");
+		
 			for(MapObject obj:manager.getFrontObjects()) {
 				write.addObject();
+				write.putObject("layer", "Front");
+				write.putObject("name", obj.getFileName());
+				write.putObject("label", obj.getLabelName());
+				write.putObject("x", obj.getX());
+				write.putObject("y", obj.getY());
+			}
+			
+			for(MapObject obj:manager.getBackObjects()) {
+				write.addObject();
+				write.putObject("layer", "Back");
 				write.putObject("name", obj.getFileName());
 				write.putObject("label", obj.getLabelName());
 				write.putObject("x", obj.getX());

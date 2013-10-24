@@ -110,9 +110,12 @@ public class MapEditorScreen implements Screen {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.combined);
+		
 		batch.begin();
+		manager.drawBackObject(batch);
 		load.draw(batch);
 		manager.drawFrontObjects(batch);			// オブジェボタン描画
+		
 		batch.end();
 		//stage.act(Gdx.graphics.getDeltaTime());		// ステージ描画
 	//	stage.draw();
