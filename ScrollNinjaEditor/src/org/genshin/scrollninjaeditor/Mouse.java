@@ -124,7 +124,6 @@ public class Mouse {
 					selectFlag = -1;
 				}
 			}
-			
 		}
 		else
 		{
@@ -142,5 +141,4 @@ public class Mouse {
 		oldmousePositionX = mousePositionX;
 		oldmousePositionY = mousePositionY;
 	}
-	
 }

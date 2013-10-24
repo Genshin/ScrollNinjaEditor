@@ -20,7 +20,8 @@ public class Load {
 	public int	IMPORT     = 1;
 	public int	EXPORT	   = 2;
 	public int	MENU	   = 3;
-	public int	TEX_NUM	   = 4;
+	public int	FIELD	   = 4;
+	public int	TEX_NUM	   = 5;
 	
 	
 	public Load(String path) {
@@ -29,6 +30,7 @@ public class Load {
 		array_Texs.add(new Texture(Gdx.files.internal("data/arrow-down.png")));
 		array_Texs.add(new Texture(Gdx.files.internal("data/arrow-up.png")));
 		array_Texs.add(new Texture(Gdx.files.internal("data/menu.png")));
+		array_Texs.add(new Texture(Gdx.files.internal("data/Stage/TerrainFar_1024.png")));
 		
 		for(int i = 0; i < TEX_NUM ; i++) {
 			array_TexRegions.add(new TextureRegion(array_Texs.get(i),0,0,array_Texs.get(i).getWidth(),array_Texs.get(i).getHeight()));

@@ -4,13 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.sun.corba.se.impl.ior.OldPOAObjectKeyTemplate;
 
 public class Camera extends OrthographicCamera {
 	
 	private static Camera instance = new Camera();
 	private MapObjectManager manager;
 	private boolean moveFlag          = false;
-	private boolean useFlg            = false;
 	private float   oldmousePositionX = 0.0f;
 	private float   oldmousePositionY = 0.0f;
 	private float   mousePositionX = 0.0f;
@@ -43,6 +43,9 @@ public class Camera extends OrthographicCamera {
 				moveFlag = true;
 				
 				this.translate(-(mousePositionX - oldmousePositionX) / 2, (mousePositionY - oldmousePositionY) / 2);
+				
+				Gdx.app.log("tag","" + this.getX());
+				Gdx.app.log("tag","" + this.getY());
 			}
 			
 		}
@@ -53,17 +56,11 @@ public class Camera extends OrthographicCamera {
 	}
 	
 	public void zoom(float zoomSize) {
-		if(!this.useFlg){
-			if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && Gdx.input.isKeyPressed(Keys.NUM_0)) {
-				this.zoom = zoomSize;
-				this.useFlg = true;
-			}
+		if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && Gdx.input.isKeyPressed(Keys.NUM_0)) {
+			this.zoom = 2;
 		}
 		else{
-			if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && Gdx.input.isKeyPressed(Keys.NUM_0)) {
-				this.zoom = 1;
-				this.useFlg = false;
-			}
+			this.zoom = zoomSize;
 		}
 	}
 	

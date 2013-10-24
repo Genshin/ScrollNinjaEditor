@@ -4,10 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MapEditorScreen implements Screen {
 	private ScrollNinjaEditor   editor;
@@ -17,11 +14,12 @@ public class MapEditorScreen implements Screen {
 	private SpriteBatch 		batch;									// バッチ用
 	private float				screenWidth = 0,
 								screenHeight = 0;
-	private MapObjectManager 	manager= new MapObjectManager();		// オブジェクトセレクト用
+	private MapObjectManager 	manager = new MapObjectManager();
 	private boolean				cameraMove = false;
 	private MapEditorStage 		mapEditorStage;
 	private Load				load;
 	private Mouse				mouse;
+	private float				zoom = 1.0f;
 
 	/**
 	 * Constructor
@@ -43,7 +41,7 @@ public class MapEditorScreen implements Screen {
 		
 		mapEditorStage = new MapEditorStage(this.fileName,load);
 		Gdx.input.setInputProcessor(mapEditorStage);
-		manager = MapObjectManager.create();			// 生成
+		manager = MapObjectManager.create();
 		
 		//===クリエイト
 		mapEditorStage.create(screenWidth,screenHeight,manager,Camera.getInstance());
@@ -54,12 +52,17 @@ public class MapEditorScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void update(float delta) {
+		zoom = mapEditorStage.update() / 100;
+		Gdx.app.log("tag", "" + zoom);
+		if(zoom < 1){
+			zoom = 1;
+		}
 		//===カメラ処理
-		cameraMove = camera.update(2.0f);
+		cameraMove = camera.update(zoom);
 		
 		//===オブジェクトクリック
-        if(!cameraMove)
-           	mouse.update();
+		if(!cameraMove)
+			mouse.update();
 	}
 
 	/**
