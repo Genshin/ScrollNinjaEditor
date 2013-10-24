@@ -51,7 +51,7 @@ public class MapEditorScreen implements Screen {
 		manager = MapObjectManager.create();			// 生成
 		
 		//===クリエイト
-		mapEditorStage.create(screenWidth,screenHeight,manager,Camera.getInstance());
+		mapEditorStage.create(screenWidth,screenHeight,manager,Camera.getInstance(),layermanager);
 	}
 
 	/**
@@ -64,7 +64,9 @@ public class MapEditorScreen implements Screen {
 		
 		//===オブジェクトクリック
         if(!cameraMove)
-           	mouse.update(camera);
+           	mouse.update(camera,layermanager);
+        
+       Gdx.app.log("", "" + layermanager.getLayer(layermanager.getSelectLayer()).getMapObjects().size());
 	}
 
 	/**
@@ -77,9 +79,11 @@ public class MapEditorScreen implements Screen {
 		batch.setProjectionMatrix(camera.combined);
 		
 		batch.begin();
-		manager.drawBackObject(batch);
+		//manager.drawBackObject(batch);
+		layermanager.drawFrontLayers(batch);
 		load.draw(batch);
-		manager.drawFrontObjects(batch);			// オブジェボタン描画
+		//manager.drawFrontObjects(batch);			// オブジェボタン描画
+		layermanager.drawBackLayers(batch);
 		
 		batch.end();
 		mapEditorStage.act(Gdx.graphics.getDeltaTime());

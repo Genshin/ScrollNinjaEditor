@@ -20,18 +20,21 @@ public class Mouse {
 	private int				 FRONT = 0;
 	private int				 BACK  = 1;
 	private int				 oldPressKey;
+	private LayerManager	 layerManager;
 
 	
 	public Mouse() {
 		manager = MapObjectManager.getInstance();
 		camera = Camera.getInstance();
+		layerManager = LayerManager.getInstance();
 	}
 	
-	public void update(Camera camera) {
+	public void update(Camera camera ,LayerManager layer) {
 		this.camera = camera;
+		this.layerManager = layer;
 		
-		if(camera.zoom == 1)
-			MouseOver();
+		//if(camera.zoom == 1)
+			//MouseOver();
 		
 		setOldMousePosition();
 		getMousePosition();
@@ -44,8 +47,23 @@ public class Mouse {
 	
 	
 	private void hitCheck() {
-		if(!checkFront())
-			checkBack();
+		//if(!checkFront())
+			//checkBack();
+		for(int i = layerManager.getLayer(layerManager.getSelectLayer()).getMapObjects().size() - 1 ; i >= 0 ;i--) {
+			if(layerManager.getLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY)) {
+				if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
+					
+					objectPositonX = layerManager.getLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().getX();
+					objectPositonY = -layerManager.getLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().getY();
+					selectFlag = i;
+											
+				}
+				if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+					layerManager.getLayer(layerManager.getSelectLayer()).getMapObjects().remove(i);
+					break;
+				}
+			}
+		}
 	}
 	
 	private boolean checkFront() {
@@ -94,7 +112,9 @@ public class Mouse {
 
 			objectPositonX += (mousePositionX - oldmousePositionX);
 			objectPositonY += (mousePositionY - oldmousePositionY);
-			if(selectLayer == FRONT)
+			
+			layerManager.getLayer(layerManager.getSelectLayer()).getMapObject(selectFlag).setPosition(objectPositonX, -objectPositonY);
+			/*if(selectLayer == FRONT)
 			{
 				manager.getFrontObject(selectFlag).setPosition(objectPositonX, -objectPositonY);
 				
@@ -118,7 +138,7 @@ public class Mouse {
 					selectLayer = FRONT;
 					selectFlag = manager.getFrontObjects().size() - 1;
 				}
-			}
+			}*/
 			
 		}
 		else

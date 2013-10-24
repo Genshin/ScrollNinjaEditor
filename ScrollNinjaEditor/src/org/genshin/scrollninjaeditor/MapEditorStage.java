@@ -8,7 +8,8 @@ public class MapEditorStage extends Stage{
 	private Table			table;
 	private Import			importButton;
 	private Export			exportButton;
-	private MenuButton		menuButton;
+	private MenuButton		menuButton; 
+	private LayerManager    layermanager;
 	
 	public MapEditorStage(String fileName, Load load){
 		super();
@@ -24,7 +25,8 @@ public class MapEditorStage extends Stage{
 		menuButton = new MenuButton(load.getSpriteDrawable(load.MENU));
 	}
 	
-	public void create(float screenWidth ,float screenHeight,final MapObjectManager manager,Camera camera){
+	public void create(float screenWidth ,float screenHeight,final MapObjectManager manager,Camera camera,LayerManager layer){
+		layermanager = layer;
 		createScrollPane(manager,camera);
 		menuButton.create(table, screenWidth, this);
 		addButton(screenWidth, screenHeight);
@@ -47,7 +49,7 @@ public class MapEditorStage extends Stage{
 	}
 	
 	public void createScrollPane(final MapObjectManager manager,Camera camera){
-		scrolloPaneStage.create(manager, camera);
+		scrolloPaneStage.create(manager, camera,layermanager);
 	}
 	
 	/**
