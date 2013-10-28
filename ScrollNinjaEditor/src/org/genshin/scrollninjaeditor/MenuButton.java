@@ -1,5 +1,6 @@
 package org.genshin.scrollninjaeditor;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -22,6 +23,10 @@ public class MenuButton extends ImageButton{
 					mapEditorStage.addScrollPane();
 					table.getChildren().get(3).setX(screenWidth - getWidth() - mapEditorStage.getPaneWidth());
 					menuClickFlg = true;
+					Gdx.app.log("tag", "X:" + table.getChildren().get(2).getX());
+					Gdx.app.log("tag", "W:" + mapEditorStage.getPaneWidth());
+					Gdx.app.log("tag", "sW:" + screenWidth);
+					Gdx.app.log("tag", "X:" + getWidth());
 				}
 				else{
 					mapEditorStage.removeButton();
