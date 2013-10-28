@@ -45,7 +45,6 @@ public class MapEditorStage extends Stage{
 		createScrollPane(manager,camera);
 		menuButton.create(table, screenWidth, this);
 		addButton(screenWidth, screenHeight);
-		
 	}
 	
 	public float update(){
@@ -64,7 +63,7 @@ public class MapEditorStage extends Stage{
 			return true;
 		}
 		});
-		return z;
+		return z / 10;
 	}
 	
 	/**
