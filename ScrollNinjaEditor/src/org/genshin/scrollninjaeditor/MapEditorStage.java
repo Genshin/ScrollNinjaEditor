@@ -13,6 +13,7 @@ public class MapEditorStage extends Stage{
 	private Import			importButton;
 	private Export			exportButton;
 	private MenuButton		menuButton;
+	private Camera			camera2;
 	private float z = 1.0f;
 	
 	/**
@@ -41,12 +42,34 @@ public class MapEditorStage extends Stage{
 	 * @param manager
 	 * @param camera
 	 */
-	public void create(float screenWidth ,float screenHeight,final MapObjectManager manager,Camera camera){
+	public void create(float screenWidth ,float screenHeight,final MapObjectManager manager, Camera camera){
 		createScrollPane(manager,camera);
 		menuButton.create(table, screenWidth, this);
 		addButton(screenWidth, screenHeight);
+		
+		// スクロール
+		addListener(new InputListener(){
+		@Override
+		public boolean handle (Event e) {
+		if (!(e instanceof InputEvent)) return false;
+			InputEvent event = (InputEvent)e;
+			camera2 = Camera.getInstance();
+			if (event.getType() == InputEvent.Type.scrolled) {
+				z += 0.1f * event.getScrollAmount();
+				if(z < -1)
+					z = -1;
+				Gdx.app.log("tes", "scrol" + event.getScrollAmount());
+				Gdx.app.log("tes", "scrol" + z);
+			}
+			return true;
+		}
+		});
 	}
 	
+	public float getZoom(){
+		return z;
+	}
+/*	
 	public float update(){
 		// スクロール
 		addListener(new InputListener(){
@@ -65,7 +88,7 @@ public class MapEditorStage extends Stage{
 		});
 		return z / 10;
 	}
-	
+*/	
 	/**
 	 * addButton
 	 * @param screenWidth

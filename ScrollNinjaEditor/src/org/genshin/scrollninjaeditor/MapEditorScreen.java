@@ -56,10 +56,12 @@ public class MapEditorScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void update(float delta) {
-		zoom = mapEditorStage.update() / 100;
+		/*zoom = mapEditorStage.update() / 100;
 		if(zoom < 1){
 			zoom = 1;
-		}
+		}*/
+		
+		zoom = mapEditorStage.getZoom();
 
 		//===カメラ処理
 		cameraMove = camera.update(zoom);
