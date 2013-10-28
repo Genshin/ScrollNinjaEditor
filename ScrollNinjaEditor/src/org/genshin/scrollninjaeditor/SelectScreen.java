@@ -101,18 +101,18 @@ public class SelectScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event,float x,float y) {
 				File current = new File("./bin/data/stage");
-				JFileChooser FileChooser = new JFileChooser(current.getAbsolutePath());
+				JFileChooser fileChooser = new JFileChooser(current.getAbsolutePath());
 				
 				//ファイル選択フィルター宣言
 				ExtendsFileFilter filter = new ExtendsFileFilter(".png","PNG  ファイル(*.png)");
 				
 				//フィルター設定
-				FileChooser.addChoosableFileFilter(filter);
+				fileChooser.addChoosableFileFilter(filter);
 				
-				int res = FileChooser.showOpenDialog(FileChooser);
+				int res = fileChooser.showOpenDialog(fileChooser);
 				
 				if(res == JFileChooser.APPROVE_OPTION) {
-					File file = FileChooser.getSelectedFile();
+					File file = fileChooser.getSelectedFile();
 
 					//開いたファイルが正しい場合
 					if(filter.accept(file)) {

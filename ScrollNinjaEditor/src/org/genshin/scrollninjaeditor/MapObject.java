@@ -27,12 +27,11 @@ public class MapObject {
 	public MapObject(Sprite sd) {
 		this.sprite = sd;
 	}
+
 	/**
 	 * sprite set
 	 */
 	public void setSprite() {
-		//Texture texture = TextureFactory.getInstance().get("data/objects/" + fileName);
-
 		Texture texture = new Texture(Gdx.files.internal("data/objects/" + fileName));
 		TextureRegion region = new TextureRegion(texture, 0, 0, width, height);
 		sprite = new Sprite(region);

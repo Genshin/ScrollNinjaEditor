@@ -12,8 +12,15 @@ public class MapEditorStage extends Stage{
 	private Table			table;
 	private Import			importButton;
 	private Export			exportButton;
+<<<<<<< HEAD
 	private MenuButton		menuButton;
 	private Camera			camera2;
+=======
+
+	private MenuButton		menuButton; 
+	private LayerManager    layermanager;
+	
+>>>>>>> yosida/test_merge
 	private float z = 1.0f;
 	
 	/**
@@ -28,13 +35,12 @@ public class MapEditorStage extends Stage{
 		table.setFillParent(true);
 		table.debug();
 		
-		importButton = new Import(load.getSpriteDrawable(load.IMPORT));
-		
-		exportButton = new Export(load.getSpriteDrawable(load.EXPORT));
-		
-		menuButton = new MenuButton(load.getSpriteDrawable(load.MENU));
+		importButton = new Import(load.getSpriteDrawable(Load.IMPORT));
+		exportButton = new Export(load.getSpriteDrawable(Load.EXPORT));
+		menuButton = new MenuButton(load.getSpriteDrawable(Load.MENU));
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * create
 	 * @param screenWidth
@@ -43,6 +49,12 @@ public class MapEditorStage extends Stage{
 	 * @param camera
 	 */
 	public void create(float screenWidth ,float screenHeight,final MapObjectManager manager, Camera camera){
+=======
+	public void create(float screenWidth ,float screenHeight,final MapObjectManager manager,Camera camera,LayerManager layer){
+		layermanager = layer;
+		importButton.setlayer(layermanager);
+		exportButton.setlayer(layermanager);
+>>>>>>> yosida/test_merge
 		createScrollPane(manager,camera);
 		menuButton.create(table, screenWidth, this);
 		addButton(screenWidth, screenHeight);
@@ -102,9 +114,9 @@ public class MapEditorStage extends Stage{
 		// エクスポート
 		table.add(exportButton).top().left().size(32,32);
 		addActor(table);
-		
+
 		// メニュー
-		table.add(menuButton).expand().right();
+		table.add(menuButton).expand().right().top();
 		addActor(table);
 	}
 	
@@ -114,7 +126,7 @@ public class MapEditorStage extends Stage{
 	 * @param camera
 	 */
 	public void createScrollPane(final MapObjectManager manager,Camera camera){
-		scrolloPaneStage.create(manager, camera);
+		scrolloPaneStage.create(manager, camera,layermanager);
 	}
 	
 	/**
