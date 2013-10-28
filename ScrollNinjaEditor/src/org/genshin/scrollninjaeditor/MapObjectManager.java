@@ -17,6 +17,7 @@ public class MapObjectManager {
 	private static MapObjectManager instance = new MapObjectManager();
 	
 	private ArrayList<MapObject> mapObjectList = new ArrayList<MapObject>();
+	private ArrayList<MapObject> objects = new ArrayList<MapObject>();
 	private ArrayList<MapObject> frontObjects = new ArrayList<MapObject>();
 	private ArrayList<MapObject> backObjects = new ArrayList<MapObject>();
 	
@@ -68,6 +69,18 @@ public class MapObjectManager {
 	 * draw front object's sprite
 	 * @param batch		SpriteBatch
 	 */
+	public void drawObjects(SpriteBatch batch) {
+		if (objects != null) {
+			for (MapObject obj : objects) {
+				obj.draw(batch);
+			}
+		}
+	}
+	
+	/**
+	 * draw front object's sprite
+	 * @param batch		SpriteBatch
+	 */
 	public void drawFrontObjects(SpriteBatch batch) {
 		if (frontObjects != null) {
 			for (MapObject obj : frontObjects) {
@@ -88,6 +101,10 @@ public class MapObjectManager {
 		}
 	}
 	
+	
+	public void setObject(MapObject obj) {
+		objects.add(obj);
+	}
 	/**
 	 * add mapObject to frontObjects
 	 * @param obj
@@ -104,6 +121,11 @@ public class MapObjectManager {
 		backObjects.add(obj);
 	}
 	
+	
+	
+	public void removeObject(MapObject obj) {
+		objects.remove(obj);
+	}
 	/**
 	 * remove mapObject from frontObjects
 	 * @param obj
@@ -120,6 +142,11 @@ public class MapObjectManager {
 		backObjects.remove(obj);
 	}
 	
+	
+	
+	public MapObject getObject(int index) {
+		return objects.get(index);
+	}
 	/**
 	 * @param index
 	 * @return front mapObject
@@ -137,6 +164,10 @@ public class MapObjectManager {
 		return backObjects.get(index);
 	}
 	
+	
+	public ArrayList<MapObject> getObjects() {
+		return objects;
+	}
 	/**
 	 * @return front mapObjects
 	 */

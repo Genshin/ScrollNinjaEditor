@@ -17,11 +17,14 @@ public class ScrollPaneStage{
 	private MapObject mapobj;
 	private Table table = new Table();
 	private SpriteDrawable spriteDrawble;
+	private LayerManager layerManager;
+	
 	
 	/**
 	 * Constructor
 	 */
 	public ScrollPaneStage(){
+		layerManager = LayerManager.getInstance();
 	}
 	
 	/**
@@ -32,21 +35,24 @@ public class ScrollPaneStage{
 	 * @param spriteDrawble
 	 * @param camera
 	 */
-	public void create(final MapObjectManager manager,final OrthographicCamera camera){
+	public void create(final MapObjectManager manager,final OrthographicCamera camera,LayerManager layer){
 		for (loopCnt = 0 ; loopCnt < manager.getMapObjectList().size() ; loopCnt ++){
 			if(loopCnt % 3 == 0)
 				table.row();
 			manager.getMapObjectList().get(loopCnt).getSp().setSize(64,64);
 			spriteDrawble = new SpriteDrawable();												// 上書きが必要
 			spriteDrawble.setSprite(manager.getMapObjectList().get(loopCnt).getSp());			// 上書きではないので注意
+			layerManager = layer;
 			final ObjectButton objB = new ObjectButton(spriteDrawble, manager.getMapObjectList().get(loopCnt));
+			
 			
 			objB.addListener(new ClickListener(){
 				@Override
 				public void clicked(InputEvent event ,float x,float y){
 					mapobj = new MapObject(objB.mapObject);										 // クリックされたオブジェクト情報を読み込み
 					mapobj.setPosition(camera.position.x,camera.position.y);
-					manager.setFrontObject(mapobj);												 // オブジェクトをセット
+					//manager.setFrontObject(mapobj);												 // オブジェクトをセット
+					layerManager.getLayer(layerManager.getSelectLayer()).setMapObject(mapobj);
 				}
 			});
 			table.add(objB);

@@ -23,6 +23,9 @@ public class MapEditorScreen implements Screen {
 	private Mouse				mouse;
 	private float				zoom = 1.0f;
 	private ShapeRenderer  sr = new ShapeRenderer();
+	//-----------------------------------------
+	private LayerManager		layermanager = new LayerManager();
+	//-----------------------------------------
 
 	/**
 	 * Constructor
@@ -49,7 +52,7 @@ public class MapEditorScreen implements Screen {
 		manager = MapObjectManager.create();
 		
 		//===クリエイト
-		mapEditorStage.create(screenWidth,screenHeight,manager,Camera.getInstance());
+		mapEditorStage.create(screenWidth,screenHeight,manager,Camera.getInstance(),layermanager);
 	}
 
 	/**
@@ -67,7 +70,18 @@ public class MapEditorScreen implements Screen {
 		
 		//===オブジェクトクリック
         if(!cameraMove)
-           	mouse.update(camera);//
+           	mouse.update(camera,layermanager);
+        
+      /* if(layermanager.getSelectPlace() == Layer.FRONT) {
+    	   Gdx.app.log("FrontLayerNum", "" + layermanager.getFrontLayers().size());
+    	   Gdx.app.log("FrontLayerNo", "" + layermanager.getSelectLayer());
+    	   Gdx.app.log("FrontLayerObjectNum", "" + layermanager.getFrontLayer(layermanager.getSelectLayer()).getMapObjects().size());
+       }
+       else {
+       	   Gdx.app.log("BackLayerNum", "" + layermanager.getBackLayers().size());
+       	   Gdx.app.log("BackLayerNo", "" + layermanager.getSelectLayer());
+       	   Gdx.app.log("BackLayerObjectNum", "" + layermanager.getBackLayer(layermanager.getSelectLayer()).getMapObjects().size());
+       }*/
 	}
 
 	/**
@@ -80,14 +94,20 @@ public class MapEditorScreen implements Screen {
 		batch.setProjectionMatrix(camera.combined);
 		
 		batch.begin();
-		manager.drawBackObject(batch);
+		//manager.drawBackObject(batch);
+		layermanager.drawBackLayers(batch);
 		load.draw(batch);
-		manager.drawFrontObjects(batch);			// オブジェボタン描画
+
+		//manager.drawFrontObjects(batch);			// オブジェボタン描画
+		layermanager.drawFrontLayers(batch);
+
 		batch.end();
 		
 		mapEditorStage.act(Gdx.graphics.getDeltaTime());
 		mapEditorStage.draw();
 		Table.drawDebug(mapEditorStage);
+		
+		/*
 		sr.setProjectionMatrix(camera.combined);
 		sr.begin(ShapeType.Rectangle);
 		sr.setColor(1, 0, 0, 1);
@@ -108,6 +128,7 @@ public class MapEditorScreen implements Screen {
 					manager.getFrontObject(i).getSp().getBoundingRectangle().getHeight());
 			sr.end();
 		}
+		*/
 	}
 
 	@Override
