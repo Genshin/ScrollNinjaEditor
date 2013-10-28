@@ -107,18 +107,6 @@ public class MapEditorScreen implements Screen {
 					manager.getFrontObject(i).getSp().getBoundingRectangle().getHeight());
 			sr.end();
 		}
-		
-		// ライン出し
-		for (int i = 0 ; i < manager.getFrontObjects().size() ; i ++){
-			sr.setProjectionMatrix(camera.combined);
-			sr.begin(ShapeType.Rectangle);
-			sr.setColor(0, 1, 0, 1);
-			sr.rect(manager.getFrontObject(i).getSp().getX(),
-					manager.getFrontObject(i).getSp().getY(),
-					manager.getFrontObject(i).getSp().getWidth(),
-					manager.getFrontObject(i).getSp().getHeight());
-			sr.end();
-		}
 	}
 
 	@Override
