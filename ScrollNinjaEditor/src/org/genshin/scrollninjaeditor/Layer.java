@@ -56,7 +56,6 @@ public class Layer {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				active = !active;
-				// TODO アクティブ状態で色変更
 				Gdx.app.log("", "aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 			}
 		});

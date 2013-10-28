@@ -33,16 +33,16 @@ public class LayerManager {
 	
 	private void setLabelColor(int place ,int number ,boolean flag) {
 		if(!flag) {
-			if(place == Layer.FRONT)
-				this.frontLayers.get(this.selectLayer).getLabel().setColor(1.0f, 1.0f, 1.0f, 1.0f);
-			else if(place == Layer.BACK)
-				this.backLayers.get(this.selectLayer).getLabel().setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			if(place == Layer.FRONT && number < this.frontLayers.size())
+				this.frontLayers.get(number).getLabel().setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			else if(place == Layer.BACK && number < this.backLayers.size())
+				this.backLayers.get(number).getLabel().setColor(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 		else {
 			if(place == Layer.FRONT)
-				this.frontLayers.get(this.selectLayer).getLabel().setColor(1.0f, 0.0f, 0.0f, 1.0f);
+				this.frontLayers.get(number).getLabel().setColor(1.0f, 0.0f, 0.0f, 1.0f);
 			else if(place == Layer.BACK)
-				this.backLayers.get(this.selectLayer).getLabel().setColor(1.0f, 0.0f, 0.0f, 1.0f);
+				this.backLayers.get(number).getLabel().setColor(1.0f, 0.0f, 0.0f, 1.0f);
 		}
 	}
 	public int getSelectPlace() {
