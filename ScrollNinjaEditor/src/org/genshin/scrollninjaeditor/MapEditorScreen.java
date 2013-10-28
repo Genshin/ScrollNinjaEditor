@@ -32,16 +32,17 @@ public class MapEditorScreen implements Screen {
 		screenWidth = Gdx.graphics.getWidth();
 		screenHeight = Gdx.graphics.getHeight();
 		camera = new Camera(screenWidth, screenHeight);
-		
 		batch = new SpriteBatch();
+
 		mouse = new Mouse();
+		
 		//===テクスチャ読み込み
-		
 		load = new Load(this.fileName);
+
 		//====ステージ
-		
 		mapEditorStage = new MapEditorStage(this.fileName,load);
 		Gdx.input.setInputProcessor(mapEditorStage);
+
 		manager = MapObjectManager.create();
 		
 		//===クリエイト

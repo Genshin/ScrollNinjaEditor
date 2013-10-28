@@ -27,11 +27,11 @@ public class MapEditorStage extends Stage{
 		table.setFillParent(true);
 		table.debug();
 		
-		importButton = new Import(load.getSpriteDrawable(load.IMPORT));
+		importButton = new Import(load.getSpriteDrawable(Load.IMPORT));
 		
-		exportButton = new Export(load.getSpriteDrawable(load.EXPORT));
+		exportButton = new Export(load.getSpriteDrawable(Load.EXPORT));
 		
-		menuButton = new MenuButton(load.getSpriteDrawable(load.MENU));
+		menuButton = new MenuButton(load.getSpriteDrawable(Load.MENU));
 	}
 	
 	/**

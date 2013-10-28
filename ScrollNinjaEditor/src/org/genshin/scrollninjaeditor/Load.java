@@ -14,16 +14,14 @@ public class Load {
 	private ArrayList<Texture>		  array_Texs      		 = new ArrayList<Texture>();
 	private ArrayList<TextureRegion>  array_TexRegions		 = new ArrayList<TextureRegion>();
 	private ArrayList<Sprite>		  array_Sprites  		 = new ArrayList<Sprite>();
-	
-	
-	public int	BACKGROUND = 0;
-	public int	IMPORT     = 1;
-	public int	EXPORT	   = 2;
-	public int	MENU	   = 3;
-	public int	FIELD	   = 4;
-	public int	TEX_NUM	   = 5;
-	
-	
+
+	public static final int	BACKGROUND = 0;
+	public static final int	IMPORT     = 1;
+	public static final int	EXPORT	   = 2;
+	public static final int	MENU	   = 3;
+	public static final int	FIELD	   = 4;
+	public static final int	TEX_NUM	   = 5;
+
 	public Load(String path) {
 		array_Texs.add(new Texture(path));
 		array_Texs.get(BACKGROUND).setFilter(TextureFilter.Linear, TextureFilter.Linear);
