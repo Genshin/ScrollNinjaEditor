@@ -15,6 +15,7 @@ public class MapEditorStage extends Stage{
 	private MenuButton		menuButton;
 	private Camera			camera2;
 	private LayerManager    layermanager;
+	private Table			scrollTable;
 	
 	private float z = 1.0f;
 	
@@ -29,6 +30,10 @@ public class MapEditorStage extends Stage{
 		table = new Table();
 		table.setFillParent(true);
 		table.debug();
+		scrollTable = new Table();
+		scrollTable.setFillParent(true);
+		scrollTable.right();
+		scrollTable.debug();
 		
 		importButton = new Import(load.getSpriteDrawable(Load.IMPORT));
 		exportButton = new Export(load.getSpriteDrawable(Load.EXPORT));
@@ -59,10 +64,7 @@ public class MapEditorStage extends Stage{
 			InputEvent event = (InputEvent)e;
 			if (event.getType() == InputEvent.Type.scrolled) {
 				z += 0.1f * event.getScrollAmount();
-				if(z < -1)
-					z = -1;
-				Gdx.app.log("tes", "scrol" + event.getScrollAmount());
-				Gdx.app.log("tes", "scrol" + z);
+				Gdx.app.log("tes", "scrol:" + z);
 			}
 			return true;
 		}
@@ -98,21 +100,27 @@ public class MapEditorStage extends Stage{
 	 * @param camera
 	 */
 	public void createScrollPane(final MapObjectManager manager,Camera camera){
-		scrolloPaneStage.create(manager, camera,layermanager);
+		scrolloPaneStage.menuCreate(manager, camera,layermanager,scrollTable);
+		scrollTable.row();
+		scrolloPaneStage.layerFrontCreate(scrollTable);
+		addActor(scrollTable);
+		scrolloPaneStage.layerBackCreate(scrollTable);
+		addActor(scrollTable);
+		removeButton();
 	}
 	
 	/**
 	 * AddScrollPane process
 	 */
 	public void addScrollPane(){
-		addActor(scrolloPaneStage.getScrollTable());
+		addActor(scrollTable);
 	}
-	
+
 	/**
 	 * Remove process
 	 */
 	public void removeButton(){
-		getRoot().removeActor(scrolloPaneStage.getScrollTable());
+		getRoot().removeActor(scrollTable);
 	}
 
 	/**

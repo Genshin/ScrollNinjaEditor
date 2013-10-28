@@ -94,7 +94,6 @@ public class Layer {
 			}
 		}
 		drawLabel(batch);
-
 	}
 	
 	public void drawLabel(SpriteBatch batch) {
