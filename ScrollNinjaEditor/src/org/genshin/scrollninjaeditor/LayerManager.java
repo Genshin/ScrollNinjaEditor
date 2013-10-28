@@ -24,11 +24,27 @@ public class LayerManager {
 	
 	
 	public void setLayer(int place,int number) {
-		
+	
+		setLabelColor(this.selectPlace, this.selectLayer, false);
 		this.selectPlace = place;
 		this.selectLayer = number;
+		setLabelColor(this.selectPlace, this.selectLayer, true);
 	}
 	
+	private void setLabelColor(int place ,int number ,boolean flag) {
+		if(!flag) {
+			if(place == Layer.FRONT)
+				this.frontLayers.get(this.selectLayer).getLabel().setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			else if(place == Layer.BACK)
+				this.backLayers.get(this.selectLayer).getLabel().setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+		else {
+			if(place == Layer.FRONT)
+				this.frontLayers.get(this.selectLayer).getLabel().setColor(1.0f, 0.0f, 0.0f, 1.0f);
+			else if(place == Layer.BACK)
+				this.backLayers.get(this.selectLayer).getLabel().setColor(1.0f, 0.0f, 0.0f, 1.0f);
+		}
+	}
 	public int getSelectPlace() {
 		return this.selectPlace;
 	}
