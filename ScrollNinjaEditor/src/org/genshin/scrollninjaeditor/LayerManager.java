@@ -24,6 +24,7 @@ public class LayerManager {
 	
 	
 	public void setLayer(int place,int number) {
+		
 		this.selectPlace = place;
 		this.selectLayer = number;
 	}
@@ -98,7 +99,24 @@ public class LayerManager {
 		}
 			
 	}
-	
+	public void selectDraw(int layerPlace,int layerNo) {
+		for(Layer lay:frontLayers) 
+			lay.setDrawFlag(false);
+		for(Layer lay:backLayers) 
+			lay.setDrawFlag(false);
+		
+		if(layerPlace == Layer.FRONT)
+			this.getFrontLayer(layerNo).setDrawFlag(true);
+		else if(layerPlace == Layer.BACK)
+			this.getBackLayer(layerNo).setDrawFlag(true);
+		
+	}
+	public void allDraw(){
+		for(Layer lay:frontLayers) 
+			lay.setDrawFlag(true);
+		for(Layer lay:backLayers) 
+			lay.setDrawFlag(true);
+	}
 	//レイヤ―描画
 	public void drawFrontLayers(SpriteBatch batch) {
 		for(Layer lay:frontLayers) {

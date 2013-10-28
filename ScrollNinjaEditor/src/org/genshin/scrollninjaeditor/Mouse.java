@@ -7,10 +7,9 @@ import com.badlogic.gdx.Input.Keys;
 
 public class Mouse {
 	
-	private MapObjectManager manager;
 	private Camera 			 camera;
 	private int				 selectFlag = -1;
-	private int				 selectLayer = -1;
+
 	private float			 mousePositionX;
 	private float			 mousePositionY;
 	private float			 oldmousePositionX;
@@ -23,7 +22,6 @@ public class Mouse {
 
 	
 	public Mouse() {
-		manager = MapObjectManager.getInstance();
 		camera = Camera.getInstance();
 		layerManager = LayerManager.getInstance();
 	}
@@ -87,10 +85,7 @@ public class Mouse {
 			
 		}
 		else
-		{
-			selectLayer = -1;
 			selectFlag = -1;
-		}
 	}
 		
 	private void input() {
@@ -132,12 +127,12 @@ public class Mouse {
 			oldPressKey = Keys.V;
 			inputFlag = true;
 			if(layerManager.getSelectPlace() == Layer.FRONT) {
-				layerManager.addFront(layerManager.getSelectLayer() + 1);
-				layerManager.setLayer(Layer.FRONT,layerManager.getSelectLayer() + 1);
+				layerManager.addFront(layerManager.getFrontLayers().size());
+				layerManager.setLayer(Layer.FRONT,layerManager.getFrontLayers().size() - 1);
 			}
 			else {
-				layerManager.addBack(layerManager.getSelectLayer() + 1);
-				layerManager.setLayer(Layer.BACK,layerManager.getSelectLayer() + 1);
+				layerManager.addBack(layerManager.getBackLayers().size());
+				layerManager.setLayer(Layer.BACK,layerManager.getBackLayers().size() - 1);
 			}
 		}
 		
@@ -184,14 +179,21 @@ public class Mouse {
 				layerManager.changeLayerFrontToFront(0, 1);
 		}
 		
+		//レイヤ―選択描画(仮)
+		if(Gdx.input.isKeyPressed(Keys.D)) {
+			layerManager.selectDraw(Layer.FRONT, 1);
+		}		
+		if(Gdx.input.isKeyPressed(Keys.F)) {
+			layerManager.allDraw();
+		}
 		
 		if(!inputFlag && !Gdx.input.isKeyPressed(oldPressKey))
 			oldPressKey = 0;
 		
 	}
 	private void getMousePosition() {
-		mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x * camera.zoom;
-		mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - camera.position.y * camera.zoom;
+		mousePositionX = ((Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x )* camera.zoom;
+		mousePositionY = ((Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - camera.position.y) * camera.zoom;
 	}
 	
 	private void setOldMousePosition() {

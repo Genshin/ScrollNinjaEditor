@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Import extends ImageButton{
 	private LayerManager  layermanager;
@@ -41,7 +40,7 @@ public class Import extends ImageButton{
 	}
 	
 	private void importFile() {
-		/*File current = new File("./bin/data");
+		File current = new File("./bin/data");
 		JFileChooser FileChooser = new JFileChooser(current.getAbsolutePath());
 		//ファイル選択フィルター宣言
 				ExtendsFileFilter filter[] = {
@@ -64,6 +63,7 @@ public class Import extends ImageButton{
 							
 							for(int node = 0;read.getRootNode(node) != null;node++)	{
 								MapObject setObj = null;
+								
 								//スプライトの種類チェック
 								int layer = read.getObjectInt("layer", node);
 								int layerNo = read.getObjectInt("layerNo", node);
@@ -78,26 +78,29 @@ public class Import extends ImageButton{
 								}
 								setObj.setPosition(read.getObjectFloat("x", node), read.getObjectFloat("y", node));
 								if(layer == Layer.FRONT){
-									if(layerNo >= layermanager.getFrontLayers().size()) {
+									if(layerNo <= layermanager.getFrontLayers().size()) {
 										for(int index = 0;index <= layerNo;index++) {
 											if(layermanager.getFrontLayer(index) == null)
 												layermanager.addFront(index);
 										}
-										layermanager.getFrontLayer(layerNo).setMapObject(setObj);
+										Gdx.app.log("node", "" + node);
+										layermanager.getFrontLayer(layerNo).getMapObjects().add(setObj);
+										
 									}
 								}
 								else if(layer == Layer.BACK)
-									if(layerNo >= layermanager.getBackLayers().size()) {
+									if(layerNo <= layermanager.getBackLayers().size()) {
 										for(int index = 0;index <= layerNo;index++) {
 											if(layermanager.getBackLayer(index) == null)
 												layermanager.addBack(index);
 										}
-										layermanager.getBackLayer(layerNo).setMapObject(setObj);
+										Gdx.app.log("node", "" + node);
+										layermanager.getBackLayer(layerNo).getMapObjects().add(setObj);
 									}
 							}
 						}
 					}
-				}*/
+				}
 	}
 	
 
