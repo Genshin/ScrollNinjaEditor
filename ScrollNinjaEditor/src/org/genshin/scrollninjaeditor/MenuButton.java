@@ -18,19 +18,18 @@ public class MenuButton extends ImageButton{
 		this.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event,float x,float y){
-				if(!menuClickFlg)
-				{
+				if(!menuClickFlg){
 					mapEditorStage.addScrollPane();
 					table.getChildren().get(2).setX(screenWidth - getWidth() - mapEditorStage.getPaneWidth());
 					menuClickFlg = true;
 				}
-				else
-				{
+				else{
 					mapEditorStage.removeButton();
 					table.getChildren().get(2).setX(screenWidth - getWidth());
 					menuClickFlg = false;
 				}
 			}
 		});
+		
 	}
 }

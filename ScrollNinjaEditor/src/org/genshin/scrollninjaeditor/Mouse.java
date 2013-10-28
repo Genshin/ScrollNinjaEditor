@@ -6,7 +6,6 @@ import com.badlogic.gdx.Input.Keys;
 
 
 public class Mouse {
-	
 	private Camera 			 camera;
 	private int				 selectFlag = -1;
 
@@ -20,7 +19,6 @@ public class Mouse {
 	private LayerManager	 layerManager;
 	private boolean			 inputFlag = false;
 
-	
 	public Mouse() {
 		camera = Camera.getInstance();
 		layerManager = LayerManager.getInstance();
@@ -29,8 +27,7 @@ public class Mouse {
 	public void update(Camera camera ,LayerManager layer) {
 		this.camera = camera;
 		this.layerManager = layer;
-		
-		
+
 		setOldMousePosition();
 		getMousePosition();
 		input();
@@ -38,30 +35,24 @@ public class Mouse {
 			hitCheck();
 		else
 			drag();
-		
 	}
-	
-	
-	private void hitCheck() {
-		for(int i = 0 ; i <layerManager.getLayer(layerManager.getSelectLayer()).getMapObjects().size();i++){
-			if(layerManager.getLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY)) {
-				if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
-					
-					objectPositonX = layerManager.getLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().getX();
-					objectPositonY = -layerManager.getLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().getY();
-					selectFlag = i;
-											
-				}
-				if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-					layerManager.getLayer(layerManager.getSelectLayer()).getMapObjects().remove(i);
-					break;
-				}
-			}
-		}
-	}
-	
 
-	
+	private void hitCheck() {
+        for(int i = 0 ; i <layerManager.getLayer(layerManager.getSelectLayer()).getMapObjects().size();i++){
+            if(layerManager.getLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY)) {
+                if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
+                    objectPositonX = layerManager.getLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().getX();
+                    objectPositonY = -layerManager.getLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().getY();
+                    selectFlag = i;
+                }
+                if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+                    layerManager.getLayer(layerManager.getSelectLayer()).getMapObjects().remove(i);
+                    break;
+                }
+            }
+        }
+	}
+
 	private void drag() {
 		if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
 
@@ -82,7 +73,6 @@ public class Mouse {
 				if(selectFlag > 0)
 				selectFlag = flag - 1;
 			}
-			
 		}
 		else
 			selectFlag = -1;
@@ -154,7 +144,6 @@ public class Mouse {
 					layerManager.removeFront(layerManager.getSelectLayer());
 					layerManager.setLayer(Layer.FRONT, 0);
 				}
-					
 			}
 			
 			else {
@@ -189,16 +178,15 @@ public class Mouse {
 		
 		if(!inputFlag && !Gdx.input.isKeyPressed(oldPressKey))
 			oldPressKey = 0;
-		
 	}
+
 	private void getMousePosition() {
-		mousePositionX = ((Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x )* camera.zoom;
+		mousePositionX = ((Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x) * camera.zoom;
 		mousePositionY = ((Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - camera.position.y) * camera.zoom;
 	}
-	
+
 	private void setOldMousePosition() {
 		oldmousePositionX = mousePositionX;
 		oldmousePositionY = mousePositionY;
 	}
-	
 }
