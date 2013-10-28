@@ -3,24 +3,27 @@ package org.genshin.scrollninjaeditor;
 import java.io.File;
 
 
+
 import javax.swing.JFileChooser;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Import extends ImageButton{
-	private MapObjectManager  manager;
+	private LayerManager  layermanager;
+	private MapObjectManager mapObjManager;
 
 	
 	
 	public Import(SpriteDrawable sd) {
 		super(sd);
 		
-		manager = MapObjectManager.getInstance();
+		layermanager = LayerManager.getInstance();
+		mapObjManager = MapObjectManager.getInstance();
 	
 		this.addListener(new ClickListener(){
 			@Override
@@ -33,9 +36,12 @@ public class Import extends ImageButton{
 		
     }
 	
+	public void setlayer(LayerManager layer) {
+		this.layermanager = layer;
+	}
 	
 	private void importFile() {
-		File current = new File("./bin/data");
+		/*File current = new File("./bin/data");
 		JFileChooser FileChooser = new JFileChooser(current.getAbsolutePath());
 		//ファイル選択フィルター宣言
 				ExtendsFileFilter filter[] = {
@@ -59,8 +65,10 @@ public class Import extends ImageButton{
 							for(int node = 0;read.getRootNode(node) != null;node++)	{
 								MapObject setObj = null;
 								//スプライトの種類チェック
-								String layer = read.getObjectString("layer", node);
-								for(MapObject obj:manager.getMapObjectList()) {
+								int layer = read.getObjectInt("layer", node);
+								int layerNo = read.getObjectInt("layerNo", node);
+								
+								for(MapObject obj:mapObjManager.getMapObjectList()) {
 									String label = read.getObjectString("label", node);
 																	
 									if(label.matches(obj.getLabelName())) {	
@@ -69,15 +77,27 @@ public class Import extends ImageButton{
 									}
 								}
 								setObj.setPosition(read.getObjectFloat("x", node), read.getObjectFloat("y", node));
-								if(layer.matches("Front"))
-									manager.setFrontObject(setObj);
-								else if(layer.matches("Back"))
-									manager.setBackObject(setObj);
-							
+								if(layer == Layer.FRONT){
+									if(layerNo >= layermanager.getFrontLayers().size()) {
+										for(int index = 0;index <= layerNo;index++) {
+											if(layermanager.getFrontLayer(index) == null)
+												layermanager.addFront(index);
+										}
+										layermanager.getFrontLayer(layerNo).setMapObject(setObj);
+									}
+								}
+								else if(layer == Layer.BACK)
+									if(layerNo >= layermanager.getBackLayers().size()) {
+										for(int index = 0;index <= layerNo;index++) {
+											if(layermanager.getBackLayer(index) == null)
+												layermanager.addBack(index);
+										}
+										layermanager.getBackLayer(layerNo).setMapObject(setObj);
+									}
 							}
 						}
 					}
-				}
+				}*/
 	}
 	
 

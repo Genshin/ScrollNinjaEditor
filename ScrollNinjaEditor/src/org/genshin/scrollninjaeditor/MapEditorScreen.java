@@ -66,7 +66,16 @@ public class MapEditorScreen implements Screen {
         if(!cameraMove)
            	mouse.update(camera,layermanager);
         
-       Gdx.app.log("", "" + layermanager.getLayer(layermanager.getSelectLayer()).getMapObjects().size());
+      /* if(layermanager.getSelectPlace() == Layer.FRONT) {
+    	   Gdx.app.log("FrontLayerNum", "" + layermanager.getFrontLayers().size());
+    	   Gdx.app.log("FrontLayerNo", "" + layermanager.getSelectLayer());
+    	   Gdx.app.log("FrontLayerObjectNum", "" + layermanager.getFrontLayer(layermanager.getSelectLayer()).getMapObjects().size());
+       }
+       else {
+       	   Gdx.app.log("BackLayerNum", "" + layermanager.getBackLayers().size());
+       	   Gdx.app.log("BackLayerNo", "" + layermanager.getSelectLayer());
+       	   Gdx.app.log("BackLayerObjectNum", "" + layermanager.getBackLayer(layermanager.getSelectLayer()).getMapObjects().size());
+       }*/
 	}
 
 	/**
@@ -80,10 +89,10 @@ public class MapEditorScreen implements Screen {
 		
 		batch.begin();
 		//manager.drawBackObject(batch);
-		layermanager.drawFrontLayers(batch);
+		layermanager.drawBackLayers(batch);
 		load.draw(batch);
 		//manager.drawFrontObjects(batch);			// オブジェボタン描画
-		layermanager.drawBackLayers(batch);
+		layermanager.drawFrontLayers(batch);
 		
 		batch.end();
 		mapEditorStage.act(Gdx.graphics.getDeltaTime());

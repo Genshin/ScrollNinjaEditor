@@ -13,14 +13,15 @@ public class LayerManager {
 
 	
 	public LayerManager() {
-		addFront();
-		addBack();
+		addFront(0);
+		addBack(0);
 		setLayer(0,Layer.FRONT);
 	}
 	
 	public static LayerManager getInstance() {
 		return instance;
 	}
+	
 	
 	public void setLayer(int place,int number) {
 		this.selectPlace = place;
@@ -46,10 +47,16 @@ public class LayerManager {
 			return null;
 	}
 	public Layer getFrontLayer(int index) {
-		return frontLayers.get(index);
+		if(index < this.frontLayers.size())
+			return frontLayers.get(index);
+		else
+			return null;
 	}
 	public Layer getBackLayer(int index) {
-		return backLayers.get(index);
+		if(index < this.backLayers.size())
+			return backLayers.get(index);
+		else
+			return null;
 	}
 	
 	
@@ -57,27 +64,39 @@ public class LayerManager {
 	public ArrayList<Layer> getFrontLayers() {
 		return frontLayers;
 	}
-	public ArrayList<Layer> getBackLayer() {
+	public ArrayList<Layer> getBackLayers() {
 		return backLayers;
 	}
 	
 	
 	//レイヤ―追加
-	public void addFront() {
-		frontLayers.add(new Layer(frontLayers.size(),Layer.FRONT));
+	public void addFront(int i) {
+		frontLayers.add(new Layer(i,Layer.FRONT));
 	}
-	public void addBack() {
-		backLayers.add(new Layer(backLayers.size(),Layer.BACK));
+	public void addBack(int i) {
+		backLayers.add(new Layer(i,Layer.BACK));
 	}
 	
 	//レイヤ―削除
 	public void removeFront(int index) {
-		if(frontLayers.get(index) != null)
+		if(frontLayers.get(index) != null) {	
 			frontLayers.remove(index);
+			for(int i = 0 ; i + index < frontLayers.size() ; i++ ) {
+				frontLayers.get(index + i).setLabel(index + i);
+				frontLayers.get(index + i).setLayerNumber(index + i);
+				
+			}
+		}
 	}
 	public void removeBack(int index) {
-		if(backLayers.get(index) != null)
+		if(backLayers.get(index) != null) {
 			backLayers.remove(index);
+			for(int i = 0 ; i + index < backLayers.size() ; i++ ) {
+				backLayers.get(index + i).setLabel(index + i);
+				backLayers.get(index + i).setLayerNumber(index + i);
+			}
+		}
+			
 	}
 	
 	//レイヤ―描画

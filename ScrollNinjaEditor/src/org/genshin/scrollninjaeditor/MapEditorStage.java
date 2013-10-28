@@ -27,6 +27,8 @@ public class MapEditorStage extends Stage{
 	
 	public void create(float screenWidth ,float screenHeight,final MapObjectManager manager,Camera camera,LayerManager layer){
 		layermanager = layer;
+		importButton.setlayer(layermanager);
+		exportButton.setlayer(layermanager);
 		createScrollPane(manager,camera);
 		menuButton.create(table, screenWidth, this);
 		addButton(screenWidth, screenHeight);
@@ -43,8 +45,9 @@ public class MapEditorStage extends Stage{
 		table.add(exportButton).top().left().size(32,32);
 		addActor(table);
 		
+
 		// メニュー
-		table.add(menuButton).expand().right();
+		table.add(menuButton).expand().right().top();
 		addActor(table);
 	}
 	

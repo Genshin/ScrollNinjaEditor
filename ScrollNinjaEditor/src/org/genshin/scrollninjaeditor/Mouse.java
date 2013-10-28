@@ -17,10 +17,9 @@ public class Mouse {
 	private float			 oldmousePositionY;
 	private float			 objectPositonX;
 	private float			 objectPositonY;
-	private int				 FRONT = 0;
-	private int				 BACK  = 1;
 	private int				 oldPressKey;
 	private LayerManager	 layerManager;
+	private boolean			 inputFlag = false;
 
 	
 	public Mouse() {
@@ -33,11 +32,10 @@ public class Mouse {
 		this.camera = camera;
 		this.layerManager = layer;
 		
-		//if(camera.zoom == 1)
-			//MouseOver();
 		
 		setOldMousePosition();
 		getMousePosition();
+		input();
 		if(selectFlag == -1)
 			hitCheck();
 		else
@@ -47,9 +45,7 @@ public class Mouse {
 	
 	
 	private void hitCheck() {
-		//if(!checkFront())
-			//checkBack();
-		for(int i = layerManager.getLayer(layerManager.getSelectLayer()).getMapObjects().size() - 1 ; i >= 0 ;i--) {
+		for(int i = 0 ; i <layerManager.getLayer(layerManager.getSelectLayer()).getMapObjects().size();i++){
 			if(layerManager.getLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY)) {
 				if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
 					
@@ -66,46 +62,7 @@ public class Mouse {
 		}
 	}
 	
-	private boolean checkFront() {
-		for(int i =  manager.getFrontObjects().size() - 1; i >= 0; i--) {
 
-			if(manager.getFrontObject(i).getSp().getBoundingRectangle().contains(mousePositionX , -mousePositionY)) {
-				if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
-	
-					objectPositonX = manager.getFrontObject(i).getSp().getX();
-					objectPositonY = -manager.getFrontObject(i).getSp().getY();
-					selectFlag = i;
-					selectLayer = FRONT;
-					return true;
-						
-				}
-				if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-					manager.getFrontObjects().remove(i);
-					break;
-				}
-			}
-		}
-		return false;
-	}
-	
-	private void checkBack() {
-		for(int i = manager.getBackObjects().size() - 1; i >= 0;i--) {
-		
-			if(manager.getBackObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY)) {
-				if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
-					objectPositonX = manager.getBackObject(i).getSp().getX();
-					objectPositonY = -manager.getBackObject(i).getSp().getY();
-					selectFlag = i;
-					selectLayer = BACK;
-					break;	
-				}
-				if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-					manager.getBackObjects().remove(i);
-					break;
-				}
-			}
-		}
-	}
 	
 	private void drag() {
 		if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
@@ -114,69 +71,124 @@ public class Mouse {
 			objectPositonY += (mousePositionY - oldmousePositionY);
 			
 			layerManager.getLayer(layerManager.getSelectLayer()).getMapObject(selectFlag).setPosition(objectPositonX, -objectPositonY);
-			/*if(selectLayer == FRONT)
-			{
-				manager.getFrontObject(selectFlag).setPosition(objectPositonX, -objectPositonY);
-				
-				if(Gdx.input.isKeyPressed(Keys.A) && oldPressKey != Keys.A)
-				{
-					oldPressKey = Keys.A;
-					manager.setBackObject(manager.getFrontObject(selectFlag));
-					manager.removefrontObject(manager.getFrontObject(selectFlag));
-					selectLayer = BACK;
-					selectFlag = manager.getBackObjects().size() - 1;
-				}
+			int flag = selectFlag;
+			
+			//オブジェクト順序入れ替え(仮)
+			if(Gdx.input.isKeyPressed(Keys.A)) {	
+				layerManager.getLayer(layerManager.getSelectLayer()).next(selectFlag);
+				if(selectFlag + 1 < layerManager.getLayer(layerManager.getSelectLayer()).getMapObjects().size())
+				selectFlag = flag + 1;
 			}
-			else if(selectLayer == BACK)
-			{
-				manager.getBackObject(selectFlag).setPosition(objectPositonX, -objectPositonY);
-				if(Gdx.input.isKeyPressed(Keys.S) && oldPressKey != Keys.S)
-				{
-					oldPressKey = Keys.S;
-					manager.setFrontObject(manager.getBackObject(selectFlag));
-					manager.removeBackObject(manager.getBackObject(selectFlag));
-					selectLayer = FRONT;
-					selectFlag = manager.getFrontObjects().size() - 1;
-				}
-			}*/
+			if(Gdx.input.isKeyPressed(Keys.S)) {
+				layerManager.getLayer(layerManager.getSelectLayer()).previous(selectFlag);
+				if(selectFlag > 0)
+				selectFlag = flag - 1;
+			}
 			
 		}
 		else
 		{
-			oldPressKey = -1;
 			selectLayer = -1;
 			selectFlag = -1;
 		}
 	}
-	
-	private void MouseOver() {
-		BackOver(FrontOver());
-	}
-	
-	private boolean FrontOver() {
-		boolean check = false;
-		for(int i = manager.getFrontObjects().size() - 1 ;i >=0 ;i-- ) {
-			if(manager.getFrontObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY) && !check) {
-				manager.getFrontObject(i).getSp().setColor(0.0f, 1.0f, 0.0f, 0.5f);
-				check = true;
+		
+	private void input() {
+		inputFlag = false;
+		//レイヤ―移動
+		//次のレイヤ―へ
+		if(Gdx.input.isKeyPressed(Keys.Z) && oldPressKey != Keys.Z) {
+			oldPressKey = Keys.Z;
+			inputFlag = true;
+			if(layerManager.getSelectPlace() == Layer.FRONT) {
+				if(layerManager.getFrontLayers().size() > layerManager.getSelectLayer() + 1)
+				layerManager.setLayer(layerManager.getSelectPlace(), layerManager.getSelectLayer() + 1);
 			}
-			else
-				manager.getFrontObject(i).getSp().setColor(1.0f, 1.0f, 1.0f, 1.0f);		
+			else {
+				if(layerManager.getBackLayers().size() > layerManager.getSelectLayer() + 1)
+					layerManager.setLayer(layerManager.getSelectPlace(), layerManager.getSelectLayer() + 1);
+			}
+		}
+		//ひとつ前のレイヤ―へ
+		if(Gdx.input.isKeyPressed(Keys.X) && oldPressKey != Keys.X) {
+			oldPressKey = Keys.X;
+			inputFlag = true;
+			if(!(layerManager.getSelectLayer() - 1 < 0) && layerManager.getLayer(layerManager.getSelectLayer() - 1) != null )
+				layerManager.setLayer(layerManager.getSelectPlace(), layerManager.getSelectLayer() - 1);
 		}
 		
-		return check;
-	}
-	private void BackOver(boolean check) {
-		for(int i = manager.getBackObjects().size() - 1 ;i >=0 ;i-- ) {
-			if(manager.getBackObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY) && !check) {
-				manager.getBackObject(i).getSp().setColor(0.0f, 1.0f, 0.0f, 0.5f);
-				
-			}
+		//レイヤ―前後切替
+		if(Gdx.input.isKeyPressed(Keys.C) && oldPressKey != Keys.C) {
+			oldPressKey = Keys.C;
+			inputFlag = true;
+			if(layerManager.getSelectPlace() == Layer.FRONT)
+				layerManager.setLayer(Layer.BACK, 0);
 			else
-				manager.getBackObject(i).getSp().setColor(1.0f, 1.0f, 1.0f, 1.0f);		
+				layerManager.setLayer(Layer.FRONT, 0);
 		}
+		
+		//レイヤ―追加
+		if(Gdx.input.isKeyPressed(Keys.V) && oldPressKey != Keys.V) {
+			oldPressKey = Keys.V;
+			inputFlag = true;
+			if(layerManager.getSelectPlace() == Layer.FRONT) {
+				layerManager.addFront(layerManager.getSelectLayer() + 1);
+				layerManager.setLayer(Layer.FRONT,layerManager.getSelectLayer() + 1);
+			}
+			else {
+				layerManager.addBack(layerManager.getSelectLayer() + 1);
+				layerManager.setLayer(Layer.BACK,layerManager.getSelectLayer() + 1);
+			}
+		}
+		
+		//レイヤ―削除
+		if(Gdx.input.isKeyPressed(Keys.B) && oldPressKey != Keys.B) {
+			oldPressKey = Keys.B;
+			inputFlag = true;
+			if(layerManager.getSelectPlace() == Layer.FRONT) {
+				if(layerManager.getFrontLayers().size() > 1) {
+					layerManager.removeFront(layerManager.getSelectLayer());
+					Gdx.app.log("delete","" + layerManager.getSelectLayer());
+					if(layerManager.getSelectLayer() != 0)
+						layerManager.setLayer(Layer.FRONT, layerManager.getSelectLayer() - 1);
+					else
+						layerManager.setLayer(Layer.FRONT, 0);
+				}
+				else if(layerManager.getFrontLayers().size() == 1) {
+					layerManager.addFront(layerManager.getSelectLayer() + 1);
+					layerManager.removeFront(layerManager.getSelectLayer());
+					layerManager.setLayer(Layer.FRONT, 0);
+				}
+					
+			}
+			
+			else {
+				if(layerManager.getBackLayers().size() > 1) {
+					layerManager.removeBack(layerManager.getSelectLayer());
+					if(layerManager.getSelectLayer() != 0)
+						layerManager.setLayer(Layer.BACK, layerManager.getSelectLayer() - 1);
+					else
+						layerManager.setLayer(Layer.BACK, layerManager.getSelectLayer() );
+				}
+				else if(layerManager.getBackLayers().size() == 1) {
+					layerManager.addBack(layerManager.getSelectLayer() + 1);
+					layerManager.removeBack(layerManager.getSelectLayer());
+					layerManager.setLayer(Layer.BACK, 0);
+				}
+			}
+		}
+		
+		//レイヤ―入れ替え(仮)
+		if(Gdx.input.isKeyPressed(Keys.A)) {
+			if(layerManager.getFrontLayers().size() > 1)
+				layerManager.changeLayerFrontToFront(0, 1);
+		}
+		
+		
+		if(!inputFlag && !Gdx.input.isKeyPressed(oldPressKey))
+			oldPressKey = 0;
+		
 	}
-	
 	private void getMousePosition() {
 		mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x * camera.zoom;
 		mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - camera.position.y * camera.zoom;
