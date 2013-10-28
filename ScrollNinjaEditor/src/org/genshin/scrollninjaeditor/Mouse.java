@@ -38,7 +38,6 @@ public class Mouse {
 			drag();
 	}
 
-
 	private void hitCheck() {
 		if(!checkFront())
 			checkBack();
@@ -47,10 +46,9 @@ public class Mouse {
 	private boolean checkFront() {
 		for(int i =  manager.getFrontObjects().size() - 1; i >= 0; i--) {
 			
-			if(manager.getFrontObject(i).getSp().getBoundingRectangle().contains(mousePositionX , -mousePositionY)) {
+			if(manager.getFrontObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY)) {
 				if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
 
-	
 					objectPositonX = manager.getFrontObject(i).getSp().getX();
 					objectPositonY = -manager.getFrontObject(i).getSp().getY();
 					selectFlag = i;
@@ -149,8 +147,8 @@ public class Mouse {
 	}
 
 	private void getMousePosition() {
-		mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x * camera.zoom;
-		mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - camera.position.y * camera.zoom;
+		mousePositionX = ((Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x )* camera.zoom;
+		mousePositionY = ((Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - camera.position.y )* camera.zoom;
 	}
 
 	private void setOldMousePosition() {
