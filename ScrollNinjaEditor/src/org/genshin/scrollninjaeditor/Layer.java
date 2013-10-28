@@ -56,8 +56,6 @@ public class Layer {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				active = !active;
-				// TODO アクティブ状態で色変更
-				Gdx.app.log("", "aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 			}
 		});
 	}
@@ -101,7 +99,8 @@ public class Layer {
 	public void drawLabel(SpriteBatch batch) {
 		if(layerPlace == FRONT) {
 			label.setText("Front" + layerNumber);
-			label.setPosition(-Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 - 64 - 32 * (layerNumber ));
+			label.setPosition(-Gdx.graphics.getWidth() / 2, 
+								Gdx.graphics.getHeight() / 2 - 64 - 32 * (layerNumber ));
 		}
 		else {
 			label.setText("Back" + layerNumber);

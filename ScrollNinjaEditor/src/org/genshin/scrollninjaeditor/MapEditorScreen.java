@@ -60,10 +60,6 @@ public class MapEditorScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void update(float delta) {
-		/*zoom = mapEditorStage.update() / 100;
-		if(zoom < 1){
-			zoom = 1;
-		}*/
 		
 		zoom = mapEditorStage.getZoom();
 
@@ -73,17 +69,6 @@ public class MapEditorScreen implements Screen {
 		//===オブジェクトクリック
         if(!cameraMove)
            	mouse.update(camera,layermanager);
-        
-      /* if(layermanager.getSelectPlace() == Layer.FRONT) {
-    	   Gdx.app.log("FrontLayerNum", "" + layermanager.getFrontLayers().size());
-    	   Gdx.app.log("FrontLayerNo", "" + layermanager.getSelectLayer());
-    	   Gdx.app.log("FrontLayerObjectNum", "" + layermanager.getFrontLayer(layermanager.getSelectLayer()).getMapObjects().size());
-       }
-       else {
-       	   Gdx.app.log("BackLayerNum", "" + layermanager.getBackLayers().size());
-       	   Gdx.app.log("BackLayerNo", "" + layermanager.getSelectLayer());
-       	   Gdx.app.log("BackLayerObjectNum", "" + layermanager.getBackLayer(layermanager.getSelectLayer()).getMapObjects().size());
-       }*/
 	}
 
 	/**
