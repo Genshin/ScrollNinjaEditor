@@ -152,7 +152,7 @@ public class Mouse {
 					if(layerManager.getSelectLayer() != 0)
 						layerManager.setLayer(Layer.BACK, layerManager.getSelectLayer() - 1);
 					else
-						layerManager.setLayer(Layer.BACK, layerManager.getSelectLayer() );
+						layerManager.setLayer(Layer.BACK, 0);
 				}
 				else if(layerManager.getBackLayers().size() == 1) {
 					layerManager.addBack(layerManager.getSelectLayer() + 1);

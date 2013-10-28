@@ -56,6 +56,7 @@ public class Layer {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				active = !active;
+				Gdx.app.log("", "aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 			}
 		});
 	}
