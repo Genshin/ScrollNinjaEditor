@@ -13,7 +13,6 @@ public class Camera extends OrthographicCamera {
 	private float   oldmousePositionY = 0.0f;
 	private float   mousePositionX = 0.0f;
 	private float   mousePositionY = 0.0f;
-	private boolean initialize = false;
 	
 	public Camera() {
 	}
@@ -25,8 +24,6 @@ public class Camera extends OrthographicCamera {
 	public static Camera getInstance() {
 		return instance;
 	}
-	
-
 
 	public void move() {
 			
@@ -43,12 +40,10 @@ public class Camera extends OrthographicCamera {
 				
 				this.translate(-(mousePositionX - oldmousePositionX) / 2, (mousePositionY - oldmousePositionY) / 2);
 			}
-			
 		}
 		else {
 			moveFlag = false;
 		}
-		
 	}
 	
 	public void zoom(float zoomSize) {
@@ -60,12 +55,10 @@ public class Camera extends OrthographicCamera {
 		}
 	}
 	
-	public boolean update(float zoomSize)
-	{
+	public boolean update(float zoomSize){
 		move();
 		zoom(zoomSize);
 		this.update();
 		return moveFlag;
 	}
-	
 }

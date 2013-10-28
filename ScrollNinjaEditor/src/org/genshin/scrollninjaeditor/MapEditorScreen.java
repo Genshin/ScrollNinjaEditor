@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class MapEditorScreen implements Screen {
@@ -20,6 +22,7 @@ public class MapEditorScreen implements Screen {
 	private Load				load;
 	private Mouse				mouse;
 	private float				zoom = 1.0f;
+	private ShapeRenderer  sr = new ShapeRenderer();
 
 	/**
 	 * Constructor
@@ -63,7 +66,7 @@ public class MapEditorScreen implements Screen {
 		
 		//===オブジェクトクリック
         if(!cameraMove)
-           	mouse.update(camera);
+           	mouse.update(camera);//
 	}
 
 	/**
@@ -79,11 +82,43 @@ public class MapEditorScreen implements Screen {
 		manager.drawBackObject(batch);
 		load.draw(batch);
 		manager.drawFrontObjects(batch);			// オブジェボタン描画
-		
 		batch.end();
+		
 		mapEditorStage.act(Gdx.graphics.getDeltaTime());
 		mapEditorStage.draw();
 		Table.drawDebug(mapEditorStage);
+		sr.setProjectionMatrix(camera.combined);
+		sr.begin(ShapeType.Rectangle);
+		sr.setColor(1, 0, 0, 1);
+		sr.rect(load.getSprite(0).getX(),
+				load.getSprite(0).getY(), 
+				load.getSprite(0).getWidth(), 
+				load.getSprite(0).getHeight());
+		sr.end();
+		
+		// ライン出し
+		for (int i = 0 ; i < manager.getFrontObjects().size() ; i ++){
+			sr.setProjectionMatrix(camera.combined);
+			sr.begin(ShapeType.Rectangle);
+			sr.setColor(1, 0, 0, 1);
+			sr.rect(manager.getFrontObject(i).getSp().getBoundingRectangle().getX(),
+					manager.getFrontObject(i).getSp().getBoundingRectangle().getY(),
+					manager.getFrontObject(i).getSp().getBoundingRectangle().getWidth(),
+					manager.getFrontObject(i).getSp().getBoundingRectangle().getHeight());
+			sr.end();
+		}
+		
+		// ライン出し
+		for (int i = 0 ; i < manager.getFrontObjects().size() ; i ++){
+			sr.setProjectionMatrix(camera.combined);
+			sr.begin(ShapeType.Rectangle);
+			sr.setColor(0, 1, 0, 1);
+			sr.rect(manager.getFrontObject(i).getSp().getX(),
+					manager.getFrontObject(i).getSp().getY(),
+					manager.getFrontObject(i).getSp().getWidth(),
+					manager.getFrontObject(i).getSp().getHeight());
+			sr.end();
+		}
 	}
 
 	@Override
