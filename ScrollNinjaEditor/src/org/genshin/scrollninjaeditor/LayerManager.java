@@ -115,6 +115,8 @@ public class LayerManager {
 		}
 			
 	}
+	
+	//描画レイヤ―の選択
 	public void selectDraw(int layerPlace,int layerNo) {
 		for(Layer lay:frontLayers) 
 			lay.setDrawFlag(false);

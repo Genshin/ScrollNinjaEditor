@@ -47,12 +47,7 @@ public class Camera extends OrthographicCamera {
 	}
 	
 	public void zoom(float zoomSize) {
-		if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && Gdx.input.isKeyPressed(Keys.NUM_0)) {
-			this.zoom = 2;
-		}
-		else{
-			this.zoom = zoomSize;
-		}
+		this.zoom = zoomSize;
 	}
 	
 	public boolean update(float zoomSize){

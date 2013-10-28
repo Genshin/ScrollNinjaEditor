@@ -181,8 +181,8 @@ public class Mouse {
 	}
 
 	private void getMousePosition() {
-		mousePositionX = ((Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x) * camera.zoom;
-		mousePositionY = ((Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - camera.position.y) * camera.zoom;
+		mousePositionX = ((Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x /2) * camera.zoom;
+		mousePositionY = ((Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - camera.position.y/2) * camera.zoom;
 	}
 
 	private void setOldMousePosition() {

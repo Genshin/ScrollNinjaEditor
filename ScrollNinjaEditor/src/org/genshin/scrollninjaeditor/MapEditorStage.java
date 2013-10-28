@@ -1,10 +1,13 @@
 package org.genshin.scrollninjaeditor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class MapEditorStage extends Stage{
@@ -15,6 +18,7 @@ public class MapEditorStage extends Stage{
 	private MenuButton		menuButton;
 	private Camera			camera2;
 	private LayerManager    layermanager;
+	private Label			scale;
 	
 	private float z = 1.0f;
 	
@@ -30,6 +34,7 @@ public class MapEditorStage extends Stage{
 		table.setFillParent(true);
 		table.debug();
 		
+		scale = new Label((100 * z) + "%",new Skin(Gdx.files.internal("data/uiskin.json")));
 		importButton = new Import(load.getSpriteDrawable(Load.IMPORT));
 		exportButton = new Export(load.getSpriteDrawable(Load.EXPORT));
 		menuButton = new MenuButton(load.getSpriteDrawable(Load.MENU));
@@ -50,7 +55,7 @@ public class MapEditorStage extends Stage{
 		menuButton.create(table, screenWidth, this);
 		addButton(screenWidth, screenHeight);
 		camera2 = camera;
-		
+		scale.setColor(0.0f, 0.0f, 0.0f, 1.0f);
 		// スクロール
 		addListener(new InputListener(){
 		@Override
@@ -59,8 +64,11 @@ public class MapEditorStage extends Stage{
 			InputEvent event = (InputEvent)e;
 			if (event.getType() == InputEvent.Type.scrolled) {
 				z += 0.1f * event.getScrollAmount();
-				if(z < -1)
-					z = -1;
+				if(z >2.0f)
+					z = 2.0f;
+				else if(z < 0.1f)
+					z = 0.1f;
+				scale.setText(Math.round(210 - (100 * z)) + "%");
 				Gdx.app.log("tes", "scrol" + event.getScrollAmount());
 				Gdx.app.log("tes", "scrol" + z);
 			}
@@ -69,8 +77,16 @@ public class MapEditorStage extends Stage{
 		});
 	}
 	
-	public float getZoom(){
-		return z;
+	public float getZoom(float texWidth,float texHeight ){
+		float screenWidth = Gdx.graphics.getWidth();
+		float screenHeight = Gdx.graphics.getHeight();
+		if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && Gdx.input.isKeyPressed(Keys.NUM_0)){
+			if(texWidth / screenWidth < texHeight / screenHeight)
+				return texHeight / screenHeight;
+			else
+				return texWidth / screenWidth;
+		}
+		return z ;
 	}
 
 	/**
@@ -86,7 +102,10 @@ public class MapEditorStage extends Stage{
 		// エクスポート
 		table.add(exportButton).top().left().size(32,32);
 		addActor(table);
-
+		
+		table.add(scale).top().left().size(64,32);
+		addActor(table);
+		
 		// メニュー
 		table.add(menuButton).expand().right().top();
 		addActor(table);
