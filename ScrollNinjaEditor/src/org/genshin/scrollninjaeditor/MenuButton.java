@@ -23,10 +23,6 @@ public class MenuButton extends ImageButton{
 					mapEditorStage.addScrollPane();
 					table.getChildren().get(3).setX(screenWidth - getWidth() - mapEditorStage.getPaneWidth());
 					menuClickFlg = true;
-					Gdx.app.log("tag", "X:" + table.getChildren().get(2).getX());
-					Gdx.app.log("tag", "W:" + mapEditorStage.getPaneWidth());
-					Gdx.app.log("tag", "sW:" + screenWidth);
-					Gdx.app.log("tag", "X:" + getWidth());
 				}
 				else{
 					mapEditorStage.removeButton();

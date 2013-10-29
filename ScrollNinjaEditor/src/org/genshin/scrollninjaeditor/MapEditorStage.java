@@ -135,6 +135,7 @@ public class MapEditorStage extends Stage{
 	 * AddScrollPane process
 	 */
 	public void addScrollPane(){
+		scrolloPaneStage.layerFrontCreate(scrollTable);
 		addActor(scrollTable);
 	}
 
