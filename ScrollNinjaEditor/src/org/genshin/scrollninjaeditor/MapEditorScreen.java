@@ -2,6 +2,7 @@ package org.genshin.scrollninjaeditor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -26,6 +27,8 @@ public class MapEditorScreen implements Screen {
 	//-----------------------------------------
 	private LayerManager		layermanager = new LayerManager();
 	//-----------------------------------------
+	 int oldPressKey;
+	 boolean inputFlag;
 
 	/**
 	 * Constructor
@@ -69,7 +72,16 @@ public class MapEditorScreen implements Screen {
 		//===オブジェクトクリック
         if(!cameraMove)
            	mouse.update(camera,layermanager);
-	}
+        
+		if(Gdx.input.isKeyPressed(Keys.Q) && (inputFlag == false)) {
+			inputFlag = true;
+			mapEditorStage.updateLayer();
+		}
+		
+		if(!Gdx.input.isKeyPressed(Keys.Q) && (inputFlag == true)) {
+			inputFlag = false;
+		}
+   	}
 
 	/**
 	 * Draw process
