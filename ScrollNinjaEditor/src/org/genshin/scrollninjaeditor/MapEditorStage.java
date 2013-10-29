@@ -20,6 +20,7 @@ public class MapEditorStage extends Stage{
 	private LayerManager    layermanager;
 	private Label			scale;
 	private Table			scrollTable;
+	private int 			sizeCnt = 0;
 	
 	private float z = 1.0f;
 	
@@ -39,7 +40,7 @@ public class MapEditorStage extends Stage{
 		scrollTable.right();
 		scrollTable.debug();
 		
-		scale = new Label((100 * z) + "%",new Skin(Gdx.files.internal("data/uiskin.json")));
+		scale = new Label("",new Skin(Gdx.files.internal("data/uiskin.json")));
 		importButton = new Import(load.getSpriteDrawable(Load.IMPORT));
 		exportButton = new Export(load.getSpriteDrawable(Load.EXPORT));
 		menuButton = new MenuButton(load.getSpriteDrawable(Load.MENU));
@@ -61,36 +62,51 @@ public class MapEditorStage extends Stage{
 		addButton(screenWidth, screenHeight);
 		camera2 = camera;
 		scale.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+		scale.setPosition(64.0f,screenHeight - 32);
+		scale.setText(Math.round(100 + (-sizeCnt  * 10))  + "%");
+		this.addActor(scale);
 		// スクロール
+		scroll();
+
+	}
+	
+	private void scroll() {
 		addListener(new InputListener(){
-		@Override
-		public boolean handle (Event e) {
-		if (!(e instanceof InputEvent)) return false;
-			InputEvent event = (InputEvent)e;
-			if (event.getType() == InputEvent.Type.scrolled) {
-				if(z < 1.0f) {
-					z += 0.1f * event.getScrollAmount();
-					if(z < 0.1f)
-						z = 0.1f;
-					scale.setText(Math.round(100 + (100 - 100 * z)) + "%");
-				}
-				else if(z < 2.0f){
-					z +=0.2f * event.getScrollAmount();
-					scale.setText(Math.round(100 - ((z - 1.0f) / 2 * 100)  ) + "%");
-				}
-				else if(z <= 6.0f) {
-					z +=1.0f * event.getScrollAmount();
-					if(z > 6.0f)
-						z = 6.0f;
-					scale.setText(Math.round(70 - 10 * z) + "%");
-				}				
+			@Override
+			public boolean handle (Event e) {
+			if (!(e instanceof InputEvent)) return false;
+				InputEvent event = (InputEvent)e;
+				if (event.getType() == InputEvent.Type.scrolled) {
+					sizeCnt += event.getScrollAmount();
+					if(sizeCnt < -9)
+						sizeCnt = -9;
+					else if(sizeCnt > 9)
+						sizeCnt = 9;
+					
+					if(sizeCnt <= 0) {
+						z = 1.0f + (sizeCnt * 0.1f);
+						if(z < 0.1f) {
+							z = 0.1f;
+						}
+					}
+		
+					else if(sizeCnt <= 5) {
+						z = 1.1f + (0.025f * sizeCnt * sizeCnt) + (0.1f * sizeCnt);
+					}
+					else if(sizeCnt < 10) {
+						z = 0.625f + (0.1875f * sizeCnt * sizeCnt) + (-0.5625f * sizeCnt);
+						if(z > 10.0f)
+							z = 10.0f;
+					}
+						
+					scale.setText(Math.round(100 + (-sizeCnt  * 10))  + "%");
 				
-				Gdx.app.log("tes", "scrol" + event.getScrollAmount());
-				Gdx.app.log("tes", "scrol" + z);
+	
+				}
+		
+				return true;
 			}
-			return true;
-		}
-		});
+			});
 	}
 	
 	public float getZoom(float texWidth,float texHeight ){
@@ -113,14 +129,9 @@ public class MapEditorStage extends Stage{
 	public void addButton(final float screenWidth ,final float screenHeight){
 		// インポート
 		table.add(importButton).top().left().size(32,32);
-		addActor(table);
 		
 		// エクスポート
 		table.add(exportButton).top().left().size(32,32);
-		addActor(table);
-		
-		table.add(scale).top().left().size(64,32);
-		addActor(table);
 		
 		// メニュー
 		table.add(menuButton).expand().right().top();

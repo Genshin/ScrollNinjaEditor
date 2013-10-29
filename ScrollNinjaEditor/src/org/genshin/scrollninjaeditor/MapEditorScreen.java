@@ -62,7 +62,7 @@ public class MapEditorScreen implements Screen {
 	public void update(float delta) {
 		
 		zoom = mapEditorStage.getZoom(load.getSprite(Load.BACKGROUND).getWidth(),load.getSprite(Load.BACKGROUND).getHeight());
-
+		
 		//===カメラ処理
 		cameraMove = camera.update(zoom);
 		
