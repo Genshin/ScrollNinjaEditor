@@ -16,6 +16,10 @@ public class MapObject {
 
 	public MapObject() {}
 	
+	/**
+	 * Constructor
+	 * @param obj	mapObject
+	 */
 	public MapObject(MapObject obj) {
 		fileName = obj.fileName;
 		labelName = obj.labelName;
@@ -24,8 +28,12 @@ public class MapObject {
 		setSprite();
 	}
 
-	public MapObject(Sprite sd) {
-		this.sprite = sd;
+	/**
+	 * Constructor
+	 * @param sprite
+	 */
+	public MapObject(Sprite sprite) {
+		this.sprite = sprite;
 	}
 
 	/**
@@ -35,8 +43,8 @@ public class MapObject {
 		Texture texture = new Texture(Gdx.files.internal("data/objects/" + fileName));
 		TextureRegion region = new TextureRegion(texture, 0, 0, width, height);
 		sprite = new Sprite(region);
-		sprite.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
-		sprite.setPosition(-sprite.getWidth()/2,-sprite.getHeight()/2);
+		sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+		sprite.setPosition(-sprite.getWidth() / 2 , -sprite.getHeight() / 2);
 	}
 	
 	/**
