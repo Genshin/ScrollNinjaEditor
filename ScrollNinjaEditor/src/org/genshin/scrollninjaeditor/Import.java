@@ -69,7 +69,7 @@ public class Import extends ImageButton{
 					}
 					setObj.setPosition(read.getObjectFloat("x", node), read.getObjectFloat("y", node));
 					if(layer == Layer.FRONT){
-						if(layerNo <= layermanager.getFrontLayers().size()) {
+						if(layerNo >= layermanager.getFrontLayers().size() && layerNo != 0) {
 							for(int index = 0;index <= layerNo;index++) {
 								if(layermanager.getFrontLayer(index) == null)
 									layermanager.addFront(index);
@@ -77,10 +77,12 @@ public class Import extends ImageButton{
 							Gdx.app.log("node", "" + node);
 							layermanager.getFrontLayer(layerNo).getMapObjects().add(setObj);
 						}
+						else
+							layermanager.getFrontLayer(layerNo).getMapObjects().add(setObj);
 					}
 					else if(layer == Layer.BACK)
 
-					if(layerNo <= layermanager.getBackLayers().size()) {
+					if(layerNo >= layermanager.getBackLayers().size() && layerNo != 0) {
 						for(int index = 0;index <= layerNo;index++) {
 							if(layermanager.getBackLayer(index) == null)
 								layermanager.addBack(index);
@@ -88,6 +90,8 @@ public class Import extends ImageButton{
 						Gdx.app.log("node", "" + node);
 						layermanager.getBackLayer(layerNo).getMapObjects().add(setObj);
 					}
+					else
+						layermanager.getBackLayer(layerNo).getMapObjects().add(setObj);
 				}
 			}
 		}
