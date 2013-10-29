@@ -10,7 +10,6 @@ public class LayerManager {
 	private ArrayList<Layer> backLayers = new ArrayList<Layer>();
 	private int selectLayer = 0;
 	private int selectPlace = Layer.FRONT;
-
 	
 	public LayerManager() {
 		addFront(0);

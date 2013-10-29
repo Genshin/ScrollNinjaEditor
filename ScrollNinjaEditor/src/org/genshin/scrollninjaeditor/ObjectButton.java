@@ -7,11 +7,11 @@ public class ObjectButton extends ImageButton {
 	 MapObject mapObject;
 	 
 	 public ObjectButton(SpriteDrawable sprite, MapObject mapObject) {
-	  super(sprite);
-	  this.mapObject = mapObject;
+		 super(sprite);
+		 this.mapObject = mapObject;
 	 }
 	 
 	 public MapObject getMapObject() {
-	  return mapObject;
+		 return mapObject;
 	 }
 }

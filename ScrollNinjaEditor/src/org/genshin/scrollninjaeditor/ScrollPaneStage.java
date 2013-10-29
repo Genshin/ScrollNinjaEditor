@@ -11,14 +11,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class ScrollPaneStage{
 	private int loopCnt = 0;
-	private Skin skin;
-	private ScrollPane scrollPane;
-	private Table scrollTable;
+	private Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));	// スキンファイルを読み込み;
+	private ScrollPane menuScrollPane;
+	private ScrollPane layerFrontScrollPane;
+	private ScrollPane layerBackScrollPane;
 	private MapObject mapobj;
 	private Table table = new Table();
 	private SpriteDrawable spriteDrawble;
 	private LayerManager layerManager;
-	
 	
 	/**
 	 * Constructor
@@ -35,7 +35,7 @@ public class ScrollPaneStage{
 	 * @param spriteDrawble
 	 * @param camera
 	 */
-	public void create(final MapObjectManager manager,final OrthographicCamera camera,LayerManager layer){
+	public void menuCreate(final MapObjectManager manager,final OrthographicCamera camera,LayerManager layer,Table scrollTable){
 		for (loopCnt = 0 ; loopCnt < manager.getMapObjectList().size() ; loopCnt ++){
 			if(loopCnt % 3 == 0)
 				table.row();
@@ -58,18 +58,32 @@ public class ScrollPaneStage{
 			table.add(objB);
 		}
 		
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));	// スキンファイルを読み込み
-		scrollPane = new ScrollPane(table,skin);					// スクロールに情報を読み込み
-		scrollPane.setFlickScroll(false);							// フリックの有無
-		scrollPane.setFadeScrollBars(true);							// ここでfalseなら常に。trueなら使用するとき。
-		scrollPane.setScrollingDisabled(false, false);				// 一番目は縦、二番目は横。これによりスクロールをするかしないか
-		scrollPane.setWidth(64 * 3 + 2);
-		scrollPane.setHeight(Gdx.graphics.getHeight());
-		scrollPane.removeListener(scrollPane.getListeners().get(0));
-		scrollTable = new Table();
-		scrollTable.setLayoutEnabled(false);
-		scrollTable.setX(Gdx.graphics.getWidth() - scrollPane.getWidth());
-		scrollTable.add(scrollPane);
+		menuScrollPane = new ScrollPane(table,skin);					// スクロールに情報を読み込み
+		menuScrollPane.setFlickScroll(false);							// フリックの有無
+		menuScrollPane.setFadeScrollBars(true);							// ここでfalseなら常に。trueなら使用するとき。
+		menuScrollPane.setScrollingDisabled(false, false);				// 一番目は縦、二番目は横。これによりスクロールをするかしない
+		menuScrollPane.removeListener(menuScrollPane.getListeners().get(0));
+		scrollTable.add(menuScrollPane).top().right().colspan(2);
+	}
+	
+	public void layerFrontCreate(Table scrollTable){
+		for (loopCnt = 0 ; loopCnt < layerManager.getFrontLayers().size() ; loopCnt ++){
+			layerFrontScrollPane = new ScrollPane(layerManager.getFrontLayer(loopCnt).getButton(),skin);
+			layerFrontScrollPane.setFlickScroll(false);							// フリックの有無
+			layerFrontScrollPane.setFadeScrollBars(true);							// ここでfalseなら常に。trueなら使用するとき。
+			layerFrontScrollPane.setScrollingDisabled(false, false);				// 一番目は縦、二番目は横。これによりスクロールをするかしないか
+			scrollTable.add(layerFrontScrollPane).expandY().left().top();
+		}
+	}
+	
+	public void layerBackCreate(Table scrollTable){
+		for (loopCnt = 0 ; loopCnt < layerManager.getBackLayers().size() ; loopCnt ++){
+			layerBackScrollPane = new ScrollPane(layerManager.getBackLayer(loopCnt).getButton(),skin);
+			layerBackScrollPane.setFlickScroll(false);							// フリックの有無
+			layerBackScrollPane.setFadeScrollBars(true);							// ここでfalseなら常に。trueなら使用するとき。
+			layerBackScrollPane.setScrollingDisabled(false, false);				// 一番目は縦、二番目は横。これによりスクロールをするかしないか
+			scrollTable.add(layerBackScrollPane).expandY().left().top();
+		}
 	}
 
 	/**
@@ -77,10 +91,6 @@ public class ScrollPaneStage{
 	 * @return scrollPane.getWidth()
 	 */
 	public float getScrollPaneWidth(){
-		return scrollPane.getWidth();
-	}
-	
-	public Table getScrollTable(){
-		return scrollTable;
+		return menuScrollPane.getWidth();
 	}
 }
