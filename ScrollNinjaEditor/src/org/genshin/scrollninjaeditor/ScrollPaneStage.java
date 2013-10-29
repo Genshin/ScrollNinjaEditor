@@ -17,6 +17,8 @@ public class ScrollPaneStage{
 	private ScrollPane layerBackScrollPane;
 	private MapObject mapobj;
 	private Table table = new Table();
+	private Table frontTable = new Table();
+	private Table backTable = new Table();
 	private SpriteDrawable spriteDrawble;
 	private LayerManager layerManager;
 	
@@ -44,12 +46,10 @@ public class ScrollPaneStage{
 			spriteDrawble.setSprite(manager.getMapObjectList().get(loopCnt).getSp());			// 上書きではないので注意
 			layerManager = layer;
 			final ObjectButton objB = new ObjectButton(spriteDrawble, manager.getMapObjectList().get(loopCnt));
-			
-			
 			objB.addListener(new ClickListener(){
 				@Override
 				public void clicked(InputEvent event ,float x,float y){
-					mapobj = new MapObject(objB.mapObject);										 // クリックされたオブジェクト情報を読み込み
+					mapobj = new MapObject(objB.mapObject);											 // クリックされたオブジェクト情報を読み込み
 					mapobj.setPosition(camera.position.x,camera.position.y);
 					//manager.setFrontObject(mapobj);												 // オブジェクトをセット
 					layerManager.getLayer(layerManager.getSelectLayer()).setMapObject(mapobj);
@@ -68,12 +68,14 @@ public class ScrollPaneStage{
 	
 	public void layerFrontCreate(Table scrollTable){
 		for (loopCnt = 0 ; loopCnt < layerManager.getFrontLayers().size() ; loopCnt ++){
-			layerFrontScrollPane = new ScrollPane(layerManager.getFrontLayer(loopCnt).getButton(),skin);
-			layerFrontScrollPane.setFlickScroll(false);							// フリックの有無
-			layerFrontScrollPane.setFadeScrollBars(true);							// ここでfalseなら常に。trueなら使用するとき。
-			layerFrontScrollPane.setScrollingDisabled(false, false);				// 一番目は縦、二番目は横。これによりスクロールをするかしないか
-			scrollTable.add(layerFrontScrollPane).expandY().left().top();
+			frontTable.add(layerManager.getFrontLayer(loopCnt).getButton());
+			frontTable.row();
 		}
+		layerFrontScrollPane = new ScrollPane(frontTable,skin);
+		layerFrontScrollPane.setFlickScroll(false);							// フリックの有無
+		layerFrontScrollPane.setFadeScrollBars(true);							// ここでfalseなら常に。trueなら使用するとき。
+		layerFrontScrollPane.setScrollingDisabled(false, false);				// 一番目は縦、二番目は横。これによりスクロールをするかしないか
+		scrollTable.add(layerFrontScrollPane).top();
 	}
 	
 	public void layerBackCreate(Table scrollTable){
@@ -91,6 +93,6 @@ public class ScrollPaneStage{
 	 * @return scrollPane.getWidth()
 	 */
 	public float getScrollPaneWidth(){
-		return menuScrollPane.getWidth();
+		return menuScrollPane.getPrefWidth();
 	}
 }
