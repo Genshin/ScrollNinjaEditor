@@ -68,12 +68,23 @@ public class MapEditorStage extends Stage{
 		if (!(e instanceof InputEvent)) return false;
 			InputEvent event = (InputEvent)e;
 			if (event.getType() == InputEvent.Type.scrolled) {
-				z += 0.1f * event.getScrollAmount();
-				if(z >1.9f)
-					z = 1.9f;
-				else if(z < 0.1f)
-					z = 0.1f;
-				scale.setText(Math.round(200 - (100 * z)) + "%");
+				if(z < 1.0f) {
+					z += 0.1f * event.getScrollAmount();
+					if(z < 0.1f)
+						z = 0.1f;
+					scale.setText(Math.round(100 + (100 - 100 * z)) + "%");
+				}
+				else if(z < 2.0f){
+					z +=0.2f * event.getScrollAmount();
+					scale.setText(Math.round(100 - ((z - 1.0f) / 2 * 100)  ) + "%");
+				}
+				else if(z <= 6.0f) {
+					z +=1.0f * event.getScrollAmount();
+					if(z > 6.0f)
+						z = 6.0f;
+					scale.setText(Math.round(70 - 10 * z) + "%");
+				}				
+				
 				Gdx.app.log("tes", "scrol" + event.getScrollAmount());
 				Gdx.app.log("tes", "scrol" + z);
 			}

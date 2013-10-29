@@ -81,13 +81,9 @@ public class MapEditorScreen implements Screen {
 		batch.setProjectionMatrix(camera.combined);
 		
 		batch.begin();
-		//manager.drawBackObject(batch);
 		layermanager.drawBackLayers(batch);
 		load.draw(batch);
-
-		//manager.drawFrontObjects(batch);			// オブジェボタン描画
 		layermanager.drawFrontLayers(batch);
-
 		batch.end();
 		
 		mapEditorStage.act(Gdx.graphics.getDeltaTime());

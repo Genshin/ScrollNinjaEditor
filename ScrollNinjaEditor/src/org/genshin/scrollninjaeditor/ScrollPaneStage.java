@@ -1,11 +1,24 @@
 package org.genshin.scrollninjaeditor;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.image.ImageObserver;
+import java.text.AttributedCharacterIterator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
@@ -19,6 +32,7 @@ public class ScrollPaneStage{
 	private Table table = new Table();
 	private SpriteDrawable spriteDrawble;
 	private LayerManager layerManager;
+	private Label	label;
 	
 	/**
 	 * Constructor
@@ -40,6 +54,7 @@ public class ScrollPaneStage{
 			if(loopCnt % 3 == 0)
 				table.row();
 			manager.getMapObjectList().get(loopCnt).getSp().setSize(64,64);
+			
 			spriteDrawble = new SpriteDrawable();												// 上書きが必要
 			spriteDrawble.setSprite(manager.getMapObjectList().get(loopCnt).getSp());			// 上書きではないので注意
 			layerManager = layer;
@@ -55,7 +70,13 @@ public class ScrollPaneStage{
 					layerManager.getLayer(layerManager.getSelectLayer()).setMapObject(mapobj);
 				}
 			});
+			label = new Label(manager.getMapObjectList().get(loopCnt).getLabelName(),skin);	
+			objB.add(label);
 			table.add(objB);
+			
+			
+			
+			
 		}
 		
 		menuScrollPane = new ScrollPane(table,skin);					// スクロールに情報を読み込み
