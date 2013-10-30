@@ -62,7 +62,7 @@ public class MapEditorScreen implements Screen {
         if(!cameraMove)
            	mouse.update(camera,layermanager,mapEditorStage);
         
-        mapEditorStage.updateLayer();
+       
    	}
 
 	/**

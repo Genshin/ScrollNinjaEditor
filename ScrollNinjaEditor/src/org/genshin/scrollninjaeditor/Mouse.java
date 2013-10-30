@@ -44,13 +44,15 @@ public class Mouse {
 		this.layerManager	= layer;
 		this.mapEditorStage = mapEditorStage;
 
-		MouseOver();
+		
 		setOldMousePosition();
 		getMousePosition();
-		input();
 		layer.checkClick();
-		if(selectFlag == -1)
+		if(selectFlag == -1){
+			input();
 			hitCheck();
+			MouseOver();
+		}
 		else
 			drag();
 	}
@@ -199,7 +201,7 @@ public class Mouse {
 					layerManager.changeLayerBackToBack(layerManager.getSelectLayerNum(), layerManager.getSelectLayerNum() - 1);
 				
 				layerManager.setLayer(layerManager.getSelectPlace(), layerManager.getSelectLayerNum() - 1);	
-				
+				mapEditorStage.updateLayer();
 			}		
 		}
 		if(Gdx.input.isKeyPressed(UseKeys.LAYER_UP) && oldPressKey != UseKeys.LAYER_UP) {
@@ -217,7 +219,8 @@ public class Mouse {
 					layerManager.changeLayerBackToBack(layerManager.getSelectLayerNum(), layerManager.getSelectLayerNum() + 1);
 					layerManager.setLayer(layerManager.getSelectPlace(), layerManager.getSelectLayerNum() + 1);	
 				}
-			}					
+			}
+			 mapEditorStage.updateLayer();
 		}
 		
 		//レイヤ―選択描画
@@ -247,6 +250,7 @@ public class Mouse {
 			for(int i = layerManager.getFrontLayer(layerManager.getSelectLayerNum()).getMapObjects().size() - 1 ;i >=0 ;i-- ) {
 				if(layerManager.getFrontLayer(layerManager.getSelectLayerNum()).getMapObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY)){
 						layerManager.getFrontLayer(layerManager.getSelectLayerNum()).getMapObject(i).getSp().setColor(0.0f, 1.0f, 0.0f, 0.5f);
+						break;
 				}
 				else
 					layerManager.getFrontLayer(layerManager.getSelectLayerNum()).getMapObject(i).getSp().setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -264,6 +268,7 @@ public class Mouse {
 			for(int i = layerManager.getBackLayer(layerManager.getSelectLayerNum()).getMapObjects().size() - 1 ;i >=0 ;i-- ) {
 				if(layerManager.getBackLayer(layerManager.getSelectLayerNum()).getMapObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY)){
 					layerManager.getBackLayer(layerManager.getSelectLayerNum()).getMapObject(i).getSp().setColor(0.0f, 1.0f, 0.0f, 0.5f);
+					break;
 				}
 				else
 					layerManager.getBackLayer(layerManager.getSelectLayerNum()).getMapObject(i).getSp().setColor(1.0f, 1.0f, 1.0f, 1.0f);
