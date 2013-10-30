@@ -20,8 +20,7 @@ public class MapEditorStage extends Stage{
 	private LayerManager    layermanager;
 	private Label			scale;
 	private int 			sizeCnt = 0;
-
-	private float z = 1.0f;
+	private float			z = 1.0f;
 	
 	/**
 	 * Create
@@ -57,8 +56,8 @@ public class MapEditorStage extends Stage{
 	 */
 	public void create(final float screenWidth ,float screenHeight,final MapObjectManager manager,Camera camera,LayerManager layer){
 		layermanager = layer;
-		importButton.setlayer(layermanager);
-		exportButton.setlayer(layermanager);
+		importButton.setlayer(layermanager,this);
+		exportButton.setlayer(layermanager,this);
 		createScrollPane(manager,camera);
 		menuButton.create(table, screenWidth, this);
 		addButton(screenWidth, screenHeight);

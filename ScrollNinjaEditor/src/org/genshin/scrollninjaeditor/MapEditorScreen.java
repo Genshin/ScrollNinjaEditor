@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 public class MapEditorScreen implements Screen {
 	private ScrollNinjaEditor   editor;
 	private String				fileName;
-	
 	private Camera				camera;
 	private SpriteBatch 		batch;
 	private float				screenWidth = 0,
@@ -21,8 +20,6 @@ public class MapEditorScreen implements Screen {
 	private Mouse				mouse;
 	private float				zoom = 1.0f;
 	private LayerManager		layermanager = new LayerManager();
-	 int oldPressKey;
-	 boolean inputFlag;
 
 	/**
 	 * Constructor

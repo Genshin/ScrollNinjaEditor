@@ -11,27 +11,30 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class Import extends ImageButton{
-	private LayerManager  layermanager;
-	private MapObjectManager mapObjManager;
+	private LayerManager		layermanager;
+	private MapObjectManager	mapObjManager;
+	private MapEditorStage		mapEditorStage;
 
 	public Import(SpriteDrawable sd) {
 		super(sd);
 
 		layermanager = LayerManager.getInstance();
 		mapObjManager = MapObjectManager.getInstance();
+		mapEditorStage = MapEditorStage.getInstance();
 
 		this.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event ,float x,float y) {
 				importFile();
+				mapEditorStage.updateLayer();
 			}
 		});
-
 		setSize(32, 32);
 	}
 
-	public void setlayer(LayerManager layer) {
+	public void setlayer(LayerManager layer, MapEditorStage mapEditorStage) {
 		this.layermanager = layer;
+		this.mapEditorStage = mapEditorStage;
 	}
 
 	private void importFile() {

@@ -4,33 +4,32 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 
-
 public class Mouse {
-	private Camera 			 camera;
-	private int				 selectFlag = -1;
-
-	private float			 mousePositionX;
-	private float			 mousePositionY;
-	private float			 oldmousePositionX;
-	private float			 oldmousePositionY;
-	private float			 objectPositonX;
-	private float			 objectPositonY;
-	private int				 oldPressKey;
-	private LayerManager	 layerManager;
-	private boolean			 inputFlag = false;
-	private MapEditorStage	mapEditorStage;
+	private Camera 			camera;
+	private int				selectFlag = -1;
+	private float			mousePositionX;
+	private float			mousePositionY;
+	private float			oldmousePositionX;
+	private float			oldmousePositionY;
+	private float			objectPositonX;
+	private float			objectPositonY;
+	private int				oldPressKey;
+	private LayerManager	layerManager;
+	private MapEditorStage mapEditorStage;
+	private boolean			inputFlag = false;
 
 	public Mouse() {
-		camera = Camera.getInstance();
-		layerManager = LayerManager.getInstance();
+		camera			= Camera.getInstance();
+		layerManager	= LayerManager.getInstance();
 		mapEditorStage = MapEditorStage.getInstance();
 	}
 	
 	public void update(Camera camera ,LayerManager layer,MapEditorStage mapEditorStage) {
-		this.camera = camera;
-		this.layerManager = layer;
+		this.camera			= camera;
+		this.layerManager	= layer;
 		this.mapEditorStage = mapEditorStage;
 
+		MouseOver();
 		setOldMousePosition();
 		getMousePosition();
 		input();
@@ -186,6 +185,45 @@ public class Mouse {
 		
 		if(!inputFlag && !Gdx.input.isKeyPressed(oldPressKey))
 			oldPressKey = 0;
+	}
+	
+	private void MouseOver(){
+		frontOver();
+		backOver();
+	}
+	
+	private void frontOver(){
+		for(int i = layerManager.getFrontLayers().size() -1 ; i >= 0 ; i --){
+			for (int j = layerManager.getFrontLayer(i).getMapObjects().size() - 1 ; j >= 0 ; j --){
+				layerManager.getFrontLayer(i).getMapObject(j).getSp().setColor(1, 1, 1, 1);
+			}
+		}
+		if(layerManager.getSelectPlace() == Layer.FRONT ){
+			for(int i = layerManager.getFrontLayer(layerManager.getSelectLayer()).getMapObjects().size() - 1 ;i >=0 ;i-- ) {
+				if(layerManager.getFrontLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY)){
+						layerManager.getFrontLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().setColor(0.0f, 1.0f, 0.0f, 0.5f);
+				}
+				else
+					layerManager.getFrontLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+		}
+	}
+	
+	private void backOver(){
+		for(int i = layerManager.getBackLayers().size() -1 ; i >= 0 ; i --){
+			for (int j = layerManager.getBackLayer(i).getMapObjects().size() - 1 ; j >= 0 ; j --){
+				layerManager.getBackLayer(i).getMapObject(j).getSp().setColor(1, 1, 1, 1);
+			}
+		}
+		if(layerManager.getSelectPlace() == Layer.BACK){
+			for(int i = layerManager.getBackLayer(layerManager.getSelectLayer()).getMapObjects().size() - 1 ;i >=0 ;i-- ) {
+				if(layerManager.getBackLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY)){
+					layerManager.getBackLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().setColor(0.0f, 1.0f, 0.0f, 0.5f);
+				}
+				else
+					layerManager.getBackLayer(layerManager.getSelectLayer()).getMapObject(i).getSp().setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+		}
 	}
 
 	private void getMousePosition() {

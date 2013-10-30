@@ -5,7 +5,6 @@ import javax.swing.filechooser.FileFilter;
 public class ExtendsFileFilter extends FileFilter {
 	private String extension;
 	private String msg;
-
 	
 	public ExtendsFileFilter(String extension ,String msg){
 		this.extension = extension;
