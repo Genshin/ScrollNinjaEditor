@@ -7,10 +7,10 @@ public class ScrollNinjaEditor extends Game {
 
 	@Override
 	public void create() {
-		//setScreen(new SelectScreen(this));
+		setScreen(new SelectScreen(this));
 		
 		// 直接マップエディタに移動
-		setScreen(new MapEditorScreen(this, "data/stage/TerrainFar_1024.png"));
+		//setScreen(new MapEditorScreen(this, "data/stage/TerrainFar_1024.png"));
 		
 
 	}

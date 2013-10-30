@@ -58,7 +58,7 @@ public class ScrollPaneStage extends Table{
 				public void clicked(InputEvent event ,float x,float y){
 					mapobj = new MapObject(objB.mapObject);											 // クリックされたオブジェクト情報を読み込み
 					mapobj.setPosition(camera.position.x,camera.position.y);
-					layerManager.getLayer(layerManager.getSelectLayer()).setMapObject(mapobj);
+					layerManager.getLayer(layerManager.getSelectLayerNum()).setMapObject(mapobj);
 				}
 			});
 			label = new Label(manager.getMapObjectList().get(loopCnt).getLabelName(),skin);	

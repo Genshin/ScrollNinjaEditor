@@ -42,11 +42,11 @@ public class Export extends ImageButton {
 			JsonWrite write = new JsonWrite();
 	
 			//フロントレイヤ―情報書き出し
-			for(Layer layer:manager.getFrontLayers()) {
-				for(MapObject obj:layer.getMapObjects()) {
+			for(int i = 0;i < manager.getFrontLayers().size();i++){
+				for(MapObject obj:manager.getFrontLayer(i).getMapObjects()) {
 					write.addObject();
-					write.putObject("layer", layer.getLayerPlace());
-					write.putObject("layerNo", layer.getLayerNumber());
+					write.putObject("layer", manager.getFrontLayer(i).getLayerPlace());
+					write.putObject("layerNo", i);
 					write.putObject("name", obj.getFileName());
 					write.putObject("label", obj.getLabelName());
 					write.putObject("x", obj.getX());
@@ -54,11 +54,11 @@ public class Export extends ImageButton {
 				}
 			}
 			//バックレイヤ―情報書き出し
-			for(Layer layer:manager.getBackLayers()) {
-				for(MapObject obj:layer.getMapObjects()) {
+			for(int i = 0 ;i < manager.getBackLayers().size() ;i ++) {
+				for(MapObject obj:manager.getBackLayer(i).getMapObjects()) {
 					write.addObject();
-					write.putObject("layer", layer.getLayerPlace());
-					write.putObject("layerNo", layer.getLayerNumber());
+					write.putObject("layer", manager.getBackLayer(i).getLayerPlace());
+					write.putObject("layerNo", i);
 					write.putObject("name", obj.getFileName());
 					write.putObject("label", obj.getLabelName());
 					write.putObject("x", obj.getX());

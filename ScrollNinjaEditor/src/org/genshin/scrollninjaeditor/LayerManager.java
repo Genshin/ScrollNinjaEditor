@@ -24,17 +24,17 @@ public class LayerManager {
 	}
 		
 	public void checkClick(){
-		for(Layer lay:frontLayers) {
-			if(lay.getClickFlag()) {
-				setLayer(lay.getLayerPlace(), lay.getLayerNumber());
-				lay.setClickFlag(false);
+		for(int i = 0; i < frontLayers.size() ; i++) {
+			if(frontLayers.get(i).getClickFlag()) {
+				setLayer(Layer.FRONT, i);
+				frontLayers.get(i).setClickFlag(false);
 				break;
 			}
 		}
-		for(Layer lay:backLayers) {
-			if(lay.getClickFlag()) {
-				setLayer(lay.getLayerPlace(), lay.getLayerNumber());
-				lay.setClickFlag(false);
+		for(int i = 0 ; i < backLayers.size() ; i ++) {
+			if(backLayers.get(i).getClickFlag()) {
+				setLayer(backLayers.get(i).getLayerPlace(), i);
+				backLayers.get(i).setClickFlag(false);
 				break;
 			}
 		}
@@ -67,7 +67,7 @@ public class LayerManager {
 		return this.selectPlace;
 	}
 	
-	public int getSelectLayer() {
+	public int getSelectLayerNum() {
 		return this.selectLayer;
 	}
 	
@@ -82,6 +82,14 @@ public class LayerManager {
 			return getFrontLayer(index);
 		else if(this.selectPlace == Layer.BACK)
 			return getBackLayer(index);
+		else
+			return null;
+	}
+	public Layer getSelectLayer() {
+		if(this.selectPlace == Layer.FRONT)
+			return getFrontLayer(this.selectLayer);
+		else if(this.selectPlace == Layer.BACK)
+			return getBackLayer(this.selectLayer);
 		else
 			return null;
 	}
@@ -175,6 +183,7 @@ public class LayerManager {
 		Layer stack = frontLayers.get(change);
 		frontLayers.set(change,frontLayers.get(target));
 		frontLayers.set(target,stack);
+
 	}
 	public void changeLayerBackToBack(int change,int target) {
 		Layer stack = backLayers.get(change);
