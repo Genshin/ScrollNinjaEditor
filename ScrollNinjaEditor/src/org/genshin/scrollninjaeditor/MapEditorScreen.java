@@ -2,11 +2,8 @@ package org.genshin.scrollninjaeditor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class MapEditorScreen implements Screen {
@@ -14,7 +11,7 @@ public class MapEditorScreen implements Screen {
 	private String				fileName;
 	
 	private Camera				camera;
-	private SpriteBatch 		batch;									// バッチ用
+	private SpriteBatch 		batch;
 	private float				screenWidth = 0,
 								screenHeight = 0;
 	private MapObjectManager 	manager = new MapObjectManager();
@@ -23,10 +20,7 @@ public class MapEditorScreen implements Screen {
 	private Load				load;
 	private Mouse				mouse;
 	private float				zoom = 1.0f;
-	private ShapeRenderer  sr = new ShapeRenderer();
-	//-----------------------------------------
 	private LayerManager		layermanager = new LayerManager();
-	//-----------------------------------------
 	 int oldPressKey;
 	 boolean inputFlag;
 
@@ -42,7 +36,6 @@ public class MapEditorScreen implements Screen {
 		screenHeight = Gdx.graphics.getHeight();
 		camera = new Camera(screenWidth, screenHeight);
 		batch = new SpriteBatch();
-
 		mouse = new Mouse();
 		
 		//===テクスチャ読み込み
@@ -63,7 +56,6 @@ public class MapEditorScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void update(float delta) {
-		
 		zoom = mapEditorStage.getZoom(load.getSprite(Load.BACKGROUND).getWidth(),load.getSprite(Load.BACKGROUND).getHeight());
 		
 		//===カメラ処理
@@ -71,16 +63,7 @@ public class MapEditorScreen implements Screen {
 		
 		//===オブジェクトクリック
         if(!cameraMove)
-           	mouse.update(camera,layermanager);
-        
-		if(Gdx.input.isKeyPressed(Keys.Q) && (inputFlag == false)) {
-			inputFlag = true;
-			mapEditorStage.updateLayer();
-		}
-		
-		if(!Gdx.input.isKeyPressed(Keys.Q) && (inputFlag == true)) {
-			inputFlag = false;
-		}
+           	mouse.update(camera,layermanager,mapEditorStage);
    	}
 
 	/**
@@ -101,29 +84,6 @@ public class MapEditorScreen implements Screen {
 		mapEditorStage.act(Gdx.graphics.getDeltaTime());
 		mapEditorStage.draw();
 		Table.drawDebug(mapEditorStage);
-		
-		/*
-		sr.setProjectionMatrix(camera.combined);
-		sr.begin(ShapeType.Rectangle);
-		sr.setColor(1, 0, 0, 1);
-		sr.rect(load.getSprite(0).getX(),
-				load.getSprite(0).getY(), 
-				load.getSprite(0).getWidth(), 
-				load.getSprite(0).getHeight());
-		sr.end();
-		
-		// ライン出し
-		for (int i = 0 ; i < manager.getFrontObjects().size() ; i ++){
-			sr.setProjectionMatrix(camera.combined);
-			sr.begin(ShapeType.Rectangle);
-			sr.setColor(1, 0, 0, 1);
-			sr.rect(manager.getFrontObject(i).getSp().getBoundingRectangle().getX(),
-					manager.getFrontObject(i).getSp().getBoundingRectangle().getY(),
-					manager.getFrontObject(i).getSp().getBoundingRectangle().getWidth(),
-					manager.getFrontObject(i).getSp().getBoundingRectangle().getHeight());
-			sr.end();
-		}
-		*/
 	}
 
 	@Override

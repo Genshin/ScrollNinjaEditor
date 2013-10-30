@@ -18,15 +18,18 @@ public class Mouse {
 	private int				 oldPressKey;
 	private LayerManager	 layerManager;
 	private boolean			 inputFlag = false;
+	private MapEditorStage	mapEditorStage;
 
 	public Mouse() {
 		camera = Camera.getInstance();
 		layerManager = LayerManager.getInstance();
+		mapEditorStage = MapEditorStage.getInstance();
 	}
 	
-	public void update(Camera camera ,LayerManager layer) {
+	public void update(Camera camera ,LayerManager layer,MapEditorStage mapEditorStage) {
 		this.camera = camera;
 		this.layerManager = layer;
+		this.mapEditorStage = mapEditorStage;
 
 		setOldMousePosition();
 		getMousePosition();
@@ -124,6 +127,7 @@ public class Mouse {
 				layerManager.addBack(layerManager.getBackLayers().size());
 				layerManager.setLayer(Layer.BACK,layerManager.getBackLayers().size() - 1);
 			}
+			mapEditorStage.updateLayer();
 		}
 		
 		//レイヤ―削除
@@ -134,10 +138,12 @@ public class Mouse {
 				if(layerManager.getFrontLayers().size() > 1) {
 					layerManager.removeFront(layerManager.getSelectLayer());
 					Gdx.app.log("delete","" + layerManager.getSelectLayer());
-					if(layerManager.getSelectLayer() != 0)
+					if(layerManager.getSelectLayer() != 0){
 						layerManager.setLayer(Layer.FRONT, layerManager.getSelectLayer() - 1);
-					else
+					}
+					else{
 						layerManager.setLayer(Layer.FRONT, 0);
+					}
 				}
 				else if(layerManager.getFrontLayers().size() == 1) {
 					layerManager.addFront(layerManager.getSelectLayer() + 1);
@@ -160,6 +166,7 @@ public class Mouse {
 					layerManager.setLayer(Layer.BACK, 0);
 				}
 			}
+			mapEditorStage.updateLayer();
 		}
 		
 		//レイヤ―入れ替え(仮)

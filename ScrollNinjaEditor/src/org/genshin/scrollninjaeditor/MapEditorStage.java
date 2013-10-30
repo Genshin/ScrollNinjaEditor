@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class MapEditorStage extends Stage{
+	private static MapEditorStage instance = new MapEditorStage();
 	private ScrollPaneStage scrolloPaneStage;
 	private Table			table;
 	private Import			importButton;
@@ -27,6 +28,9 @@ public class MapEditorStage extends Stage{
 	 * @param fileName
 	 * @param load
 	 */
+	public MapEditorStage(){
+	}
+	
 	public MapEditorStage(String fileName, Load load){
 		super();
 		scrolloPaneStage = new ScrollPaneStage();
@@ -38,6 +42,10 @@ public class MapEditorStage extends Stage{
 		importButton = new Import(load.getSpriteDrawable(Load.IMPORT));
 		exportButton = new Export(load.getSpriteDrawable(Load.EXPORT));
 		menuButton = new MenuButton(load.getSpriteDrawable(Load.MENU));
+	}
+	
+	public static MapEditorStage getInstance(){
+		return instance;
 	}
 	
 	/**
@@ -90,12 +98,8 @@ public class MapEditorStage extends Stage{
 						if(z > 10.0f)
 							z = 10.0f;
 					}
-						
 					scale.setText(Math.round(100 + (-sizeCnt  * 10))  + "%");
-				
-	
 				}
-		
 				return true;
 			}
 			});

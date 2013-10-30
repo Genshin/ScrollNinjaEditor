@@ -97,18 +97,11 @@ public class Layer {
 	}
 	
 	public void drawLabel(SpriteBatch batch) {
-		if(layerPlace == FRONT) {
+		if(layerPlace == FRONT) 
 			label.setText("Front" + layerNumber);
-			//label.setPosition(-Gdx.graphics.getWidth() / 2, 
-			//					Gdx.graphics.getHeight() / 2 - 64 - 32 * (layerNumber ));
-		}
-		else {
+		else 
 			label.setText("Back" + layerNumber);
-			//label.setPosition(-Gdx.graphics.getWidth() / 2, 0.0f - 32.0f * (layerNumber ));
-		}
-		label.setWidth(64);
 		label.setColor(0.0f, 0.0f, 0.0f, 1.0f);
-		label.draw(batch, 1.0f);
 	}
 	public void setLabelColor(float r,float g , float b ,float a) {
 		label.setColor(r, g, b, a);
