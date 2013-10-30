@@ -11,16 +11,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class MapEditorStage extends Stage{
-	private static MapEditorStage instance = new MapEditorStage();
-	private ScrollPaneStage scrolloPaneStage;
-	private Table			table;
-	private Import			importButton;
-	private Export			exportButton;
-	private MenuButton		menuButton;
-	private LayerManager    layermanager;
-	private Label			scale;
-	private int 			sizeCnt = 0;
-	private float			z = 1.0f;
+	private static MapEditorStage	instance = new MapEditorStage();
+	private ScrollPaneEditor		scrolloPaneEditor;
+	private Table					table;
+	private Import					importButton;
+	private Export					exportButton;
+	private MenuButton				menuButton;
+	private LayerManager			layerManager;
+	private Label					scale;
+	private int 					sizeCnt = 0;
+	private float					z = 1.0f;
 	
 	/**
 	 * Create
@@ -30,9 +30,14 @@ public class MapEditorStage extends Stage{
 	public MapEditorStage(){
 	}
 	
+	/**
+	 * Overload
+	 * @param fileName
+	 * @param load
+	 */
 	public MapEditorStage(String fileName, Load load){
 		super();
-		scrolloPaneStage = new ScrollPaneStage();
+		scrolloPaneEditor = new ScrollPaneEditor();
 		table = new Table();
 		table.setFillParent(true);
 		table.debug();
@@ -43,6 +48,10 @@ public class MapEditorStage extends Stage{
 		menuButton = new MenuButton(load.getSpriteDrawable(Load.MENU));
 	}
 	
+	/**
+	 * 
+	 * @return instance
+	 */
 	public static MapEditorStage getInstance(){
 		return instance;
 	}
@@ -54,10 +63,11 @@ public class MapEditorStage extends Stage{
 	 * @param manager
 	 * @param camera
 	 */
-	public void create(final float screenWidth ,float screenHeight,final MapObjectManager manager,Camera camera,LayerManager layer){
-		layermanager = layer;
-		importButton.setlayer(layermanager,this);
-		exportButton.setlayer(layermanager,this);
+	public void create(final float screenWidth ,float screenHeight,final MapObjectManager manager,
+						Camera camera,LayerManager layer){
+		layerManager = layer;
+		importButton.setlayer(layerManager,this);
+		exportButton.setlayer(layerManager,this);
 		createScrollPane(manager,camera);
 		menuButton.create(table, screenWidth, this);
 		addButton(screenWidth, screenHeight);
@@ -104,10 +114,18 @@ public class MapEditorStage extends Stage{
 			});
 	}
 	
+	/**
+	 * 
+	 * @param texWidth
+	 * @param texHeight
+	 * @return z
+	 */
 	public float getZoom(float texWidth,float texHeight ){
 		float screenWidth = Gdx.graphics.getWidth();
 		float screenHeight = Gdx.graphics.getHeight();
-		if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && Gdx.input.isKeyPressed(Keys.NUM_0)){
+		if((Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) ||
+			Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && 
+			Gdx.input.isKeyPressed(Keys.NUM_0)){
 			if(texWidth / screenWidth < texHeight / screenHeight)
 				return texHeight / screenHeight;
 			else
@@ -139,12 +157,12 @@ public class MapEditorStage extends Stage{
 	 * @param camera
 	 */
 	public void createScrollPane(final MapObjectManager manager,Camera camera){
-		scrolloPaneStage.menuCreate(manager, camera,layermanager);
-		scrolloPaneStage.row();
-		scrolloPaneStage.layerFrontCreate();
-		addActor(scrolloPaneStage.getTable());
-		scrolloPaneStage.layerBackCreate();
-		addActor(scrolloPaneStage.getTable());
+		scrolloPaneEditor.menuCreate(manager, camera,layerManager);
+		scrolloPaneEditor.row();
+		scrolloPaneEditor.layerFrontCreate();
+		addActor(scrolloPaneEditor.getTable());
+		scrolloPaneEditor.layerBackCreate();
+		addActor(scrolloPaneEditor.getTable());
 		removeButton();
 	}
 	
@@ -152,14 +170,14 @@ public class MapEditorStage extends Stage{
 	 * AddScrollPane process
 	 */
 	public void addScrollPane(){
-		addActor(scrolloPaneStage.getTable());
+		addActor(scrolloPaneEditor.getTable());
 	}
 
 	/**
 	 * Remove process
 	 */
 	public void removeButton(){
-		getRoot().removeActor(scrolloPaneStage.getTable());
+		getRoot().removeActor(scrolloPaneEditor.getTable());
 	}
 
 	/**
@@ -167,11 +185,11 @@ public class MapEditorStage extends Stage{
 	 * @return scrollPane.getWidth()
 	 */
 	public float getPaneWidth(){
-		return scrolloPaneStage.getScrollPaneWidth();
+		return scrolloPaneEditor.getScrollPaneWidth();
 	}
 	
 	public void updateLayer(){
-		scrolloPaneStage.addFront();
-		scrolloPaneStage.addBack();
+		scrolloPaneEditor.addFront();
+		scrolloPaneEditor.addBack();
 	}
 }

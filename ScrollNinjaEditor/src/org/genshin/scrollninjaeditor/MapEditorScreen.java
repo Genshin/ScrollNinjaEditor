@@ -61,8 +61,6 @@ public class MapEditorScreen implements Screen {
 		//===オブジェクトクリック
         if(!cameraMove)
            	mouse.update(camera,layermanager,mapEditorStage);
-        
-        mapEditorStage.updateLayer();
    	}
 
 	/**

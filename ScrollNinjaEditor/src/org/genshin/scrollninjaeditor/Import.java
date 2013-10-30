@@ -70,7 +70,8 @@ public class Import extends ImageButton{
 							break;
 						}
 					}
-					setObj.setPosition(read.getObjectFloat("x", node), read.getObjectFloat("y", node));
+					setObj.setPosition(read.getObjectFloat("x", node), 
+															read.getObjectFloat("y", node));
 					if(layer == Layer.FRONT){
 						if(layerNo >= layermanager.getFrontLayers().size() && layerNo != 0) {
 							for(int index = 0;index <= layerNo;index++) {

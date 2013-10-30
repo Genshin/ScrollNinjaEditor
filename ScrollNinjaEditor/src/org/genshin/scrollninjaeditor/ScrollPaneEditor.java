@@ -10,13 +10,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class ScrollPaneStage extends Table{
+public class ScrollPaneEditor extends Table{
 	private int				loopCnt = 0;
-	private Skin			skin = new Skin(Gdx.files.internal("data/uiskin.json"));	// スキンファイルを読み込み;
+	private Skin			skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 	private ScrollPane		menuScrollPane;
 	private ScrollPane		layerFrontScrollPane;
 	private ScrollPane		layerBackScrollPane;
-	private MapObject		mapobj;
+	private MapObject		mapObject;
 	private Table			table = new Table();
 	private Table			frontTable = new Table();
 	private Table			backTable = new Table();
@@ -27,7 +27,7 @@ public class ScrollPaneStage extends Table{
 	/**
 	 * Constructor
 	 */
-	public ScrollPaneStage(){
+	public ScrollPaneEditor(){
 		layerManager = LayerManager.getInstance();
 		this.setFillParent(true);
 		this.top();
@@ -36,29 +36,32 @@ public class ScrollPaneStage extends Table{
 	}
 	
 	/**
-	 * Create
+	 * menuCreate
 	 * @param stage
 	 * @param manager
 	 * @param table
 	 * @param spriteDrawble
 	 * @param camera
 	 */
-	public void menuCreate(final MapObjectManager manager,final OrthographicCamera camera,LayerManager layer){
+	public void menuCreate( final MapObjectManager manager,
+							final OrthographicCamera camera,
+							LayerManager layer){
 		for (loopCnt = 0 ; loopCnt < manager.getMapObjectList().size() ; loopCnt ++){
 			if(loopCnt % 3 == 0)
 				table.row();
 			manager.getMapObjectList().get(loopCnt).getSp().setSize(64,64);
 			
-			spriteDrawble = new SpriteDrawable();												// 上書きが必要
-			spriteDrawble.setSprite(manager.getMapObjectList().get(loopCnt).getSp());			// 上書きではないので注意
+			spriteDrawble = new SpriteDrawable();
+			spriteDrawble.setSprite(manager.getMapObjectList().get(loopCnt).getSp());
 			layerManager = layer;
-			final ObjectButton objB = new ObjectButton(spriteDrawble, manager.getMapObjectList().get(loopCnt));
+			final ObjectButton objB = new ObjectButton(spriteDrawble, 
+														manager.getMapObjectList().get(loopCnt));
 			objB.addListener(new ClickListener(){
 				@Override
 				public void clicked(InputEvent event ,float x,float y){
-					mapobj = new MapObject(objB.mapObject);											 // クリックされたオブジェクト情報を読み込み
-					mapobj.setPosition(camera.position.x,camera.position.y);
-					layerManager.getLayer(layerManager.getSelectLayerNum()).setMapObject(mapobj);
+					mapObject = new MapObject(objB.mapObject);
+					mapObject.setPosition(camera.position.x,camera.position.y);
+					layerManager.getLayer(layerManager.getSelectLayerNum()).setMapObject(mapObject);
 				}
 			});
 			label = new Label(manager.getMapObjectList().get(loopCnt).getLabelName(),skin);	
@@ -66,39 +69,51 @@ public class ScrollPaneStage extends Table{
 			table.add(objB);
 		}
 		
-		menuScrollPane = new ScrollPane(table,skin);					// スクロールに情報を読み込み
-		menuScrollPane.setFlickScroll(false);							// フリックの有無
-		menuScrollPane.setFadeScrollBars(true);							// ここでfalseなら常に。trueなら使用するとき。
-		menuScrollPane.setScrollingDisabled(false, false);				// 一番目は縦、二番目は横。これによりスクロールをするかしない
+		menuScrollPane = new ScrollPane(table,skin);
+		menuScrollPane.setFlickScroll(false);
+		menuScrollPane.setFadeScrollBars(true);
+		menuScrollPane.setScrollingDisabled(false, false);
 		menuScrollPane.removeListener(menuScrollPane.getListeners().get(0));
 		this.add(menuScrollPane).top().right().colspan(2);
 	}
 	
+	/**
+	 * layerFrontCreate
+	 */
 	public void layerFrontCreate(){
 		for (loopCnt = layerManager.getFrontLayers().size() - 1 ; loopCnt >= 0 ; loopCnt --){
 			frontTable.add(layerManager.getFrontLayer(loopCnt).getButton()).top().expand();
 			frontTable.row();
 		}
 		layerFrontScrollPane = new ScrollPane(frontTable,skin);
-		layerFrontScrollPane.setFlickScroll(false);							// フリックの有無
-		layerFrontScrollPane.setFadeScrollBars(true);							// ここでfalseなら常に。trueなら使用するとき。
-		layerFrontScrollPane.setScrollingDisabled(false, false);				// 一番目は縦、二番目は横。これによりスクロールをするかしない
+		layerFrontScrollPane.setFlickScroll(false);
+		layerFrontScrollPane.setFadeScrollBars(true);
+		layerFrontScrollPane.setScrollingDisabled(false, false);
 		layerFrontScrollPane.removeListener(layerFrontScrollPane.getListeners().get(0));
-		this.add(layerFrontScrollPane).left().top().fillX().size(menuScrollPane.getPrefWidth()/2,menuScrollPane.getPrefHeight()/2);
+		this.add(layerFrontScrollPane).left().top().fillX().size(menuScrollPane.getPrefWidth()/2,
+																menuScrollPane.getPrefHeight()/2);
 	}
+	
+	/**
+	 * layerBackCreate
+	 */
 	public void layerBackCreate(){
 		for (loopCnt = layerManager.getBackLayers().size() - 1 ; loopCnt >= 0 ; loopCnt --){
 			backTable.add(layerManager.getBackLayer(loopCnt).getButton()).top().expand();
 			backTable.row();
 		}
 		layerBackScrollPane = new ScrollPane(backTable,skin);
-		layerBackScrollPane.setFlickScroll(false);							// フリックの有無
-		layerBackScrollPane.setFadeScrollBars(true);							// ここでfalseなら常に。trueなら使用するとき。
-		layerBackScrollPane.setScrollingDisabled(false, false);				// 一番目は縦、二番目は横。これによりスクロールをするかしない
+		layerBackScrollPane.setFlickScroll(false);
+		layerBackScrollPane.setFadeScrollBars(true);
+		layerBackScrollPane.setScrollingDisabled(false, false);
 		layerBackScrollPane.removeListener(layerBackScrollPane.getListeners().get(0));
-		this.add(layerBackScrollPane).left().top().fillX().size(menuScrollPane.getPrefWidth()/2,menuScrollPane.getPrefHeight()/2);
+		this.add(layerBackScrollPane).left().top().fillX().size(menuScrollPane.getPrefWidth()/2,
+																menuScrollPane.getPrefHeight()/2);
 	}
 	
+	/**
+	 * addFront
+	 */
 	public void addFront(){
 		frontTable = new Table();
 		for (loopCnt = layerManager.getFrontLayers().size() - 1 ; loopCnt >= 0 ; loopCnt --){
@@ -106,13 +121,16 @@ public class ScrollPaneStage extends Table{
 			frontTable.row();
 		}
 		layerFrontScrollPane = new ScrollPane(frontTable,skin);
-		layerFrontScrollPane.setFlickScroll(false);							// フリックの有無
-		layerFrontScrollPane.setFadeScrollBars(true);							// ここでfalseなら常に。trueなら使用するとき。
-		layerFrontScrollPane.setScrollingDisabled(false, false);				// 一番目は縦、二番目は横。これによりスクロールをするかしない
+		layerFrontScrollPane.setFlickScroll(false);
+		layerFrontScrollPane.setFadeScrollBars(true);
+		layerFrontScrollPane.setScrollingDisabled(false, false);
 		layerFrontScrollPane.removeListener(layerFrontScrollPane.getListeners().get(0));
 		this.addAll();
 	}
 	
+	/**
+	 * addBack
+	 */
 	public void addBack(){
 		backTable = new Table();
 		for (loopCnt = layerManager.getBackLayers().size() - 1 ; loopCnt >= 0 ; loopCnt --){
@@ -120,9 +138,9 @@ public class ScrollPaneStage extends Table{
 			backTable.row();
 		}
 		layerBackScrollPane = new ScrollPane(backTable,skin);
-		layerBackScrollPane.setFlickScroll(false);							// フリックの有無
-		layerBackScrollPane.setFadeScrollBars(true);							// ここでfalseなら常に。trueなら使用するとき。
-		layerBackScrollPane.setScrollingDisabled(false, false);				// 一番目は縦、二番目は横。これによりスクロールをするかしない
+		layerBackScrollPane.setFlickScroll(false);
+		layerBackScrollPane.setFadeScrollBars(true);
+		layerBackScrollPane.setScrollingDisabled(false, false);
 		layerBackScrollPane.setClamp(false);
 		layerBackScrollPane.removeListener(layerBackScrollPane.getListeners().get(0));
 		this.addAll();
@@ -130,21 +148,30 @@ public class ScrollPaneStage extends Table{
 
 	/**
 	 * getScrollPaneWidth
-	 * @return scrollPane.getWidth()
+	 * @return scrollPane.getPrefWidth()
 	 */
 	public float getScrollPaneWidth(){
 		return menuScrollPane.getPrefWidth();
 	}
 	
+	/**
+	 * getTable
+	 * @return this
+	 */
 	public Table getTable(){
 		return this;
 	}
 	
+	/**
+	 * addAll
+	 */
 	public void addAll(){
 		this.clear();
 		this.add(menuScrollPane).top().right().colspan(2);
 		this.row();
-		this.add(layerFrontScrollPane).left().top().fillX().size(menuScrollPane.getPrefWidth()/2,menuScrollPane.getPrefHeight()/2);
-		this.add(layerBackScrollPane).left().top().fillX().size(menuScrollPane.getPrefWidth()/2,menuScrollPane.getPrefHeight()/2);
+		this.add(layerFrontScrollPane).left().top().fillX().size(menuScrollPane.getPrefWidth()/2,
+																menuScrollPane.getPrefHeight()/2);
+		this.add(layerBackScrollPane).left().top().fillX().size(menuScrollPane.getPrefWidth()/2,
+																menuScrollPane.getPrefHeight()/2);
 	}
 }

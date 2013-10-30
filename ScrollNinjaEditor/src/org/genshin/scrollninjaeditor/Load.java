@@ -22,6 +22,10 @@ public class Load {
 	public static final int	FIELD	   = 4;
 	public static final int	TEX_NUM	   = 5;
 
+	/**
+	 * 
+	 * @param path
+	 */
 	public Load(String path) {
 		array_Texs.add(new Texture(path));
 		array_Texs.get(BACKGROUND).setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -41,15 +45,29 @@ public class Load {
 		array_Sprites.set(BACKGROUND, sprite);
 	}
 	
+	/**
+	 * 
+	 * @param index
+	 * @return array_Sprites.get(index)
+	 */
 	public Sprite getSprite(int index) {
 		return array_Sprites.get(index);
 	}
 	
+	/**
+	 * 
+	 * @param index
+	 * @return sd
+	 */
 	public SpriteDrawable getSpriteDrawable(int index) {
 		SpriteDrawable sd = new SpriteDrawable(array_Sprites.get(index));
 		return sd;
 	}
 	
+	/**
+	 * 
+	 * @param batch
+	 */
 	public void draw(SpriteBatch batch) {
 		array_Sprites.get(BACKGROUND).draw(batch);
 	}

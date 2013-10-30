@@ -11,7 +11,6 @@ public class LayerManager {
 	private int	selectLayer = 0;
 	private int	selectPlace = Layer.FRONT;
 	private int	oldSelectLayer;
-
 	
 	public LayerManager() {
 		addFront(0);

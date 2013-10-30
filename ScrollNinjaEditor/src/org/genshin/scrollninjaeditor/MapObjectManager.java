@@ -32,7 +32,7 @@ public class MapObjectManager {
 	 * @return	instance
 	 */
 	public static MapObjectManager create() {
-        if( !instance.isInitialized ) {
+        if( !instance.isInitialized ){
             instance.initialize();
             instance.isInitialized = true;
         }
@@ -44,8 +44,7 @@ public class MapObjectManager {
 	 */
 	private void initialize() {
 		// read json
-		try
-        {
+		try{
             ObjectMapper objectMapper = new ObjectMapper();
             mapObjectList = objectMapper.readValue(Gdx.files.internal("data/objects/objects.json").read(),
             									   new TypeReference<ArrayList<MapObject>>(){});
