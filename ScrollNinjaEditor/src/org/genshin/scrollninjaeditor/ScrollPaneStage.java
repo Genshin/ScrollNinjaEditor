@@ -11,18 +11,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class ScrollPaneStage extends Table{
-	private int loopCnt = 0;
-	private Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));	// スキンファイルを読み込み;
-	private ScrollPane menuScrollPane;
-	private ScrollPane layerFrontScrollPane;
-	private ScrollPane layerBackScrollPane;
-	private MapObject mapobj;
-	private Table table = new Table();
-	private Table frontTable = new Table();
-	private Table backTable = new Table();
-	private SpriteDrawable spriteDrawble;
-	private LayerManager layerManager;
-	private Label	label;
+	private int				loopCnt = 0;
+	private Skin			skin = new Skin(Gdx.files.internal("data/uiskin.json"));	// スキンファイルを読み込み;
+	private ScrollPane		menuScrollPane;
+	private ScrollPane		layerFrontScrollPane;
+	private ScrollPane		layerBackScrollPane;
+	private MapObject		mapobj;
+	private Table			table = new Table();
+	private Table			frontTable = new Table();
+	private Table			backTable = new Table();
+	private SpriteDrawable	spriteDrawble;
+	private LayerManager	layerManager;
+	private Label			label;
 	
 	/**
 	 * Constructor
@@ -75,8 +75,8 @@ public class ScrollPaneStage extends Table{
 	}
 	
 	public void layerFrontCreate(){
-		for (loopCnt = 0 ; loopCnt < layerManager.getFrontLayers().size() ; loopCnt ++){
-			frontTable.add(layerManager.getFrontLayer(loopCnt).getButton()).top();
+		for (loopCnt = layerManager.getFrontLayers().size() - 1 ; loopCnt >= 0 ; loopCnt --){
+			frontTable.add(layerManager.getFrontLayer(loopCnt).getButton()).top().expand();
 			frontTable.row();
 		}
 		layerFrontScrollPane = new ScrollPane(frontTable,skin);
@@ -87,8 +87,8 @@ public class ScrollPaneStage extends Table{
 		this.add(layerFrontScrollPane).left().top().fillX().size(menuScrollPane.getPrefWidth()/2,menuScrollPane.getPrefHeight()/2);
 	}
 	public void layerBackCreate(){
-		for (loopCnt = 0 ; loopCnt < layerManager.getBackLayers().size() ; loopCnt ++){
-			backTable.add(layerManager.getBackLayer(loopCnt).getButton());
+		for (loopCnt = layerManager.getBackLayers().size() - 1 ; loopCnt >= 0 ; loopCnt --){
+			backTable.add(layerManager.getBackLayer(loopCnt).getButton()).top().expand();
 			backTable.row();
 		}
 		layerBackScrollPane = new ScrollPane(backTable,skin);
@@ -101,7 +101,7 @@ public class ScrollPaneStage extends Table{
 	
 	public void addFront(){
 		frontTable = new Table();
-		for (loopCnt = 0 ; loopCnt < layerManager.getFrontLayers().size() ; loopCnt ++){
+		for (loopCnt = layerManager.getFrontLayers().size() - 1 ; loopCnt >= 0 ; loopCnt --){
 			frontTable.add(layerManager.getFrontLayer(loopCnt).getButton()).top().expand();
 			frontTable.row();
 		}
@@ -115,8 +115,8 @@ public class ScrollPaneStage extends Table{
 	
 	public void addBack(){
 		backTable = new Table();
-		for (loopCnt = 0 ; loopCnt < layerManager.getBackLayers().size() ; loopCnt ++){
-			backTable.add(layerManager.getBackLayer(loopCnt).getButton());
+		for (loopCnt = layerManager.getBackLayers().size() - 1 ; loopCnt >= 0 ; loopCnt --){
+			backTable.add(layerManager.getBackLayer(loopCnt).getButton()).top().expand();
 			backTable.row();
 		}
 		layerBackScrollPane = new ScrollPane(backTable,skin);

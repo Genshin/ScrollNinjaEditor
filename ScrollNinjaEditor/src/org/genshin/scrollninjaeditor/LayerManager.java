@@ -8,8 +8,9 @@ public class LayerManager {
 	private static LayerManager instance = new LayerManager();
 	private ArrayList<Layer> frontLayers = new ArrayList<Layer>();
 	private ArrayList<Layer> backLayers = new ArrayList<Layer>();
-	private int selectLayer = 0;
-	private int selectPlace = Layer.FRONT;
+	private int	selectLayer = 0;
+	private int	selectPlace = Layer.FRONT;
+	private int	oldSelectLayer;
 
 	
 	public LayerManager() {
@@ -43,6 +44,7 @@ public class LayerManager {
 	
 		setLabelColor(this.selectPlace, this.selectLayer, false);
 		this.selectPlace = place;
+		oldSelectLayer = this.selectLayer;
 		this.selectLayer = number;
 		setLabelColor(this.selectPlace, this.selectLayer, true);
 	}
@@ -67,6 +69,10 @@ public class LayerManager {
 	
 	public int getSelectLayer() {
 		return this.selectLayer;
+	}
+	
+	public int getOldlayer(){
+		return this.oldSelectLayer;
 	}
 	
 	

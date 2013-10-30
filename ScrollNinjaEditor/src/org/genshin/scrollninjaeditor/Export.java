@@ -11,26 +11,27 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class Export extends ImageButton {
 	LayerManager manager;
-	
+	private MapEditorStage		mapEditorStage;
 	
 	public Export(SpriteDrawable sd ) {
 		super(sd);
 		
 		this.manager = LayerManager.getInstance();
+		mapEditorStage = MapEditorStage.getInstance();
 		
 		this.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event ,float x,float y) {
-				
 				exportFile();
+				mapEditorStage.updateLayer();
 			}
 		});
-		
 		setSize(32, 32);
 	}
 	
-	public void setlayer(LayerManager layer) {
+	public void setlayer(LayerManager layer, MapEditorStage mapEditorStage) {
 		this.manager = layer;
+		this.mapEditorStage = mapEditorStage;
 	}
 	
 	private void exportFile() {
@@ -50,7 +51,6 @@ public class Export extends ImageButton {
 					write.putObject("label", obj.getLabelName());
 					write.putObject("x", obj.getX());
 					write.putObject("y", obj.getY());
-					
 				}
 			}
 			//バックレイヤ―情報書き出し

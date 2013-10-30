@@ -29,10 +29,7 @@ public class MenuButton extends ImageButton{
 					table.getChildren().get(2).setX(screenWidth - getWidth());
 					menuClickFlg = false;
 				}
-			
 			}
 		});
-		
 	}
-
 }

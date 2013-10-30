@@ -67,7 +67,6 @@ public class Layer {
 			public void clicked(InputEvent event, float x, float y) {
 				active = !active;
 				clickFlag = true;
-				
 			}
 		});
 	}
