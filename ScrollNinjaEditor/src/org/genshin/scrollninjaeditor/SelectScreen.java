@@ -50,7 +50,7 @@ public class SelectScreen implements Screen {
 		this.editor = editor;
 		
 		float  w = Gdx.graphics.getWidth();
-		float  h = Gdx.graphics.getHeight();
+		final float  h = Gdx.graphics.getHeight();
 
 		batch = new SpriteBatch();
 		
@@ -120,6 +120,7 @@ public class SelectScreen implements Screen {
 						fileText.setText(file.getName());
 						fileName = "data/stage/" + file.getName();	//パス保存
 						preTable.setSize(ratioX, ratioY);
+						preTable.setPosition(0.0f, h/5);
 						preTable.translate(Gdx.graphics.getWidth() / 2 - preTable.getWidth() / 2, 0.0f);
 						loadflag = true;
 					}
