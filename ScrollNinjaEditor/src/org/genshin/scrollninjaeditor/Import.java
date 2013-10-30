@@ -45,7 +45,6 @@ public class Import extends ImageButton{
 
 		//フィルター設定
 		fileChooser.addChoosableFileFilter(filter);
-
 		int res = fileChooser.showOpenDialog(fileChooser);
 
 		if(res == JFileChooser.APPROVE_OPTION) {

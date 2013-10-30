@@ -73,8 +73,7 @@ public class LayerManager {
 	public int getOldlayer(){
 		return this.oldSelectLayer;
 	}
-	
-	
+
 	//レイヤ―取得
 	public Layer getLayer(int index) {
 		if(this.selectPlace == Layer.FRONT)
@@ -104,8 +103,7 @@ public class LayerManager {
 		else
 			return null;
 	}
-	
-	
+
 	//レイヤ―配列取得
 	public ArrayList<Layer> getFrontLayers() {
 		return frontLayers;
@@ -113,15 +111,13 @@ public class LayerManager {
 	public ArrayList<Layer> getBackLayers() {
 		return backLayers;
 	}
-	
-	
+
 	//レイヤ―追加
 	public void addFront(int i) {
 		frontLayers.add(new Layer(i,Layer.FRONT));
 	}
 	public void addBack(int i) {
 		backLayers.add(new Layer(i,Layer.BACK));
-		
 	}
 	
 	//レイヤ―削除
@@ -130,8 +126,7 @@ public class LayerManager {
 			frontLayers.remove(index);
 			for(int i = 0 ; i + index < frontLayers.size() ; i++ ) {
 				frontLayers.get(index + i).setLabel(index + i);
-				frontLayers.get(index + i).setLayerNumber(index + i);
-				
+				frontLayers.get(index + i).setLayerNumber(index + i);	
 			}
 		}
 	}
@@ -142,8 +137,7 @@ public class LayerManager {
 				backLayers.get(index + i).setLabel(index + i);
 				backLayers.get(index + i).setLayerNumber(index + i);
 			}
-		}
-			
+		}		
 	}
 	
 	//描画レイヤ―の選択
@@ -157,7 +151,6 @@ public class LayerManager {
 			this.getFrontLayer(layerNo).setDrawFlag(true);
 		else if(layerPlace == Layer.BACK)
 			this.getBackLayer(layerNo).setDrawFlag(true);
-		
 	}
 	public void allDraw(){
 		for(Layer lay:frontLayers) 
@@ -182,7 +175,6 @@ public class LayerManager {
 		Layer stack = frontLayers.get(change);
 		frontLayers.set(change,frontLayers.get(target));
 		frontLayers.set(target,stack);
-
 	}
 	public void changeLayerBackToBack(int change,int target) {
 		Layer stack = backLayers.get(change);
@@ -199,7 +191,4 @@ public class LayerManager {
 		frontLayers.add(backLayers.get(index));
 		backLayers.remove(index);
 	}
-	
-
-
 }

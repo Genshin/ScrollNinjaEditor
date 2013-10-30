@@ -200,8 +200,8 @@ public class Mouse {
 					layerManager.changeLayerBackToBack(layerManager.getSelectLayerNum(), layerManager.getSelectLayerNum() - 1);
 				
 				layerManager.setLayer(layerManager.getSelectPlace(), layerManager.getSelectLayerNum() - 1);	
-			}
-			mapEditorStage.updateLayer();
+				mapEditorStage.updateLayer();
+			}		
 		}
 		if(Gdx.input.isKeyPressed(UseKeys.LAYER_UP) && oldPressKey != UseKeys.LAYER_UP) {
 			oldPressKey = UseKeys.LAYER_UP;
