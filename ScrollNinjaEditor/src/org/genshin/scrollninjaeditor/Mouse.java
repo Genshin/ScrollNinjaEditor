@@ -34,6 +34,7 @@ public class Mouse {
 		setOldMousePosition();
 		getMousePosition();
 		input();
+		layer.checkClick();
 		if(selectFlag == -1)
 			hitCheck();
 		else
@@ -175,9 +176,9 @@ public class Mouse {
 				layerManager.changeLayerFrontToFront(0, 1);
 		}
 		
-		//レイヤ―選択描画(仮)
+		//レイヤ―選択描画
 		if(Gdx.input.isKeyPressed(Keys.D)) {
-			layerManager.selectDraw(Layer.FRONT, 1);
+			layerManager.selectDraw(layerManager.getSelectPlace(),layerManager.getSelectLayer());
 		}		
 		if(Gdx.input.isKeyPressed(Keys.F)) {
 			layerManager.allDraw();

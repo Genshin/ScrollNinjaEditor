@@ -12,12 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class Layer {
 	private int layerNumber;
-	//private LayerManager layer;
 	private TextButton label;
 	private Boolean active;
 	private ArrayList<MapObject> mapObjects;
 	private int layerPlace;
 	private boolean drawFlag = false;
+	private boolean clickFlag = false;
 	
 	public static int FRONT = 0;
 	public static int BACK = 1;
@@ -28,8 +28,8 @@ public class Layer {
 		setPlace(place);
 		active = false;
 		drawFlag = true;
+		clickFlag = false;
 		mapObjects = new ArrayList<MapObject>();
-		//layer = LayerManager.getInstance();
 	}
 
 	public void setPlace(int place)	{
@@ -41,11 +41,21 @@ public class Layer {
 	public void setDrawFlag(boolean flag) {
 		this.drawFlag = flag;
 	}
+	public void setClickFlag(boolean flag) {
+		this.clickFlag = flag;
+	}
+	
 	public int getLayerNumber() {
 		return layerNumber;
 	}
 	public int getLayerPlace() {
 		return layerPlace;
+	}
+	public boolean getDrawFlag() {
+		return this.drawFlag ;
+	}
+	public boolean getClickFlag() {
+		return this.clickFlag;
 	}
 	
 	public void setLabel(int num) {
@@ -56,7 +66,8 @@ public class Layer {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				active = !active;
-				Gdx.app.log("", "aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+				clickFlag = true;
+				
 			}
 		});
 	}

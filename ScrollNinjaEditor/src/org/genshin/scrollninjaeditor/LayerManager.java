@@ -10,6 +10,7 @@ public class LayerManager {
 	private ArrayList<Layer> backLayers = new ArrayList<Layer>();
 	private int selectLayer = 0;
 	private int selectPlace = Layer.FRONT;
+
 	
 	public LayerManager() {
 		addFront(0);
@@ -20,7 +21,23 @@ public class LayerManager {
 	public static LayerManager getInstance() {
 		return instance;
 	}
-	
+		
+	public void checkClick(){
+		for(Layer lay:frontLayers) {
+			if(lay.getClickFlag()) {
+				setLayer(lay.getLayerPlace(), lay.getLayerNumber());
+				lay.setClickFlag(false);
+				break;
+			}
+		}
+		for(Layer lay:backLayers) {
+			if(lay.getClickFlag()) {
+				setLayer(lay.getLayerPlace(), lay.getLayerNumber());
+				lay.setClickFlag(false);
+				break;
+			}
+		}
+	}
 	
 	public void setLayer(int place,int number) {
 	
@@ -91,6 +108,7 @@ public class LayerManager {
 	}
 	public void addBack(int i) {
 		backLayers.add(new Layer(i,Layer.BACK));
+		
 	}
 	
 	//レイヤ―削除
@@ -168,5 +186,6 @@ public class LayerManager {
 		backLayers.remove(index);
 	}
 	
+
 
 }
