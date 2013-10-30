@@ -19,8 +19,8 @@ public class Layer {
 	private boolean drawFlag = false;
 	private boolean clickFlag = false;
 	
-	public static int FRONT = 0;
-	public static int BACK = 1;
+	public static final int FRONT = 0;
+	public static final int BACK = 1;
 
 	public Layer(int num,int place) {
 		setLayerNumber(num);

@@ -21,8 +21,8 @@ public class MapEditorScreen implements Screen {
 	private Mouse				mouse;
 	private float				zoom = 1.0f;
 	private LayerManager		layermanager = new LayerManager();
-	 int oldPressKey;
-	 boolean inputFlag;
+	int oldPressKey;
+	boolean inputFlag;
 
 	/**
 	 * Constructor
