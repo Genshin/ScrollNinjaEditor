@@ -10,7 +10,6 @@ public class LayerManager {
 	private ArrayList<Layer> backLayers = new ArrayList<Layer>();
 	private int	selectLayer = 0;
 	private int	selectPlace = Layer.FRONT;
-	private int	oldSelectLayer;
 	
 	public LayerManager() {
 		addFront(0);
@@ -43,7 +42,6 @@ public class LayerManager {
 	
 		setLabelColor(this.selectPlace, this.selectLayer, false);
 		this.selectPlace = place;
-		oldSelectLayer = this.selectLayer;
 		this.selectLayer = number;
 		setLabelColor(this.selectPlace, this.selectLayer, true);
 	}
@@ -68,10 +66,6 @@ public class LayerManager {
 	
 	public int getSelectLayerNum() {
 		return this.selectLayer;
-	}
-	
-	public int getOldlayer(){
-		return this.oldSelectLayer;
 	}
 
 	//レイヤ―取得

@@ -38,7 +38,8 @@ public class Camera extends OrthographicCamera {
 			if(Gdx.input.isButtonPressed(Buttons.LEFT))	{
 				moveFlag = true;
 				
-				this.translate(-(mousePositionX - oldmousePositionX) / 2, (mousePositionY - oldmousePositionY) / 2);
+				this.translate(-(mousePositionX - oldmousePositionX) / 2, 
+								(mousePositionY - oldmousePositionY) / 2);
 			}
 		}
 		else {

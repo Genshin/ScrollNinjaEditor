@@ -32,12 +32,12 @@ public class MapObjectManager {
 	 * @return	instance
 	 */
 	public static MapObjectManager create() {
-        if( !instance.isInitialized ){
-            instance.initialize();
-            instance.isInitialized = true;
-        }
-        return instance;
-    }
+		if( !instance.isInitialized ){
+			instance.initialize();
+			instance.isInitialized = true;
+		}
+		return instance;
+	}
 	
 	/**
 	 * initialize
@@ -45,14 +45,14 @@ public class MapObjectManager {
 	private void initialize() {
 		// read json
 		try{
-            ObjectMapper objectMapper = new ObjectMapper();
-            mapObjectList = objectMapper.readValue(Gdx.files.internal("data/objects/objects.json").read(),
-            									   new TypeReference<ArrayList<MapObject>>(){});
-        }
-        catch (JsonParseException e) { e.printStackTrace(); }
-        catch (JsonMappingException e) { e.printStackTrace(); }
-        catch (IOException e) { e.printStackTrace(); }
-
+			ObjectMapper objectMapper = new ObjectMapper();
+			mapObjectList = objectMapper.readValue(Gdx.files.internal("data/objects/objects.json").read(),
+													new TypeReference<ArrayList<MapObject>>(){});
+		}
+		catch (JsonParseException e) { e.printStackTrace(); }
+		catch (JsonMappingException e) { e.printStackTrace(); }
+		catch (IOException e) { e.printStackTrace(); }
+		
 		// set sprite
 		if (mapObjectList != null) {
 			for (int i = 0; i < mapObjectList.size(); i ++) {

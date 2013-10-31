@@ -8,13 +8,13 @@ public class Mouse {
 	private Camera 			 camera;
 	private int				 selectFlag = -1;
 
+	private int					oldPressKey;
 	private float				mousePositionX;
 	private float				mousePositionY;
 	private float				oldmousePositionX;
 	private float				oldmousePositionY;
 	private float				objectPositonX;
 	private float				objectPositonY;
-	private int					oldPressKey;
 	private boolean				inputFlag = false;
 	private LayerManager		layerManager;
 	private MapEditorStage		mapEditorStage;
