@@ -54,13 +54,13 @@ public class Import extends ImageButton{
 			if(filter.accept(file)) {
 				JsonRead read = new JsonRead(Gdx.files.absolute(file.getAbsolutePath()).path());
 
+				//読み込んだデータの格納
 				for(int node = 0;read.getRootNode(node) != null;node++) {
 					MapObject setObj = null;
 
 					//スプライトの種類チェック
 					int layer = read.getObjectInt("layer", node);
 					int layerNo = read.getObjectInt("layerNo", node);
-
 					for(MapObject obj:mapObjManager.getMapObjectList()) {
 						String label = read.getObjectString("label", node);
 

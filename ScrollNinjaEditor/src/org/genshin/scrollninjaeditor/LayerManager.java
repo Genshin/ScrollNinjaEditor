@@ -38,6 +38,7 @@ public class LayerManager {
 		}
 	}
 	
+	//レイヤー選択
 	public void setLayer(int place,int number) {
 	
 		setLabelColor(this.selectPlace, this.selectLayer, false);
@@ -46,6 +47,7 @@ public class LayerManager {
 		setLabelColor(this.selectPlace, this.selectLayer, true);
 	}
 	
+	//レイヤ―のラベルボタンカラーの変更
 	private void setLabelColor(int place ,int number ,boolean flag) {
 		if(!flag) {
 			if(place == Layer.FRONT && number < this.frontLayers.size())
@@ -60,10 +62,13 @@ public class LayerManager {
 				this.backLayers.get(number).getLabel().setColor(1.0f, 0.0f, 0.0f, 1.0f);
 		}
 	}
+	
+	//選択中のレイヤーの場所取得（Front　or Back）
 	public int getSelectPlace() {
 		return this.selectPlace;
 	}
 	
+	//選択中のレイヤー番号取得
 	public int getSelectLayerNum() {
 		return this.selectLayer;
 	}
@@ -77,6 +82,8 @@ public class LayerManager {
 		else
 			return null;
 	}
+	
+	//選択中のレイヤ―取得
 	public Layer getSelectLayer() {
 		if(this.selectPlace == Layer.FRONT)
 			return getFrontLayer(this.selectLayer);
@@ -152,6 +159,8 @@ public class LayerManager {
 		for(Layer lay:backLayers) 
 			lay.setDrawFlag(true);
 	}
+	
+	
 	//レイヤ―描画
 	public void drawFrontLayers(SpriteBatch batch) {
 		for(Layer lay:frontLayers) {

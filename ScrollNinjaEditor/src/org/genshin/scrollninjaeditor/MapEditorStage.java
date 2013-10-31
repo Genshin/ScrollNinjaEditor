@@ -35,17 +35,17 @@ public class MapEditorStage extends Stage{
 	 * @param fileName
 	 * @param load
 	 */
-	public MapEditorStage(String fileName, Load load){
+	public MapEditorStage(String fileName, LoadTexture load){
 		super();
 		scrolloPaneEditor = new ScrollPaneEditor();
 		table = new Table();
 		table.setFillParent(true);
 		table.debug();
-		
-		scale			= new Label("",new Skin(Gdx.files.internal("data/uiskin.json")));
-		importButton	= new Import(load.getSpriteDrawable(Load.IMPORT));
-		exportButton	= new Export(load.getSpriteDrawable(Load.EXPORT));
-		menuButton		= new MenuButton(load.getSpriteDrawable(Load.MENU));
+
+		scale = new Label("",new Skin(Gdx.files.internal("data/uiskin.json")));
+		importButton = new Import(load.getSpriteDrawable(LoadTexture.IMPORT));
+		exportButton = new Export(load.getSpriteDrawable(LoadTexture.EXPORT));
+		menuButton = new MenuButton(load.getSpriteDrawable(LoadTexture.MENU));
 	}
 	
 	/**

@@ -32,8 +32,8 @@ public class Camera extends OrthographicCamera {
 		
 		if(Gdx.input.isKeyPressed(Keys.SPACE)) {
 			
-			mousePositionX = (Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + this.position.x;
-			mousePositionY = (Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - this.position.y;
+			mousePositionX = ((Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + this.position.x / this.zoom) * this.zoom;
+			mousePositionY = ((Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - this.position.y / this.zoom) * this.zoom;
 			
 			if(Gdx.input.isButtonPressed(Buttons.LEFT))	{
 				moveFlag = true;
@@ -46,7 +46,6 @@ public class Camera extends OrthographicCamera {
 			moveFlag = false;
 		}
 	}
-	
 	public void zoom(float zoomSize) {
 		this.zoom = zoomSize;
 	}

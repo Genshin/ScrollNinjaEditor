@@ -3,8 +3,6 @@ package org.genshin.scrollninjaeditor;
 import java.io.File;
 import java.io.IOException;
 
-import java.util.Iterator;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -71,27 +69,7 @@ public class JsonRead {
 		
 		return getNode.floatValue();
 	}
-	
-	/**
-	 * @param object ObjectName
-	 * @param field  FieldName
-	 * @param nodeNo NodeNo
-	 * @return FieldValue toString
-	 */
-	public String getObjectField(String object,String field , int nodeNo)	{
-		currentNode = rootNode.get(nodeNo);
 		
-		JsonNode objNode = currentNode.get(object);
-		Iterator<String> nodeFields = objNode.fieldNames();
-		while(nodeFields.hasNext())	{
-			String nodeField = nodeFields.next();
-			if(nodeField == field) {
-				return objNode.get(nodeField).asText();
-			}
-		}
-		return null;
-	}
-	
 	
 	/**
 	 * @param nodeNo NodeNo
