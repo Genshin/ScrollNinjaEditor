@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -25,19 +26,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class SelectScreen implements Screen {
 	private ScrollNinjaEditor editor;
+
 	private String fileName;
 	private SpriteBatch batch;
 	private Stage stage;
 	private Image image;
-	private static boolean loadflag = false;
-	private static boolean changeflag = false;
-	private Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+	private boolean loadflag = false;
+	private boolean changeflag = false;
 	private TextField fileText;
-
-	private Texture texture;
-	private TextureRegion region;
-	private Sprite sprite;
-	private SpriteDrawable sd;
 	
 	private float ratioX;
 	private float ratioY;
@@ -58,6 +54,8 @@ public class SelectScreen implements Screen {
 		stage = new Stage(w,h,true);
 		Gdx.input.setInputProcessor(stage);
 		
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		
 		//----------------------------------------
 		//画像選択ボタン
 		//----------------------------------------
@@ -66,9 +64,9 @@ public class SelectScreen implements Screen {
 		selTable.size( w/5*4 , h / 5 );
 		selTable.translate(w/10, h/5*4);
 		//ボタン作成
-		TextButton openButton;
-		openButton = new TextButton("OPEN",skin);
+		TextButton openButton = new TextButton("OPEN",skin);
 		fileText = new TextField(" ",skin);
+		fileText.setTouchable(Touchable.disabled);
 		selTable.add(fileText).size(selTable.getWidth() - 64,32);
 		selTable.right().add(openButton).size(64, 32);
 
@@ -80,8 +78,7 @@ public class SelectScreen implements Screen {
 		ratioY = h/5*3; 
 		final Table preTable = new Table();
 		preTable.translate(0, h/5);
-		setdata(null);
-		image = new Image(sd);
+		image = new Image();
 		preTable.add(image);
 
 		//----------------------------------------
@@ -92,8 +89,7 @@ public class SelectScreen implements Screen {
 		creTable.size( w/5*4 , h / 5 );
 		creTable.translate(w/10,0.0f);
 		//ボタン作成
-		TextButton createButton;
-		createButton = new TextButton("CREATE",skin);
+		TextButton createButton = new TextButton("CREATE",skin);
 		creTable.add(createButton).size(64, 32);
 		
 		//ボタン機能設定
@@ -108,7 +104,6 @@ public class SelectScreen implements Screen {
 				
 				//フィルター設定
 				fileChooser.addChoosableFileFilter(filter);
-				
 				int res = fileChooser.showOpenDialog(fileChooser);
 				
 				if(res == JFileChooser.APPROVE_OPTION) {
@@ -116,7 +111,7 @@ public class SelectScreen implements Screen {
 
 					//開いたファイルが正しい場合
 					if(filter.accept(file)) {
-						changeTex(file.getName());	//画像切替
+						setThumbnail(file.getName());	//画像切替
 						fileText.setText(file.getName());
 						fileName = "data/stage/" + file.getName();	//パス保存
 						preTable.setSize(ratioX, ratioY);
@@ -192,38 +187,33 @@ public class SelectScreen implements Screen {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		texture.dispose();
 		stage.dispose();
 	}
 	
 	/**
-	 * 選択した画像をセットする
+	 * 選択した画像を取得する
 	 * @param str		ファイル名
 	 */
-	private void setdata(String str) {
+	private SpriteDrawable setImage(String str) {
+		SpriteDrawable sd = null;
+
 		if(str != null)	{
-			texture = TextureFactory.getInstance().get("data/stage/" + str);
-			region = new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight());
+			Texture texture = TextureFactory.getInstance().get("data/stage/" + str);
+			TextureRegion region = new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight());
 			setRatio(texture.getWidth(), texture.getHeight());
-			sprite = new Sprite(region);
+			Sprite sprite = new Sprite(region);
 			sd = new SpriteDrawable(sprite);
 		}
-		else {
-			texture = null;
-			region = null;
-			sprite = null;
-			sd = null;
-		}
+		
+		return sd;
 	}
 
 	/**
-	 * 選択した画像に変更する
+	 * 選択した画像のサムネイルをセットする
 	 * @param str	ファイル名
 	 */
-	private void changeTex(String str) {
-		setdata(str);
-		
-		image.setDrawable(sd);
+	private void setThumbnail(String str) {		
+		image.setDrawable(setImage(str));
 	}
 	
 	/**
