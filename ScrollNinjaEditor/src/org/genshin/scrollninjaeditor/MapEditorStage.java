@@ -63,16 +63,18 @@ public class MapEditorStage extends Stage{
 	 * @param manager
 	 * @param camera
 	 */
-	public void create(final float screenWidth ,float screenHeight,final MapObjectManager manager,
-						Camera camera,LayerManager layer){
+	public void create(final MapObjectManager manager,
+						Camera camera,LayerManager layer,
+						float scaleX,float scaleY){
 		layerManager = layer;
 		importButton.setlayer(layerManager,this);
 		exportButton.setlayer(layerManager,this);
 		createScrollPane(manager,camera);
-		menuButton.create(table, screenWidth, this);
-		addButton(screenWidth, screenHeight);
+		menuButton.create(table, Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), this);
+		menuButton.getImage().scale(1, scaleY);
+		addButton(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 		scale.setColor(0.0f, 0.0f, 0.0f, 1.0f);
-		scale.setPosition(64.0f,screenHeight - 32);
+		scale.setPosition(64.0f,Gdx.graphics.getHeight() - 32);
 		scale.setText(Math.round(100 + (-sizeCnt  * 10))  + "%");
 		this.addActor(scale);
 		// スクロール
@@ -147,7 +149,7 @@ public class MapEditorStage extends Stage{
 		table.add(exportButton).top().left().size(32,32);
 		
 		// メニュー
-		table.add(menuButton).expand().right().top();
+		table.add(menuButton).expand().right().top().size(menuButton.getWidth() * 2, Gdx.graphics.getHeight() * 2);
 		addActor(table);
 	}
 	

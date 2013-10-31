@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class MapEditorScreen implements Screen {
@@ -19,14 +21,17 @@ public class MapEditorScreen implements Screen {
 	private float				screenWidth		= 0,
 								screenHeight	= 0;
 	private float				zoom			= 1.0f;
+	private float				scaleX			= 0.0f,
+								scaleY			= 0.0f;
 	private boolean				cameraMove		= false;
+	private ShapeRenderer		sr				= new ShapeRenderer();
 
 	/**
 	 * Constructor
 	 * @param editor
 	 * @param fileName		background file name
 	 */
-	public MapEditorScreen(ScrollNinjaEditor editor, String fileName) {
+	public MapEditorScreen(ScrollNinjaEditor editor, String fileName,float scaleW,float scaleH) {
 		this.editor		= editor;
 		this.fileName	= fileName;
 		screenWidth		= Gdx.graphics.getWidth();
@@ -34,7 +39,9 @@ public class MapEditorScreen implements Screen {
 		camera			= new Camera(screenWidth, screenHeight);
 		batch			= new SpriteBatch();
 		mouse			= new Mouse();
-		
+		scaleX = scaleW;
+		scaleY = scaleH;
+
 		//===テクスチャ読み込み
 		load = new LoadTexture(this.fileName);
 
@@ -44,7 +51,7 @@ public class MapEditorScreen implements Screen {
 		manager 		= MapObjectManager.create();
 		
 		//===クリエイト
-		mapEditorStage.create(screenWidth,screenHeight,manager,Camera.getInstance(),layerManager);
+		mapEditorStage.create(manager,Camera.getInstance(),layerManager,scaleX,scaleY);
 	}
 
 	/**
@@ -60,7 +67,7 @@ public class MapEditorScreen implements Screen {
 		//===オブジェクトクリック
         if(!cameraMove)
            	mouse.update(camera,layerManager,mapEditorStage);
-   	}
+ 	}
 
 	/**
 	 * Draw process
@@ -80,6 +87,13 @@ public class MapEditorScreen implements Screen {
 		mapEditorStage.act(Gdx.graphics.getDeltaTime());
 		mapEditorStage.draw();
 		Table.drawDebug(mapEditorStage);
+		
+		sr.setProjectionMatrix(camera.combined);
+		sr.begin(ShapeType.Rectangle);
+		sr.setColor(1, 0, 0, 1);
+		sr.rect(load.getSprite(0).getX(), load.getSprite(0).getY(),
+				load.getSprite(0).getWidth(),load.getSprite(0).getHeight());
+		sr.end();
 	}
 
 	@Override

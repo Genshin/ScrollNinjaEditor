@@ -74,7 +74,7 @@ public class ScrollPaneEditor extends Table{
 		menuScrollPane.setFadeScrollBars(true);
 		menuScrollPane.setScrollingDisabled(false, false);
 		menuScrollPane.removeListener(menuScrollPane.getListeners().get(0));
-		this.add(menuScrollPane).top().right().size(menuScrollPane.getWidth(), Gdx.graphics.getHeight() / 2).colspan(2);
+		this.add(menuScrollPane).top().right().size(menuScrollPane.getPrefWidth(), Gdx.graphics.getHeight() / 2).colspan(2);
 	}
 	
 	/**
@@ -90,7 +90,7 @@ public class ScrollPaneEditor extends Table{
 		layerFrontScrollPane.setFadeScrollBars(true);
 		layerFrontScrollPane.setScrollingDisabled(false, false);
 		layerFrontScrollPane.removeListener(layerFrontScrollPane.getListeners().get(0));
-		this.add(layerFrontScrollPane).left().top().fillX().size(menuScrollPane.getWidth()/2, Gdx.graphics.getHeight() / 2);
+		this.add(layerFrontScrollPane).left().top().fillX().size(menuScrollPane.getPrefWidth() / 2 , Gdx.graphics.getHeight() / 2);
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public class ScrollPaneEditor extends Table{
 		layerBackScrollPane.setFadeScrollBars(true);
 		layerBackScrollPane.setScrollingDisabled(false, false);
 		layerBackScrollPane.removeListener(layerBackScrollPane.getListeners().get(0));
-		this.add(layerBackScrollPane).left().top().fillX().size(menuScrollPane.getWidth()/2, Gdx.graphics.getHeight() / 2);
+		this.add(layerBackScrollPane).left().top().fillX().size(menuScrollPane.getPrefWidth() / 2, Gdx.graphics.getHeight() / 2);
 	}
 	
 	/**
@@ -167,7 +167,7 @@ public class ScrollPaneEditor extends Table{
 		this.clear();
 		this.add(menuScrollPane).top().right().colspan(2);
 		this.row();
-		this.add(layerFrontScrollPane).left().top().fillX().size(menuScrollPane.getWidth()/2, Gdx.graphics.getHeight() / 2);
-		this.add(layerBackScrollPane).left().top().fillX().size(menuScrollPane.getWidth()/2, Gdx.graphics.getHeight() / 2);
+		this.add(layerFrontScrollPane).left().top().fillX().size(menuScrollPane.getPrefWidth() / 2, Gdx.graphics.getHeight() / 2);
+		this.add(layerBackScrollPane).left().top().fillX().size(menuScrollPane.getPrefWidth() / 2, Gdx.graphics.getHeight() / 2);
 	}
 }

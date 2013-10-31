@@ -15,7 +15,7 @@ public class MenuButton extends ImageButton{
 		super(sd);
 	}
 	
-	public void create(final Table table,final float screenWidth,final MapEditorStage mapEditorStage){
+	public void create(final Table table,final float screenWidth,final float screenHight ,final MapEditorStage mapEditorStage){
 		this.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event,float x,float y){

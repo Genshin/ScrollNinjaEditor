@@ -41,24 +41,26 @@ public class SelectScreen implements Screen {
 	private float ratioX;
 	private float ratioY;
 	
+	private float scaleW,scaleH;
+
 	/**
 	 * Constructor
 	 * @param editor
 	 */
 	public SelectScreen(ScrollNinjaEditor editor) {
 		this.editor = editor;
-		
+
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
 
 		batch = new SpriteBatch();
-		
+
 		//stage作成
 		stage = new Stage(w,h,true);
 		Gdx.input.setInputProcessor(stage);
 		
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		
+
 		//----------------------------------------
 		//画像選択ボタン
 		//----------------------------------------
@@ -94,21 +96,21 @@ public class SelectScreen implements Screen {
 		//ボタン作成
 		TextButton createButton = new TextButton("CREATE",skin);
 		creTable.add(createButton).size(64, 32);
-		
+
 		//ボタン機能設定
 		openButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event,float x,float y) {
 				File current = new File("./bin/data/stage");
 				JFileChooser fileChooser = new JFileChooser(current.getAbsolutePath());
-				
+
 				//ファイル選択フィルター宣言
 				ExtendsFileFilter filter = new ExtendsFileFilter(".png","PNG  ファイル(*.png)");
-				
+
 				//フィルター設定
 				fileChooser.addChoosableFileFilter(filter);
 				int res = fileChooser.showOpenDialog(fileChooser);
-				
+
 				if(res == JFileChooser.APPROVE_OPTION) {
 					File file = fileChooser.getSelectedFile();
 
@@ -125,7 +127,7 @@ public class SelectScreen implements Screen {
 				}
 			}
 		});
-		
+
 		createButton.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event,float x,float y){
@@ -134,7 +136,7 @@ public class SelectScreen implements Screen {
 				}
 			}
 		});
-				
+
 		stage.addActor(selTable);
 		stage.addActor(preTable);
 		stage.addActor(creTable);
@@ -149,7 +151,7 @@ public class SelectScreen implements Screen {
 		h = Gdx.graphics.getHeight();
 
 		if(changeflag)
-			editor.setScreen(new MapEditorScreen(editor, fileName));
+			editor.setScreen(new MapEditorScreen(editor, fileName,scaleW,scaleH));
 	}
 	
 	/**
@@ -172,6 +174,8 @@ public class SelectScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		scaleW = width / w;
+		scaleH = height / h;
 	}
 
 	@Override
@@ -210,7 +214,7 @@ public class SelectScreen implements Screen {
 			Sprite sprite = new Sprite(region);
 			sd = new SpriteDrawable(sprite);
 		}
-		
+
 		return sd;
 	}
 
@@ -221,7 +225,7 @@ public class SelectScreen implements Screen {
 	private void setThumbnail(String str) {		
 		image.setDrawable(setImage(str));
 	}
-	
+
 	/**
 	 * 選択した画像を表示する際の縦横比を調整
 	 * @param width
