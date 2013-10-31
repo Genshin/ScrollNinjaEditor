@@ -1,5 +1,6 @@
 package org.genshin.scrollninjaeditor;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -7,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class MenuButton extends ImageButton{
-	
 	private boolean 		menuClickFlg = false;
 	
 	public MenuButton(SpriteDrawable sd){
@@ -15,6 +15,7 @@ public class MenuButton extends ImageButton{
 	}
 	
 	public void create(final Table table,final float screenWidth,final MapEditorStage mapEditorStage){
+		this.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		this.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event,float x,float y){
