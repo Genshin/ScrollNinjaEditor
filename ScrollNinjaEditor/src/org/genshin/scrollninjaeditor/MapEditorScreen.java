@@ -11,15 +11,15 @@ public class MapEditorScreen implements Screen {
 	private String				fileName;
 	private Camera				camera;
 	private SpriteBatch 		batch;
-	private float				screenWidth = 0,
-								screenHeight = 0;
-	private MapObjectManager 	manager = new MapObjectManager();
-	private boolean				cameraMove = false;
-	private MapEditorStage 		mapEditorStage;
 	private Load				load;
 	private Mouse				mouse;
-	private float				zoom = 1.0f;
-	private LayerManager		layermanager = new LayerManager();
+	private MapEditorStage 		mapEditorStage;
+	private MapObjectManager 	manager			= new MapObjectManager();
+	private LayerManager		layerManager	= new LayerManager();
+	private float				screenWidth		= 0,
+								screenHeight	= 0;
+	private float				zoom			= 1.0f;
+	private boolean				cameraMove		= false;
 
 	/**
 	 * Constructor
@@ -27,25 +27,24 @@ public class MapEditorScreen implements Screen {
 	 * @param fileName		background file name
 	 */
 	public MapEditorScreen(ScrollNinjaEditor editor, String fileName) {
-		this.editor = editor;
-		this.fileName = fileName;
-		screenWidth = Gdx.graphics.getWidth();
-		screenHeight = Gdx.graphics.getHeight();
-		camera = new Camera(screenWidth, screenHeight);
-		batch = new SpriteBatch();
-		mouse = new Mouse();
+		this.editor		= editor;
+		this.fileName	= fileName;
+		screenWidth		= Gdx.graphics.getWidth();
+		screenHeight	= Gdx.graphics.getHeight();
+		camera			= new Camera(screenWidth, screenHeight);
+		batch			= new SpriteBatch();
+		mouse			= new Mouse();
 		
 		//===テクスチャ読み込み
 		load = new Load(this.fileName);
 
 		//====ステージ
-		mapEditorStage = new MapEditorStage(this.fileName,load);
+		mapEditorStage	= new MapEditorStage(this.fileName,load);
 		Gdx.input.setInputProcessor(mapEditorStage);
-
-		manager = MapObjectManager.create();
+		manager 		= MapObjectManager.create();
 		
 		//===クリエイト
-		mapEditorStage.create(screenWidth,screenHeight,manager,Camera.getInstance(),layermanager);
+		mapEditorStage.create(screenWidth,screenHeight,manager,Camera.getInstance(),layerManager);
 	}
 
 	/**
@@ -60,7 +59,7 @@ public class MapEditorScreen implements Screen {
 		
 		//===オブジェクトクリック
         if(!cameraMove)
-           	mouse.update(camera,layermanager,mapEditorStage);
+           	mouse.update(camera,layerManager,mapEditorStage);
    	}
 
 	/**
@@ -73,9 +72,9 @@ public class MapEditorScreen implements Screen {
 		batch.setProjectionMatrix(camera.combined);
 		
 		batch.begin();
-		layermanager.drawBackLayers(batch);
+		layerManager.drawBackLayers(batch);
 		load.draw(batch);
-		layermanager.drawFrontLayers(batch);
+		layerManager.drawFrontLayers(batch);
 		batch.end();
 		
 		mapEditorStage.act(Gdx.graphics.getDeltaTime());

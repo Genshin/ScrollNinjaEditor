@@ -42,10 +42,10 @@ public class MapEditorStage extends Stage{
 		table.setFillParent(true);
 		table.debug();
 		
-		scale = new Label("",new Skin(Gdx.files.internal("data/uiskin.json")));
-		importButton = new Import(load.getSpriteDrawable(Load.IMPORT));
-		exportButton = new Export(load.getSpriteDrawable(Load.EXPORT));
-		menuButton = new MenuButton(load.getSpriteDrawable(Load.MENU));
+		scale			= new Label("",new Skin(Gdx.files.internal("data/uiskin.json")));
+		importButton	= new Import(load.getSpriteDrawable(Load.IMPORT));
+		exportButton	= new Export(load.getSpriteDrawable(Load.EXPORT));
+		menuButton		= new MenuButton(load.getSpriteDrawable(Load.MENU));
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class MapEditorStage extends Stage{
 				}
 				return true;
 			}
-			});
+		});
 	}
 	
 	/**

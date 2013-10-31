@@ -10,14 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class Export extends ImageButton {
-	LayerManager manager;
+	private LayerManager		manager;
 	private MapEditorStage		mapEditorStage;
 	
 	public Export(SpriteDrawable sd ) {
 		super(sd);
 		
-		this.manager = LayerManager.getInstance();
-		mapEditorStage = MapEditorStage.getInstance();
+		this.manager	= LayerManager.getInstance();
+		mapEditorStage	= MapEditorStage.getInstance();
 		
 		this.addListener(new ClickListener(){
 			@Override
@@ -30,8 +30,8 @@ public class Export extends ImageButton {
 	}
 	
 	public void setlayer(LayerManager layer, MapEditorStage mapEditorStage) {
-		this.manager = layer;
-		this.mapEditorStage = mapEditorStage;
+		this.manager		= layer;
+		this.mapEditorStage	= mapEditorStage;
 	}
 	
 	private void exportFile() {

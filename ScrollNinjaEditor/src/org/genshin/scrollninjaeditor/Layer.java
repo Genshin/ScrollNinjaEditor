@@ -11,10 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class Layer {
-	private int layerNumber;
 	private TextButton label;
 	private Boolean active;
 	private ArrayList<MapObject> mapObjects;
+	private int layerNumber;
 	private int layerPlace;
 	private boolean drawFlag = false;
 	private boolean clickFlag = false;
