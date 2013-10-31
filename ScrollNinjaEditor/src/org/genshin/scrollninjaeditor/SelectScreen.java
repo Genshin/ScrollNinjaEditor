@@ -38,6 +38,9 @@ public class SelectScreen implements Screen {
 	private TextureRegion region;
 	private Sprite sprite;
 	private SpriteDrawable sd;
+	private float w;
+	private float h;
+	
 	
 	private float ratioX;
 	private float ratioY;
@@ -49,8 +52,8 @@ public class SelectScreen implements Screen {
 	public SelectScreen(ScrollNinjaEditor editor) {
 		this.editor = editor;
 		
-		float  w = Gdx.graphics.getWidth();
-		final float  h = Gdx.graphics.getHeight();
+		w = Gdx.graphics.getWidth();
+		h = Gdx.graphics.getHeight();
 
 		batch = new SpriteBatch();
 		
@@ -147,6 +150,8 @@ public class SelectScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void update(float delta) {
+		w = Gdx.graphics.getWidth();
+		h = Gdx.graphics.getHeight();
 		if(changeflag)
 			editor.setScreen(new MapEditorScreen(editor, fileName));
 	}

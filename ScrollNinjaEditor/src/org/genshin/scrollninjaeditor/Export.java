@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class Export extends ImageButton {
-	LayerManager manager;
+	private LayerManager 		manager;
 	private MapEditorStage		mapEditorStage;
 	
 	public Export(SpriteDrawable sd ) {
@@ -41,7 +41,7 @@ public class Export extends ImageButton {
 		if(select == JFileChooser.APPROVE_OPTION) {
 			JsonWrite write = new JsonWrite();
 	
-			//フロントレイヤ―情報書き出し
+			//フロントレイヤ―情報格納
 			for(int i = 0;i < manager.getFrontLayers().size();i++){
 				for(MapObject obj:manager.getFrontLayer(i).getMapObjects()) {
 					write.addObject();
@@ -53,7 +53,7 @@ public class Export extends ImageButton {
 					write.putObject("y", obj.getY());
 				}
 			}
-			//バックレイヤ―情報書き出し
+			//バックレイヤ―情報格納
 			for(int i = 0 ;i < manager.getBackLayers().size() ;i ++) {
 				for(MapObject obj:manager.getBackLayer(i).getMapObjects()) {
 					write.addObject();
@@ -65,6 +65,7 @@ public class Export extends ImageButton {
 					write.putObject("y", obj.getY());
 				}
 			}
+			//情報書き出し
 			write.writeData(fileChooser.getSelectedFile().toString() + ".json");
 		}
 	}

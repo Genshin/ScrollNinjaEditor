@@ -18,6 +18,7 @@ public class Mouse {
 	private boolean				inputFlag = false;
 	private LayerManager		layerManager;
 	private MapEditorStage		mapEditorStage;
+	private boolean				mouseFlag = false;
 	
 	public class UseKeys {
 		public static final int OBJECT_UP    		 = Keys.W;
@@ -64,10 +65,7 @@ public class Mouse {
                     objectPositonY = -layerManager.getLayer(layerManager.getSelectLayerNum()).getMapObject(i).getSp().getY();
                     selectFlag = i;
                 }
-                if(Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-                    layerManager.getLayer(layerManager.getSelectLayerNum()).getMapObjects().remove(i);
-                    break;
-                }
+  
             }
         }
 	}
@@ -75,30 +73,34 @@ public class Mouse {
 	private void drag() {
 		if(Gdx.input.isButtonPressed(Buttons.LEFT)) {
 
+			inputFlag = false;
 			objectPositonX += (mousePositionX - oldmousePositionX);
 			objectPositonY += (mousePositionY - oldmousePositionY);
 			
 			layerManager.getLayer(layerManager.getSelectLayerNum()).getMapObject(selectFlag).setPosition(objectPositonX, -objectPositonY);
 			int flag = selectFlag;
 			
-			//オブジェクト順序入れ替え(仮)
+			//オブジェクト順序入れ替え
 			if(Gdx.input.isKeyPressed(UseKeys.OBJECT_UP) && oldPressKey != UseKeys.OBJECT_UP) {
 				oldPressKey = UseKeys.OBJECT_UP;
 				inputFlag = true;
 				layerManager.getLayer(layerManager.getSelectLayerNum()).next(selectFlag);
 				if(selectFlag + 1 < layerManager.getLayer(layerManager.getSelectLayerNum()).getMapObjects().size())
-				selectFlag = flag + 1;
+					selectFlag = flag + 1;
 			}
 			if(Gdx.input.isKeyPressed(UseKeys.OBJECT_DOWN) && oldPressKey != UseKeys.OBJECT_DOWN) {
 				oldPressKey = UseKeys.OBJECT_DOWN;
 				inputFlag = true;
 				layerManager.getLayer(layerManager.getSelectLayerNum()).previous(selectFlag);
 				if(selectFlag > 0)
-				selectFlag = flag - 1;
+					selectFlag = flag - 1;
 			}
 		}
 		else
 			selectFlag = -1;
+		
+		if(!inputFlag && !Gdx.input.isKeyPressed(oldPressKey))
+			oldPressKey = 0;
 	}
 		
 	private void input() {
@@ -229,56 +231,75 @@ public class Mouse {
 			layerManager.allDraw();
 		}
 		
+		
 		if(!inputFlag && !Gdx.input.isKeyPressed(oldPressKey))
 			oldPressKey = 0;
 	}
 	
+	//マウスオーバー
 	private void MouseOver(){
 		frontOver();
 		backOver();
 	}
-	
+	//マウスオーバー（フロントレイヤ―）
 	private void frontOver(){
+		//スプライトの色を初期化
 		for(int i = layerManager.getFrontLayers().size() -1 ; i >= 0 ; i --){
 			for (int j = layerManager.getFrontLayer(i).getMapObjects().size() - 1 ; j >= 0 ; j --){
-				layerManager.getFrontLayer(i).getMapObject(j).getSp().setColor(1, 1, 1, 1);
+				layerManager.getFrontLayer(i).getMapObject(j).getSp().setColor(1.0f, 1.0f, 1.0f, 1.0f);
 			}
 		}
+		//マウスオーバー中のスプライトの色を変更、右クリックでマウスオーバー中のスプライトを削除
 		if(layerManager.getSelectPlace() == Layer.FRONT ){
 			for(int i = layerManager.getFrontLayer(layerManager.getSelectLayerNum()).getMapObjects().size() - 1 ;i >=0 ;i-- ) {
 				if(layerManager.getFrontLayer(layerManager.getSelectLayerNum()).getMapObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY)){
 						layerManager.getFrontLayer(layerManager.getSelectLayerNum()).getMapObject(i).getSp().setColor(0.0f, 1.0f, 0.0f, 0.5f);
+			            if(Gdx.input.isButtonPressed(Buttons.RIGHT) && !mouseFlag) {
+			            	layerManager.getFrontLayer(layerManager.getSelectLayerNum()).getMapObjects().remove(i);
+			                mouseFlag = true;
+			                break;
+			            }
+			            else if(!Gdx.input.isButtonPressed(Buttons.RIGHT))
+			                mouseFlag = false;
 						break;
 				}
-				else
-					layerManager.getFrontLayer(layerManager.getSelectLayerNum()).getMapObject(i).getSp().setColor(1.0f, 1.0f, 1.0f, 1.0f);
 			}
 		}
 	}
-	
+	//マウスオーバー（バックレイヤ―）
 	private void backOver(){
+		//スプライトの色を初期化
 		for(int i = layerManager.getBackLayers().size() -1 ; i >= 0 ; i --){
 			for (int j = layerManager.getBackLayer(i).getMapObjects().size() - 1 ; j >= 0 ; j --){
-				layerManager.getBackLayer(i).getMapObject(j).getSp().setColor(1, 1, 1, 1);
+				layerManager.getBackLayer(i).getMapObject(j).getSp().setColor(1.0f, 1.0f, 1.0f, 1.0f);
 			}
 		}
+		//マウスオーバー中のスプライトの色を変更、右クリックでマウスオーバー中のスプライトを削除
 		if(layerManager.getSelectPlace() == Layer.BACK){
 			for(int i = layerManager.getBackLayer(layerManager.getSelectLayerNum()).getMapObjects().size() - 1 ;i >=0 ;i-- ) {
 				if(layerManager.getBackLayer(layerManager.getSelectLayerNum()).getMapObject(i).getSp().getBoundingRectangle().contains(mousePositionX, -mousePositionY)){
 					layerManager.getBackLayer(layerManager.getSelectLayerNum()).getMapObject(i).getSp().setColor(0.0f, 1.0f, 0.0f, 0.5f);
+					if(Gdx.input.isButtonPressed(Buttons.RIGHT) && !mouseFlag) {
+		            	layerManager.getBackLayer(layerManager.getSelectLayerNum()).getMapObjects().remove(i);
+		                mouseFlag = true;
+		                break;
+		            }
+		            else if(!Gdx.input.isButtonPressed(Buttons.RIGHT))
+		                mouseFlag = false;
 					break;
 				}
-				else
-					layerManager.getBackLayer(layerManager.getSelectLayerNum()).getMapObject(i).getSp().setColor(1.0f, 1.0f, 1.0f, 1.0f);
+	
 			}
 		}
 	}
 
+	//マウス座標の取得
 	private void getMousePosition() {
-		mousePositionX = ((Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x /2) * camera.zoom;
-		mousePositionY = ((Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - camera.position.y/2) * camera.zoom;
+		mousePositionX = ((Gdx.input.getX() - Gdx.graphics.getWidth() / 2) + camera.position.x / camera.zoom) * camera.zoom;
+		mousePositionY = ((Gdx.input.getY() - Gdx.graphics.getHeight() / 2) - camera.position.y / camera.zoom) * camera.zoom;
 	}
 
+	//マウスの過去座標の格納
 	private void setOldMousePosition() {
 		oldmousePositionX = mousePositionX;
 		oldmousePositionY = mousePositionY;

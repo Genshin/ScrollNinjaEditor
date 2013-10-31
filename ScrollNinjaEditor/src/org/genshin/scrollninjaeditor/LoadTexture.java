@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
-public class Load {
+public class LoadTexture {
 	private ArrayList<Texture>		  array_Texs      		 = new ArrayList<Texture>();
 	private ArrayList<TextureRegion>  array_TexRegions		 = new ArrayList<TextureRegion>();
 	private ArrayList<Sprite>		  array_Sprites  		 = new ArrayList<Sprite>();
@@ -26,7 +26,7 @@ public class Load {
 	 * 
 	 * @param path
 	 */
-	public Load(String path) {
+	public LoadTexture(String path) {
 		array_Texs.add(new Texture(path));
 		array_Texs.get(BACKGROUND).setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		array_Texs.add(new Texture(Gdx.files.internal("data/arrow-down.png")));
@@ -37,7 +37,8 @@ public class Load {
 			array_TexRegions.add(new TextureRegion(array_Texs.get(i),0,0,array_Texs.get(i).getWidth(),array_Texs.get(i).getHeight()));
 			array_Sprites.add(new Sprite(array_TexRegions.get(i)));
 		}
-			
+		
+		//背景画像設定
 		Sprite sprite = array_Sprites.get(BACKGROUND);
 		sprite.setSize(sprite.getRegionWidth(), sprite.getRegionHeight());
 		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight() / 2);

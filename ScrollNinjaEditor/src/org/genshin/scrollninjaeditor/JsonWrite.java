@@ -14,7 +14,6 @@ public class JsonWrite
 	private ObjectMapper mapper;
 	private ArrayNode rootNode;
 	private ObjectNode objectNode;
-	private ObjectNode fieldNode;
 	
 	public JsonWrite() {
 		mapper = new ObjectMapper();
@@ -45,21 +44,6 @@ public class JsonWrite
 		objectNode.put(object,value);
 	}
 	
-	/**
-	 * @param object  ObjectName
-	 */
-	public void setFieldNode(String object) {
-		fieldNode = objectNode.putObject(object);
-	}
-	
-	/**
-	 * @param field  FieldName
-	 * @param value  FieldValue
-	 */
-	public void putObjectField(String field,String value) {
-		fieldNode.put(field,value);
-	}
-
 	public void addObject()	{
 		objectNode = rootNode.addObject();
 		

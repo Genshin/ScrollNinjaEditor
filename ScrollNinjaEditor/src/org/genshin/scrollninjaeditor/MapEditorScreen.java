@@ -16,7 +16,7 @@ public class MapEditorScreen implements Screen {
 	private MapObjectManager 	manager = new MapObjectManager();
 	private boolean				cameraMove = false;
 	private MapEditorStage 		mapEditorStage;
-	private Load				load;
+	private LoadTexture				load;
 	private Mouse				mouse;
 	private float				zoom = 1.0f;
 	private LayerManager		layermanager = new LayerManager();
@@ -36,7 +36,7 @@ public class MapEditorScreen implements Screen {
 		mouse = new Mouse();
 		
 		//===テクスチャ読み込み
-		load = new Load(this.fileName);
+		load = new LoadTexture(this.fileName);
 
 		//====ステージ
 		mapEditorStage = new MapEditorStage(this.fileName,load);
@@ -53,7 +53,7 @@ public class MapEditorScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void update(float delta) {
-		zoom = mapEditorStage.getZoom(load.getSprite(Load.BACKGROUND).getWidth(),load.getSprite(Load.BACKGROUND).getHeight());
+		zoom = mapEditorStage.getZoom(load.getSprite(LoadTexture.BACKGROUND).getWidth(),load.getSprite(LoadTexture.BACKGROUND).getHeight());
 		
 		//===カメラ処理
 		cameraMove = camera.update(zoom);
