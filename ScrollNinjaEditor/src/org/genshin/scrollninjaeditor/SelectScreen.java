@@ -37,9 +37,12 @@ public class SelectScreen implements Screen {
 
 	private float w;
 	private float h;
+	private Table preTable; 
 	
 	private float ratioX;
 	private float ratioY;
+
+	private String path;
 	
 	private float scaleW,scaleH;
 
@@ -81,7 +84,8 @@ public class SelectScreen implements Screen {
 		//プレビュー用table作成
 		ratioX = w/5*4;
 		ratioY = h/5*3; 
-		final Table preTable = new Table();
+		preTable = new Table();
+		preTable.setSize(ratioX, ratioY);
 		preTable.translate(0, h/5);
 		image = new Image();
 		preTable.add(image);
@@ -121,7 +125,8 @@ public class SelectScreen implements Screen {
 						fileName = "data/stage/" + file.getName();	//パス保存
 						preTable.setSize(ratioX, ratioY);
 						preTable.setPosition(0.0f, h/5);
-						preTable.translate(Gdx.graphics.getWidth() / 2 - preTable.getWidth() / 2, 0.0f);
+						preTable.translate((w - ratioX)/2, 0.0f);
+										
 						loadflag = true;
 					}
 				}
@@ -147,9 +152,6 @@ public class SelectScreen implements Screen {
 	 * @param delta		delta time
 	 */
 	public void update(float delta) {
-		w = Gdx.graphics.getWidth();
-		h = Gdx.graphics.getHeight();
-
 		if(changeflag)
 			editor.setScreen(new MapEditorScreen(editor, fileName,scaleW,scaleH));
 	}
@@ -176,6 +178,12 @@ public class SelectScreen implements Screen {
 	public void resize(int width, int height) {
 		scaleW = width / w;
 		scaleH = height / h;
+		if(loadflag) {
+			setThumbnail(path);	//画像切替
+			preTable.setSize(ratioX, ratioY);
+			preTable.setPosition(0.0f, h/5);
+			preTable.translate((w - ratioX)/2, 0.0f);
+		}
 	}
 
 	@Override
@@ -210,6 +218,8 @@ public class SelectScreen implements Screen {
 		if(str != null)	{
 			Texture texture = TextureFactory.getInstance().get("data/stage/" + str);
 			TextureRegion region = new TextureRegion(texture,0,0,texture.getWidth(),texture.getHeight());
+			path = str;
+
 			setRatio(texture.getWidth(), texture.getHeight());
 			Sprite sprite = new Sprite(region);
 			sd = new SpriteDrawable(sprite);
