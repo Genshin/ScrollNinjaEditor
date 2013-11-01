@@ -3,9 +3,8 @@
 *.DS_Store
 *.log
 *.class
-ScrollNinja.jar
+ScrollNinjaEditor.jar
 doc/
 bin/
-ScrollNinja-html/.gwt/.gwt-log
-ScrollNinja-html/gwt-unit-Cache/
-ScrollNinja-android/gen/
+ScrollNinjaEditor-html/.gwt/.gwt-log
+ScrollNinjaEditor-android/gen/org/genshin/scrollninjaEditor/BuildConfig.java
